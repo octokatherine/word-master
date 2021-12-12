@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 const letters = [
   'A',
@@ -37,9 +37,10 @@ const status = {
 }
 
 function App() {
+  const [answer, setAnswer] = useState('THORN')
   const [board, setBoard] = useState([
-    ['R', 'A', 'I', 'S', ''],
-    ['A', 'N', 'O', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
     ['', '', '', '', ''],
     ['', '', '', '', ''],
     ['', '', '', '', ''],
@@ -49,6 +50,7 @@ function App() {
     Array(6).fill(Array(5).fill(status.unguessed))
   )
   const [currentRow, setCurrentRow] = useState(0)
+  const [currentCol, setCurrentCol] = useState(0)
   const [letterStatuses, setLetterStatuses] = useState(() => {
     const letterStatuses = {}
     letters.forEach((letter) => {
@@ -75,6 +77,18 @@ function App() {
     }
   }
 
+  const addLetter = (letter) => {
+    setBoard((prev) => {
+      if (currentCol > 4) {
+        return prev
+      }
+      const newBoard = [...prev]
+      newBoard[currentRow][currentCol] = letter
+      return newBoard
+    })
+    setCurrentCol((prev) => prev + 1)
+  }
+
   return (
     <div className="flex flex-col justify-between h-screen">
       <h1 className="text-center font-medium text-2xl my-2">Word Master</h1>
@@ -96,7 +110,7 @@ function App() {
           )}
         </div>
       </div>
-      <Keyboard letterStatuses={letterStatuses} />
+      <Keyboard letterStatuses={letterStatuses} addLetter={addLetter} />
     </div>
   )
 }
@@ -107,7 +121,7 @@ const keyboardLetters = [
   ['Z', 'X', 'C', 'V', 'B', 'N', 'M'],
 ]
 
-const Keyboard = ({ letterStatuses }) => {
+const Keyboard = ({ letterStatuses, addLetter }) => {
   const getKeyStyle = (letter) => {
     switch (letterStatuses[letter]) {
       case status.green:
@@ -121,6 +135,31 @@ const Keyboard = ({ letterStatuses }) => {
     }
   }
 
+  const onKeyButtonPress = (letter) => {
+    letter = letter.toLowerCase()
+    window.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key: letter,
+      })
+    )
+  }
+
+  const handleKeyDown = useCallback(
+    (event) => {
+      const letter = event.key.toUpperCase()
+      if (letters.includes(letter)) {
+        addLetter(letter)
+      }
+    },
+    [addLetter]
+  )
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleKeyDown])
+
   return (
     <div className="w-full flex flex-col items-center mb-2">
       {keyboardLetters.map((row, idx) => (
@@ -133,6 +172,7 @@ const Keyboard = ({ letterStatuses }) => {
             )}
             {row.map((letter) => (
               <button
+                onClick={() => onKeyButtonPress(letter)}
                 key={letter}
                 className={`h-14 w-8 sm:w-10 ${getKeyStyle(
                   letter
