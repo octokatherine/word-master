@@ -5,12 +5,11 @@ import answers from './data/answers'
 
 const getRandomAnswer = () => {
   const randomIndex = Math.floor(Math.random() * answers.length)
-  return answers[randomIndex]
+  return answers[randomIndex].toUpperCase()
 }
 
 function App() {
   const [answer, setAnswer] = useState(() => getRandomAnswer())
-
   const [board, setBoard] = useState([
     ['', '', '', '', ''],
     ['', '', '', '', ''],
