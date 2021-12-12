@@ -1,9 +1,16 @@
 import { useState } from 'react'
 import { letters, status } from './constants'
 import { Keyboard } from './Keyboard'
+import answers from './data/answers'
+
+const getRandomAnswer = () => {
+  const randomIndex = Math.floor(Math.random() * answers.length)
+  return answers[randomIndex]
+}
 
 function App() {
-  const [answer, setAnswer] = useState('THORN')
+  const [answer, setAnswer] = useState(() => getRandomAnswer())
+
   const [board, setBoard] = useState([
     ['', '', '', '', ''],
     ['', '', '', '', ''],
