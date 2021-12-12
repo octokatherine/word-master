@@ -60,7 +60,7 @@ function App() {
 
     const word = board[currentRow].join('')
     if (word.length < 5) return
-    console.log('here')
+
     updateCellStatuses(word, currentRow)
     setCurrentRow((prev) => prev + 1)
     setCurrentCol(0)
