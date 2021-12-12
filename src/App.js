@@ -86,7 +86,7 @@ function App() {
 
   return (
     <div className="flex flex-col justify-between h-screen">
-      <h1 className="text-center font-medium text-2xl my-2">WORD MASTER</h1>
+      <h1 className="text-center font-extrabold text-2xl my-2">WORD MASTER</h1>
       <div className="flex items-center flex-col">
         <div className="grid grid-cols-5 grid-flow-row gap-1">
           {board.map((row, rowNumber) =>
