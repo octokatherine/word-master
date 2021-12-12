@@ -83,6 +83,7 @@ function App() {
           {board.map((row, rowNumber) =>
             row.map((letter, colNumber) => (
               <span
+                key={colNumber}
                 className={`${getCellStyles(
                   rowNumber,
                   colNumber,
@@ -132,6 +133,7 @@ const Keyboard = ({ letterStatuses }) => {
             )}
             {row.map((letter) => (
               <button
+                key={letter}
                 className={`h-14 w-8 sm:w-10 ${getKeyStyle(
                   letter
                 )} mx-[2px] text-sm font-bold rounded`}
