@@ -1,7 +1,7 @@
 import { keyboardLetters, status, letters } from './constants'
 import { useEffect, useCallback } from 'react'
 
-const Keyboard = ({ letterStatuses, addLetter }) => {
+const Keyboard = ({ letterStatuses, addLetter, onEnterPress }) => {
   const getKeyStyle = (letter) => {
     switch (letterStatuses[letter]) {
       case status.green:
@@ -29,9 +29,11 @@ const Keyboard = ({ letterStatuses, addLetter }) => {
       const letter = event.key.toUpperCase()
       if (letters.includes(letter)) {
         addLetter(letter)
+      } else if (letter === 'ENTER') {
+        onEnterPress()
       }
     },
-    [addLetter]
+    [addLetter, onEnterPress]
   )
 
   useEffect(() => {
@@ -46,7 +48,10 @@ const Keyboard = ({ letterStatuses, addLetter }) => {
         <div className="w-full flex justify-center my-[5px]">
           <>
             {idx === 2 && (
-              <button className="h-14 w-12 px-1 text-xs sm:w-10 bg-gray-300 mx-[2px] font-bold rounded">
+              <button
+                onClick={onEnterPress}
+                className="h-14 w-12 px-1 text-xs sm:w-10 bg-gray-300 mx-[2px] font-bold rounded"
+              >
                 ENTER
               </button>
             )}
@@ -86,4 +91,4 @@ const Keyboard = ({ letterStatuses, addLetter }) => {
   )
 }
 
-export default Keyboard
+export { Keyboard }
