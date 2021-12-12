@@ -68,6 +68,7 @@ function App() {
     if (word.length < 5) return
 
     updateCellStatuses(word, currentRow)
+    updateLetterStatuses(word)
     setCurrentRow((prev) => prev + 1)
     setCurrentCol(0)
   }
@@ -87,6 +88,23 @@ function App() {
         }
       }
       return newCellStatuses
+    })
+  }
+
+  const updateLetterStatuses = (word) => {
+    setLetterStatuses((prev) => {
+      const newLetterStatuses = { ...prev }
+      const wordLength = word.length
+      for (let i = 0; i < wordLength; i++) {
+        if (word[i] === answer[i]) {
+          newLetterStatuses[word[i]] = status.green
+        } else if (answer.includes(word[i])) {
+          newLetterStatuses[word[i]] = status.yellow
+        } else {
+          newLetterStatuses[word[i]] = status.gray
+        }
+      }
+      return newLetterStatuses
     })
   }
 
