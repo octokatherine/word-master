@@ -9329,6 +9329,6 @@ const words = {
   zuppa: true,
   zuzim: true,
   zymes: true,
-};
+}
 
-export default words;
+export default words
