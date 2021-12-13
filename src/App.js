@@ -1,8 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { letters, status } from './constants'
 import { Keyboard } from './Keyboard'
 import answers from './data/answers'
 import words from './data/words'
+
+const state = {
+  playing: 'playing',
+  won: 'won',
+  lost: 'lost',
+}
 
 const getRandomAnswer = () => {
   const randomIndex = Math.floor(Math.random() * answers.length)
@@ -11,6 +17,7 @@ const getRandomAnswer = () => {
 
 function App() {
   const [answer, setAnswer] = useState(() => getRandomAnswer())
+  const [gameState, setGameState] = useState(state.playing)
 
   const [board, setBoard] = useState([
     ['', '', '', '', ''],
@@ -131,6 +138,19 @@ function App() {
     })
   }
 
+  const isRowAllGreen = (row) => {
+    return row.every((cell) => cell === status.green)
+  }
+
+  // every time cellStatuses updates, check if the game is won or lost
+  useEffect(() => {
+    if (currentRow === 6) {
+      setGameState(state.lost)
+    } else if (isRowAllGreen(cellStatuses[currentRow])) {
+      setGameState(state.won)
+    }
+  }, [cellStatuses, currentRow])
+
   const updateLetterStatuses = (word) => {
     setLetterStatuses((prev) => {
       const newLetterStatuses = { ...prev }
@@ -169,11 +189,14 @@ function App() {
           )}
         </div>
       </div>
+      {gameState === state.lost && <p>Oops! The word was {answer}</p>}
+      {gameState === state.won && <p>Congrats!! 🎉</p>}
       <Keyboard
         letterStatuses={letterStatuses}
         addLetter={addLetter}
         onEnterPress={onEnterPress}
         onDeletePress={onDeletePress}
+        gameDisabled={gameState !== state.playing}
       />
     </div>
   )
