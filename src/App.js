@@ -17,6 +17,7 @@ const getRandomAnswer = () => {
 
 function App() {
   const [answer, setAnswer] = useState(() => getRandomAnswer())
+
   const [gameState, setGameState] = useState(state.playing)
 
   const [board, setBoard] = useState([
@@ -144,10 +145,16 @@ function App() {
 
   // every time cellStatuses updates, check if the game is won or lost
   useEffect(() => {
-    if (currentRow === 6) {
-      setGameState(state.lost)
-    } else if (isRowAllGreen(cellStatuses[currentRow])) {
+    const cellStatusesCopy = [...cellStatuses]
+    const reversedStatuses = cellStatusesCopy.reverse()
+    const lastFilledRow = reversedStatuses.find((r) => {
+      return r[0] !== status.unguessed
+    })
+
+    if (lastFilledRow && isRowAllGreen(lastFilledRow)) {
       setGameState(state.won)
+    } else if (currentRow === 6) {
+      setGameState(state.lost)
     }
   }, [cellStatuses, currentRow])
 
