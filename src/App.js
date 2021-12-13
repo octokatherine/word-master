@@ -196,8 +196,8 @@ function App() {
           )}
         </div>
       </div>
-      {gameState === state.lost && <p>Oops! The word was {answer}</p>}
-      {gameState === state.won && <p>Congrats!! 🎉</p>}
+      {gameState === state.lost && <p className="text-center">Oops! The word was {answer}</p>}
+      {gameState === state.won && <p className="text-center">Congrats!! 🎉</p>}
       <Keyboard
         letterStatuses={letterStatuses}
         addLetter={addLetter}
