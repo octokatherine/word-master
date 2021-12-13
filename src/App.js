@@ -11,7 +11,7 @@ const getRandomAnswer = () => {
 
 function App() {
   const [answer, setAnswer] = useState(() => getRandomAnswer())
-  console.log('answer :>> ', answer)
+
   const [board, setBoard] = useState([
     ['', '', '', '', ''],
     ['', '', '', '', ''],
