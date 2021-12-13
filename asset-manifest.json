@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/word-master/static/css/main.e0ffbfa0.css",
-    "main.js": "/word-master/static/js/main.a1cd779f.js",
+    "main.js": "/word-master/static/js/main.f4ccdc9d.js",
     "index.html": "/word-master/index.html",
     "main.e0ffbfa0.css.map": "/word-master/static/css/main.e0ffbfa0.css.map",
-    "main.a1cd779f.js.map": "/word-master/static/js/main.a1cd779f.js.map"
+    "main.f4ccdc9d.js.map": "/word-master/static/js/main.f4ccdc9d.js.map"
   },
   "entrypoints": [
     "static/css/main.e0ffbfa0.css",
-    "static/js/main.a1cd779f.js"
+    "static/js/main.f4ccdc9d.js"
   ]
 }
