@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { letters, status } from './constants'
 import { Keyboard } from './Keyboard'
 import answers from './data/answers'
+import words from './data/words'
 
 const getRandomAnswer = () => {
   const randomIndex = Math.floor(Math.random() * answers.length)
@@ -64,11 +65,16 @@ function App() {
     }
   }
 
+  const isValidWord = (word) => {
+    if (word.length < 5) return false
+    return words[word.toLowerCase()]
+  }
+
   const onEnterPress = () => {
     if (currentRow === 6) return
 
     const word = board[currentRow].join('')
-    if (word.length < 5) return
+    if (!isValidWord(word)) return
 
     updateCellStatuses(word, currentRow)
     updateLetterStatuses(word)
