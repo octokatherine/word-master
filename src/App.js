@@ -65,6 +65,7 @@ function App() {
   }
 
   const addLetter = (letter) => {
+    setSubmittedInvalidWord(false)
     setBoard((prev) => {
       if (currentCol > 4) {
         return prev
