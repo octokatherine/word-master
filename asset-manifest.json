@@ -1,13 +1,14 @@
 {
   "files": {
-    "main.css": "/word-master/static/css/main.e0ffbfa0.css",
-    "main.js": "/word-master/static/js/main.f4ccdc9d.js",
+    "main.css": "/word-master/static/css/main.fb723e4d.css",
+    "main.js": "/word-master/static/js/main.1ba08b9d.js",
+    "static/media/Ranade-Variable.ttf": "/word-master/static/media/Ranade-Variable.bb177f94a709e8e8f396.ttf",
     "index.html": "/word-master/index.html",
-    "main.e0ffbfa0.css.map": "/word-master/static/css/main.e0ffbfa0.css.map",
-    "main.f4ccdc9d.js.map": "/word-master/static/js/main.f4ccdc9d.js.map"
+    "main.fb723e4d.css.map": "/word-master/static/css/main.fb723e4d.css.map",
+    "main.1ba08b9d.js.map": "/word-master/static/js/main.1ba08b9d.js.map"
   },
   "entrypoints": [
-    "static/css/main.e0ffbfa0.css",
-    "static/js/main.f4ccdc9d.js"
+    "static/css/main.fb723e4d.css",
+    "static/js/main.1ba08b9d.js"
   ]
 }
