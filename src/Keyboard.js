@@ -5,13 +5,13 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
   const getKeyStyle = (letter) => {
     switch (letterStatuses[letter]) {
       case status.green:
-        return 'bg-green-600 text-white'
+        return 'nm-inset-n-green text-gray-50'
       case status.yellow:
-        return 'bg-yellow-600 text-white'
+        return 'nm-inset-yellow-500 text-gray-50'
       case status.gray:
-        return 'bg-gray-600 text-white'
+        return 'nm-inset-n-gray text-gray-50'
       default:
-        return 'bg-gray-300'
+        return 'nm-flat-background-sm text-primary'
     }
   }
 
@@ -54,7 +54,7 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
           {idx === 2 && (
             <button
               onClick={onEnterPress}
-              className="h-14 w-12 px-1 text-xs bg-gray-300 mx-[2px] font-bold rounded"
+              className="h-[14vw] w-12 px-1 text-xs mx-[3.5px] rounded nm-flat-background-sm text-primary"
             >
               ENTER
             </button>
@@ -63,9 +63,9 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
             <button
               onClick={() => onKeyButtonPress(letter)}
               key={letter}
-              className={`h-14 w-8 sm:w-10 ${getKeyStyle(
+              className={`h-[14vw] w-[2rem] sm:w-10 ${getKeyStyle(
                 letter
-              )} mx-[2px] text-sm font-bold rounded`}
+              )} mx-[3.5px] text-sm rounded`}
             >
               {letter}
             </button>
@@ -73,7 +73,7 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
           {idx === 2 && (
             <button
               onClick={onDeletePress}
-              className="h-14 w-12 flex items-center justify-center bg-gray-300 mx-[2px] text-sm font-bold rounded"
+              className="h-[14vw] w-12 flex items-center justify-center nm-flat-background-sm text-primary mx-[3.5px] text-sm  rounded"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +85,7 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={1.5}
                   d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"
                 />
               </svg>
