@@ -16,7 +16,7 @@ const getRandomAnswer = () => {
 }
 
 function App() {
-  const [answer, setAnswer] = useState(() => getRandomAnswer())
+  const [answer] = useState(() => getRandomAnswer())
 
   const [gameState, setGameState] = useState(state.playing)
 
