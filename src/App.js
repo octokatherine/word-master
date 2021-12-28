@@ -3,6 +3,11 @@ import { letters, status } from './constants'
 import { Keyboard } from './Keyboard'
 import answers from './data/answers'
 import words from './data/words'
+import Modal from 'react-modal'
+import Success from './data/Success.png'
+import Fail from './data/Cross.png'
+
+Modal.setAppElement('#root')
 
 const state = {
   playing: 'playing',
@@ -16,31 +21,45 @@ const getRandomAnswer = () => {
 }
 
 function App() {
-  const [answer] = useState(() => getRandomAnswer())
+  const initialStates = {
+    answer: () => getRandomAnswer(),
+    gameState: state.playing,
+    board: [
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+    ],
+    cellStatuses: () => Array(6).fill(Array(5).fill(status.unguessed)),
+    currentRow: 0,
+    currentCol: 0,
+    letterStatuses: () => {
+      const letterStatuses = {}
+      letters.forEach((letter) => {
+        letterStatuses[letter] = status.unguessed
+      })
+      return letterStatuses
+    },
+  }
 
-  const [gameState, setGameState] = useState(state.playing)
-
-  const [board, setBoard] = useState([
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-  ])
-  const [cellStatuses, setCellStatuses] = useState(() =>
-    Array(6).fill(Array(5).fill(status.unguessed))
-  )
-  const [currentRow, setCurrentRow] = useState(0)
-  const [currentCol, setCurrentCol] = useState(0)
-  const [letterStatuses, setLetterStatuses] = useState(() => {
-    const letterStatuses = {}
-    letters.forEach((letter) => {
-      letterStatuses[letter] = status.unguessed
-    })
-    return letterStatuses
-  })
+  const [answer, setAnswer] = useState(initialStates.answer)
+  const [gameState, setGameState] = useState(initialStates.gameState)
+  const [board, setBoard] = useState(initialStates.board)
+  const [cellStatuses, setCellStatuses] = useState(initialStates.cellStatuses)
+  const [currentRow, setCurrentRow] = useState(initialStates.currentRow)
+  const [currentCol, setCurrentCol] = useState(initialStates.currentCol)
+  const [letterStatuses, setLetterStatuses] = useState(initialStates.letterStatuses)
   const [submittedInvalidWord, setSubmittedInvalidWord] = useState(false)
+  const [modalIsOpen, setIsOpen] = useState(false)
+
+  const openModal = () => setIsOpen(true)
+  const closeModal = () => setIsOpen(false)
+
+  useEffect(() => {
+    gameState !== state.playing && openModal()
+  }, [gameState])
 
   const getCellStyles = (rowNumber, colNumber, letter) => {
     if (rowNumber === currentRow) {
@@ -185,6 +204,28 @@ function App() {
     })
   }
 
+  const TryAgainButton = () => {
+    return (
+      <button
+        type="button"
+        className="rounded-lg px-6 py-2 mt-8 text-lg nm-flat-background hover:nm-inset-background"
+        onClick={() => {
+          setAnswer(initialStates.answer)
+          setGameState(initialStates.gameState)
+          setBoard(initialStates.board)
+          setCellStatuses(initialStates.cellStatuses)
+          setCurrentRow(initialStates.currentRow)
+          setCurrentCol(initialStates.currentCol)
+          setLetterStatuses(initialStates.letterStatuses)
+          closeModal()
+        }}
+      >
+        Try Again
+      </button>
+    )
+  }
+  console.log('gameState :>> ', gameState)
+
   return (
     <div className="flex flex-col justify-between h-fill bg-background">
       <h1 className="text-center text-primary text-2xl pt-3">WORD MASTER</h1>
@@ -198,7 +239,7 @@ function App() {
                   rowNumber,
                   colNumber,
                   letter
-                )} inline-flex items-center justify-center text-3x w-[14vw] h-[14vw] sm:w-20 sm:h-20 rounded-full`}
+                )} inline-flex items-center justify-center text-3x w-[14vw] h-[14vw] sm:w-16 sm:h-16 rounded-full`}
               >
                 {letter}
               </span>
@@ -206,8 +247,33 @@ function App() {
           )}
         </div>
       </div>
-      {gameState === state.lost && <p className="text-center">Oops! The word was {answer}</p>}
-      {gameState === state.won && <p className="text-center">Congrats!! 🎉</p>}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Game End Modal"
+      >
+        <div className="h-full flex flex-col items-center justify-center">
+          {gameState === state.won && (
+            <>
+              <img src={Success} alt="success" height="auto" width="auto" />
+              <h1 className="text-primary text-3xl">Congrats!</h1>
+            </>
+          )}
+          {gameState === state.lost && (
+            <>
+              <img src={Fail} alt="success" height="auto" width="80%" />
+              <div className="text-primary text-4xl text-center">
+                <p>Oops!</p>
+                <p className="mt-3 text-2xl">
+                  The word was <strong>{answer}</strong>
+                </p>
+              </div>
+            </>
+          )}
+          <TryAgainButton />
+        </div>
+      </Modal>
       <Keyboard
         letterStatuses={letterStatuses}
         addLetter={addLetter}
@@ -217,6 +283,31 @@ function App() {
       />
     </div>
   )
+}
+
+const customStyles = {
+  overlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'hsl(231, 16%, 92%)',
+  },
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    transform: 'translate(-50%, -50%)',
+    height: 'calc(100% - 2rem)',
+    width: 'calc(100% - 2rem)',
+    backgroundColor: 'hsl(231, 16%, 92%)',
+    boxShadow:
+      '0.2em 0.2em calc(0.2em * 2) #A3A7BD, calc(0.2em * -1) calc(0.2em * -1) calc(0.2em * 2) #FFFFFF',
+    border: 'none',
+    borderRadius: '1rem',
+  },
 }
 
 export default App
