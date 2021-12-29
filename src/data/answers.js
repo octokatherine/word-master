@@ -455,7 +455,6 @@ const answers = [
   'cutes',
   'cutey',
   'cutie',
-  'cycad',
   'cycle',
   'cynic',
   'daddy',
