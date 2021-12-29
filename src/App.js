@@ -276,11 +276,11 @@ function App() {
             <>
               <img src={Success} alt="success" height="auto" width="auto" />
               <h1 className="text-primary text-3xl">Congrats!</h1>
-              <p className="text-primary">
-                <em>Current streak: </em> {currentStreak}
+              <p className="mt-6">
+                Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
               </p>
-              <p className="text-primary">
-                <em>Longest streak: </em> {longestStreak}
+              <p>
+                Longest streak: <strong>{longestStreak}</strong>
               </p>
             </>
           )}
