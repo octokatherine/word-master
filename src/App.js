@@ -298,6 +298,12 @@ function App() {
                 <p className="mt-3 text-2xl">
                   The word was <strong>{answer}</strong>
                 </p>
+                <p className="mt-6 text-base">
+                  Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
+                </p>
+                <p className="text-base">
+                  Longest streak: <strong>{longestStreak}</strong>
+                </p>
               </div>
             </>
           )}
