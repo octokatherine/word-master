@@ -7,6 +7,9 @@ import Modal from 'react-modal'
 import Success from './data/Success.png'
 import Fail from './data/Cross.png'
 import { useLocalStorage } from './hooks/useLocalStorage'
+import { ReactComponent as Github } from './data/Github.svg'
+import { ReactComponent as Close } from './data/Close.svg'
+import { ReactComponent as Info } from './data/Info.svg'
 
 Modal.setAppElement('#root')
 
@@ -52,10 +55,11 @@ function App() {
   const [currentCol, setCurrentCol] = useState(initialStates.currentCol)
   const [letterStatuses, setLetterStatuses] = useState(initialStates.letterStatuses)
   const [submittedInvalidWord, setSubmittedInvalidWord] = useState(false)
-  const [modalIsOpen, setIsOpen] = useState(false)
   const [currentStreak, setCurrentStreak] = useLocalStorage('current-streak', 0)
   const [longestStreak, setLongestStreak] = useLocalStorage('longest-streak', 0)
   const streakUpdated = useRef(false)
+  const [modalIsOpen, setIsOpen] = useState(false)
+  const [infoModalIsOpen, setInfoModalIsOpen] = useState(false)
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -250,9 +254,14 @@ function App() {
 
   return (
     <div className="flex flex-col justify-between h-fill bg-background">
-      <h1 className="text-center text-primary text-xl xxs:text-2xl sm:text-4xl pt-2 tracking-wide font-bold">
-        WORD MASTER
-      </h1>
+      <header className="flex items-center py-2 px-3 text-primary">
+        <h1 className="flex-1 text-center text-xl xxs:text-2xl -mr-6 sm:text-4xl tracking-wide font-bold">
+          WORD MASTER
+        </h1>
+        <button type="button" onClick={() => setInfoModalIsOpen(true)}>
+          <Info />
+        </button>
+      </header>
       <div className="flex items-center flex-col py-3">
         <div className="grid grid-cols-5 grid-flow-row gap-4">
           {board.map((row, rowNumber) =>
@@ -311,6 +320,25 @@ function App() {
         onDeletePress={onDeletePress}
         gameDisabled={gameState !== state.playing}
       />
+      <Modal
+        isOpen={infoModalIsOpen}
+        onRequestClose={() => setInfoModalIsOpen(false)}
+        style={customStyles}
+        contentLabel="Game Info Modal"
+      >
+        <button
+          className="absolute top-4 right-4 rounded-full nm-flat-background text-primary p-2"
+          onClick={() => setInfoModalIsOpen(false)}
+        >
+          <Close />
+        </button>
+        <div className="h-full flex flex-col items-center justify-center max-w-[300px] mx-auto pt-9 text-primary">
+          <div className="flex-1 w-full border border-red-500">game instructions</div>
+          <div className="flex justify-center">
+            I'm Katherine <Github /> I'm super cool
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }
@@ -339,6 +367,7 @@ const customStyles = {
     borderRadius: '1rem',
     maxWidth: '475px',
     maxHeight: '650px',
+    position: 'relative',
   },
 }
 
