@@ -246,8 +246,10 @@ function App() {
 
   return (
     <div className="flex flex-col justify-between h-fill bg-background">
-      <h1 className="text-center text-primary text-2xl pt-3">WORD MASTER</h1>
-      <div className="flex items-center flex-col">
+      <h1 className="text-center text-primary text-xl xxs:text-2xl sm:text-4xl pt-2 tracking-wide font-bold">
+        WORD MASTER
+      </h1>
+      <div className="flex items-center flex-col py-3">
         <div className="grid grid-cols-5 grid-flow-row gap-4">
           {board.map((row, rowNumber) =>
             row.map((letter, colNumber) => (
@@ -257,7 +259,7 @@ function App() {
                   rowNumber,
                   colNumber,
                   letter
-                )} inline-flex items-center justify-center text-3x w-[14vw] h-[14vw] sm:w-16 sm:h-16 rounded-full`}
+                )} inline-flex items-center justify-center text-3x w-[14vw] h-[14vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
               >
                 {letter}
               </span>

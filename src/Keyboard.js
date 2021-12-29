@@ -54,7 +54,7 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
           {idx === 2 && (
             <button
               onClick={onEnterPress}
-              className="h-14 w-12 px-1 text-xs mx-[3.5px] rounded nm-flat-background-sm text-primary"
+              className="h-10 xxs:h-14 w-12 px-1 text-xs mx-[3.5px] rounded nm-flat-background-sm text-primary"
             >
               ENTER
             </button>
@@ -63,7 +63,9 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
             <button
               onClick={() => onKeyButtonPress(letter)}
               key={letter}
-              className={`h-14 w-[2rem] sm:w-10 ${getKeyStyle(letter)} mx-[3.5px] text-sm rounded`}
+              className={`h-10 xxs:h-14 w-[2rem] sm:w-10 ${getKeyStyle(
+                letter
+              )} mx-[3.5px] text-sm rounded`}
             >
               {letter}
             </button>
@@ -71,7 +73,7 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
           {idx === 2 && (
             <button
               onClick={onDeletePress}
-              className="h-14 w-12 flex items-center justify-center nm-flat-background-sm text-primary mx-[3.5px] text-sm  rounded"
+              className="h-10 xxs:h-14 w-12 flex items-center justify-center nm-flat-background-sm text-primary mx-[3.5px] text-sm  rounded"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
