@@ -271,7 +271,7 @@ function App() {
         style={customStyles}
         contentLabel="Game End Modal"
       >
-        <div className="h-full flex flex-col items-center justify-center">
+        <div className="h-full flex flex-col items-center justify-center max-w-[300px] mx-auto">
           {gameState === state.won && (
             <>
               <img src={Success} alt="success" height="auto" width="auto" />
@@ -331,6 +331,8 @@ const customStyles = {
       '0.2em 0.2em calc(0.2em * 2) #A3A7BD, calc(0.2em * -1) calc(0.2em * -1) calc(0.2em * 2) #FFFFFF',
     border: 'none',
     borderRadius: '1rem',
+    maxWidth: '475px',
+    maxHeight: '650px',
   },
 }
 
