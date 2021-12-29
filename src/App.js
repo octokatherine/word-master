@@ -222,7 +222,7 @@ function App() {
     })
   }
 
-  const TryAgainButton = () => {
+  const PlayAgainButton = () => {
     return (
       <button
         type="button"
@@ -239,7 +239,7 @@ function App() {
           streakUpdated.current = false
         }}
       >
-        Try Again
+        Play Again
       </button>
     )
   }
@@ -295,7 +295,7 @@ function App() {
               </div>
             </>
           )}
-          <TryAgainButton />
+          <PlayAgainButton />
         </div>
       </Modal>
       <Keyboard
