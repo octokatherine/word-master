@@ -5,13 +5,13 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
   const getKeyStyle = (letter) => {
     switch (letterStatuses[letter]) {
       case status.green:
-        return 'nm-inset-n-green text-gray-50'
+        return 'bg-n-green text-gray-50'
       case status.yellow:
-        return 'nm-inset-yellow-500 text-gray-50'
+        return 'bg-yellow-500 text-gray-50'
       case status.gray:
-        return 'nm-inset-n-gray text-gray-50'
+        return 'bg-n-gray text-gray-50'
       default:
-        return 'nm-flat-background-sm text-primary'
+        return 'text-primary'
     }
   }
 
@@ -63,11 +63,15 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
             <button
               onClick={() => onKeyButtonPress(letter)}
               key={letter}
-              className={`h-10 xxs:h-14 w-[2rem] sm:w-10 ${getKeyStyle(
-                letter
-              )} mx-[3.5px] text-sm rounded`}
+              className="h-10 xxs:h-14 w-[2rem] sm:w-10 mx-[3.5px] text-sm rounded-[4px] nm-flat-background-sm"
             >
-              {letter}
+              <div
+                className={`h-full w-full rounded-[3px] flex items-center justify-center ${getKeyStyle(
+                  letter
+                )}`}
+              >
+                {letter}
+              </div>
             </button>
           ))}
           {idx === 2 && (
