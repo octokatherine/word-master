@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/word-master/static/css/main.833ad415.css",
-    "main.js": "/word-master/static/js/main.20e6022c.js",
+    "main.css": "/word-master/static/css/main.15b5eb33.css",
+    "main.js": "/word-master/static/js/main.8bf64db6.js",
     "static/media/Cross.png": "/word-master/static/media/Cross.cbf77228e847522eff11.png",
     "static/media/Success.png": "/word-master/static/media/Success.df533be8f86a57bc5946.png",
     "static/media/Ranade-Variable.ttf": "/word-master/static/media/Ranade-Variable.bb177f94a709e8e8f396.ttf",
     "index.html": "/word-master/index.html",
-    "main.833ad415.css.map": "/word-master/static/css/main.833ad415.css.map",
-    "main.20e6022c.js.map": "/word-master/static/js/main.20e6022c.js.map"
+    "main.15b5eb33.css.map": "/word-master/static/css/main.15b5eb33.css.map",
+    "main.8bf64db6.js.map": "/word-master/static/js/main.8bf64db6.js.map"
   },
   "entrypoints": [
-    "static/css/main.833ad415.css",
-    "static/js/main.20e6022c.js"
+    "static/css/main.15b5eb33.css",
+    "static/js/main.8bf64db6.js"
   ]
 }
