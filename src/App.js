@@ -224,7 +224,6 @@ function App() {
       </button>
     )
   }
-  console.log('gameState :>> ', gameState)
 
   return (
     <div className="flex flex-col justify-between h-fill bg-background">
