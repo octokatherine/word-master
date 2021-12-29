@@ -61,7 +61,11 @@ function App() {
   const closeModal = () => setIsOpen(false)
 
   useEffect(() => {
-    gameState !== state.playing && openModal()
+    if (gameState !== state.playing) {
+      setTimeout(() => {
+        openModal()
+      }, 500)
+    }
   }, [gameState])
 
   useEffect(() => {
