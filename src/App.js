@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { letters, status } from './constants'
 import { Keyboard } from './Keyboard'
 import answers from './data/answers'
@@ -6,6 +6,7 @@ import words from './data/words'
 import Modal from 'react-modal'
 import Success from './data/Success.png'
 import Fail from './data/Cross.png'
+import { useLocalStorage } from './hooks/useLocalStorage'
 
 Modal.setAppElement('#root')
 
@@ -43,7 +44,6 @@ function App() {
       return letterStatuses
     },
   }
-
   const [answer, setAnswer] = useState(initialStates.answer)
   const [gameState, setGameState] = useState(initialStates.gameState)
   const [board, setBoard] = useState(initialStates.board)
@@ -53,6 +53,9 @@ function App() {
   const [letterStatuses, setLetterStatuses] = useState(initialStates.letterStatuses)
   const [submittedInvalidWord, setSubmittedInvalidWord] = useState(false)
   const [modalIsOpen, setIsOpen] = useState(false)
+  const [currentStreak, setCurrentStreak] = useLocalStorage('current-streak', 0)
+  const [longestStreak, setLongestStreak] = useLocalStorage('longest-streak', 0)
+  const streakUpdated = useRef(false)
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -60,6 +63,21 @@ function App() {
   useEffect(() => {
     gameState !== state.playing && openModal()
   }, [gameState])
+
+  useEffect(() => {
+    if (!streakUpdated.current) {
+      if (gameState === state.won) {
+        if (currentStreak >= longestStreak) {
+          setLongestStreak((prev) => prev + 1)
+        }
+        setCurrentStreak((prev) => prev + 1)
+        streakUpdated.current = true
+      } else if (gameState === state.lost) {
+        setCurrentStreak(0)
+        streakUpdated.current = true
+      }
+    }
+  }, [gameState, currentStreak, longestStreak, setLongestStreak, setCurrentStreak])
 
   const getCellStyles = (rowNumber, colNumber, letter) => {
     if (rowNumber === currentRow) {
@@ -218,6 +236,7 @@ function App() {
           setCurrentCol(initialStates.currentCol)
           setLetterStatuses(initialStates.letterStatuses)
           closeModal()
+          streakUpdated.current = false
         }}
       >
         Try Again
@@ -257,6 +276,12 @@ function App() {
             <>
               <img src={Success} alt="success" height="auto" width="auto" />
               <h1 className="text-primary text-3xl">Congrats!</h1>
+              <p className="text-primary">
+                <em>Current streak: </em> {currentStreak}
+              </p>
+              <p className="text-primary">
+                <em>Longest streak: </em> {longestStreak}
+              </p>
             </>
           )}
           {gameState === state.lost && (
