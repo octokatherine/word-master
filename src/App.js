@@ -59,10 +59,15 @@ function App() {
   const [longestStreak, setLongestStreak] = useLocalStorage('longest-streak', 0)
   const streakUpdated = useRef(false)
   const [modalIsOpen, setIsOpen] = useState(false)
-  const [infoModalIsOpen, setInfoModalIsOpen] = useState(false)
+  const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
+  const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
+  const handleInfoClose = () => {
+    setFirstTime(false)
+    setInfoModalIsOpen(false)
+  }
 
   useEffect(() => {
     if (gameState !== state.playing) {
@@ -328,13 +333,13 @@ function App() {
       />
       <Modal
         isOpen={infoModalIsOpen}
-        onRequestClose={() => setInfoModalIsOpen(false)}
+        onRequestClose={() => handleInfoClose()}
         style={customStyles}
         contentLabel="Game Info Modal"
       >
         <button
           className="absolute top-4 right-4 rounded-full nm-flat-background text-primary p-1 w-6 h-6 sm:p-2 sm:h-8 sm:w-8"
-          onClick={() => setInfoModalIsOpen(false)}
+          onClick={() => handleInfoClose()}
         >
           <Close />
         </button>
