@@ -218,6 +218,8 @@ function App() {
       const newLetterStatuses = { ...prev }
       const wordLength = word.length
       for (let i = 0; i < wordLength; i++) {
+        if (newLetterStatuses[word[i]] === status.green) continue
+
         if (word[i] === answer[i]) {
           newLetterStatuses[word[i]] = status.green
         } else if (answer.includes(word[i])) {
