@@ -7,6 +7,8 @@
   src: url('/public/assets/Ranade-Variable.ttf') format('ttf');
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+
 *,
 body {
   margin: 0;
@@ -25,4 +27,8 @@ code {
 .h-fill {
   height: 100vh;
   max-height: -webkit-fill-available;
+}
+
+.font-righteous {
+  font-family: 'Righteous', cursive;
 }
