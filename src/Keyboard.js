@@ -34,6 +34,7 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
         addLetter(letter)
       } else if (letter === 'ENTER') {
         onEnterPress()
+        event.preventDefault()
       } else if (letter === 'BACKSPACE') {
         onDeletePress()
       }
