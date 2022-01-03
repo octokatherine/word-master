@@ -32,3 +32,7 @@ code {
 .font-righteous {
   font-family: 'Righteous', cursive;
 }
+
+.key-user-select{
+    user-select: none;
+}
