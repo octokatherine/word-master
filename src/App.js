@@ -164,34 +164,29 @@ function App() {
 
   const updateCellStatuses = (word, rowNumber) => {
     setCellStatuses((prev) => {
-      let ans = answer
-      let wor = word
       const newCellStatuses = [...prev]
       newCellStatuses[rowNumber] = [...prev[rowNumber]]
-      const wordLength = wor.length
+      const wordLength = word.length
+      const answerLetters = answer.split("");
+
+      // set all to gray
+      for (let i = 0; i < wordLength; i++) {
+        newCellStatuses[rowNumber][i] = status.gray
+      }
 
       // check greens
-      for (let i = 0; i < wordLength; i++) {
-        if (wor[i] === ans[i]) {
+      for (let i = wordLength - 1; i >= 0; i--) {
+        if (word[i] === answer[i]) {
           newCellStatuses[rowNumber][i] = status.green
-          ans = ans.substr(0, i) + '.' + ans.substr(i + 1)
-          wor = wor.substr(0, i) + '.' + wor.substr(i + 1)
+          answerLetters.splice(i, 1)
         }
       }
 
       // check yellows
       for (let i = 0; i < wordLength; i++) {
-        if (wor[i] === '.') continue
-
-        if (ans.includes(wor[i])) {
+        if (answerLetters.includes(word[i]) && newCellStatuses[rowNumber][i] !== status.green) {
           newCellStatuses[rowNumber][i] = status.yellow
-        }
-      }
-
-      // set rest to gray
-      for (let i = 0; i < wordLength; i++) {
-        if (newCellStatuses[rowNumber][i] === status.unguessed) {
-          newCellStatuses[rowNumber][i] = status.gray
+          answerLetters.splice(answerLetters.indexOf(word[i]), 1)
         }
       }
 
