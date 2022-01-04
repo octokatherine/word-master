@@ -67,6 +67,7 @@ function App() {
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [difficultyLevel, setDifficultyLevel] = useState(difficulty.normal)
+  const [exactGuesses, setExactGuesses] = useState({})
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
   const [difficultyLevel, setDifficultyLevel] = useState(difficulty.normal)
   const [exactGuesses, setExactGuesses] = useState({})
@@ -154,7 +155,6 @@ function App() {
   }
 
   const onEnterPress = () => {
-    console.log(letterStatuses)
     const word = board[currentRow].join('')
     if (!isValidWord(word)) {
       setSubmittedInvalidWord(true)
@@ -214,6 +214,7 @@ function App() {
 
       return newCellStatuses
     })
+    setExactGuesses(fixedLetters)
     setExactGuesses(fixedLetters)
   }
 
