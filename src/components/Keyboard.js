@@ -1,7 +1,7 @@
 import { keyboardLetters, status, letters } from '../constants'
 import { useEffect, useCallback } from 'react'
 
-const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, gameDisabled }) => {
+const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, gameDisabled, onPageUpDownPress }) => {
   const getKeyStyle = (letter) => {
     switch (letterStatuses[letter]) {
       case status.green:
@@ -30,6 +30,8 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
 
       const letter = event.key.toUpperCase()
 
+      console.log("Pressed", letter)
+
       if (letters.includes(letter)) {
         addLetter(letter)
       } else if (letter === 'ENTER') {
@@ -37,9 +39,13 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
         event.preventDefault()
       } else if (letter === 'BACKSPACE') {
         onDeletePress()
+      } else if (letter === 'PAGEUP') {
+        onPageUpDownPress(false)
+      } else if (letter === 'PAGEDOWN') {
+        onPageUpDownPress(true)
       }
     },
-    [addLetter, onEnterPress, onDeletePress, gameDisabled]
+    [addLetter, onEnterPress, onDeletePress, gameDisabled, onPageUpDownPress]
   )
 
   useEffect(() => {

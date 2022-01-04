@@ -66,6 +66,7 @@ function App() {
   const [modalIsOpen, setIsOpen] = useState(false)
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
+  const [difficultyLevel, setDifficultyLevel] = useState(difficulty.normal)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
   const [difficultyLevel, setDifficultyLevel] = useState(difficulty.normal)
   const [exactGuesses, setExactGuesses] = useState({})
@@ -153,6 +154,7 @@ function App() {
   }
 
   const onEnterPress = () => {
+    console.log(letterStatuses)
     const word = board[currentRow].join('')
     if (!isValidWord(word)) {
       setSubmittedInvalidWord(true)
@@ -222,6 +224,15 @@ function App() {
         [difficulty.hard]: difficulty.easy,
     }
     setDifficultyLevel(currentLevel => transitions[currentLevel])
+  }
+
+  const onPageUpDownPress = (isUp) => {
+    const transitions = {
+        [difficulty.easy]: [difficulty.normal, difficulty.hard],
+        [difficulty.normal]: [difficulty.hard, difficulty.easy],
+        [difficulty.hard]: [difficulty.easy, difficulty.normal],
+    }
+    setDifficultyLevel((currentLevel) => transitions[currentLevel][isUp ? 0 : 1])
   }
 
   const isRowAllGreen = (row) => {
