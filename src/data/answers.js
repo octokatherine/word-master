@@ -1540,7 +1540,6 @@ const answers = [
   'seats',
   'sedan',
   'segue',
-  'senes',
   'sepia',
   'serif',
   'setup',
