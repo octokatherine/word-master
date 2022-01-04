@@ -68,6 +68,7 @@ function App() {
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [difficultyLevel, setDifficultyLevel] = useState(difficulty.normal)
+  const [exactGuesses, setExactGuesses] = useState({})
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -144,11 +145,11 @@ function App() {
     const guessedLetters = Object.entries(letterStatuses).filter(([letter, letterStatus]) =>
       [status.yellow, status.green].includes(letterStatus)
     );
-    return guessedLetters.every(([letter, _]) => word.includes(letter))
+    if (!guessedLetters.every(([letter, _]) => word.includes(letter))) return false
+    return Object.entries(exactGuesses).every(([position, letter]) => word[position] === letter)
   }
 
   const onEnterPress = () => {
-    console.log(letterStatuses)
     const word = board[currentRow].join('')
     if (!isValidWord(word)) {
       setSubmittedInvalidWord(true)
@@ -177,6 +178,7 @@ function App() {
   }
 
   const updateCellStatuses = (word, rowNumber) => {
+    const fixedLetters = exactGuesses
     setCellStatuses((prev) => {
       const newCellStatuses = [...prev]
       newCellStatuses[rowNumber] = [...prev[rowNumber]]
@@ -193,6 +195,7 @@ function App() {
         if (word[i] === answer[i]) {
           newCellStatuses[rowNumber][i] = status.green
           answerLetters.splice(i, 1)
+          fixedLetters[i] = answer[i]
         }
       }
 
@@ -206,6 +209,7 @@ function App() {
 
       return newCellStatuses
     })
+    setExactGuesses(fixedLetters)
   }
 
   const onPageUpDownPress = (isUp) => {
@@ -268,6 +272,7 @@ function App() {
           setCurrentRow(initialStates.currentRow)
           setCurrentCol(initialStates.currentCol)
           setLetterStatuses(initialStates.letterStatuses)
+          setExactGuesses({})
           closeModal()
           streakUpdated.current = false
         }}
