@@ -31,7 +31,6 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
       const letter = event.key.toUpperCase()
 
       if (letters.includes(letter)) {
-      if (letters.includes(letter)) {
         addLetter(letter)
       } else if (letter === 'ENTER') {
         onEnterPress()
