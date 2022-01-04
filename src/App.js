@@ -227,13 +227,13 @@ function App() {
     setDifficultyLevel(currentLevel => transitions[currentLevel])
   }
 
-  const onPageUpDownPress = (isUp) => {
+  const changeDifficulty = () => {
     const transitions = {
-        [difficulty.easy]: [difficulty.normal, difficulty.hard],
-        [difficulty.normal]: [difficulty.hard, difficulty.easy],
-        [difficulty.hard]: [difficulty.easy, difficulty.normal],
+        [difficulty.easy]: difficulty.normal,
+        [difficulty.normal]: difficulty.hard,
+        [difficulty.hard]: difficulty.easy,
     }
-    setDifficultyLevel((currentLevel) => transitions[currentLevel][isUp ? 0 : 1])
+    setDifficultyLevel(currentLevel => transitions[currentLevel])
   }
 
   const isRowAllGreen = (row) => {
