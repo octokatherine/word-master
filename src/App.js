@@ -19,6 +19,12 @@ const state = {
   lost: 'lost',
 }
 
+const difficulty = {
+  easy: 'easy',
+  normal: 'normal',
+  hard: 'hard',
+}
+
 const getRandomAnswer = () => {
   const randomIndex = Math.floor(Math.random() * answers.length)
   return answers[randomIndex].toUpperCase()
@@ -61,6 +67,7 @@ function App() {
   const [modalIsOpen, setIsOpen] = useState(false)
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
+  const [difficultyLevel, setDifficultyLevel] = useState(difficulty.normal)
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -131,10 +138,17 @@ function App() {
 
   const isValidWord = (word) => {
     if (word.length < 5) return false
-    return words[word.toLowerCase()]
+    if (difficultyLevel === difficulty.easy) return true
+    if (!words[word.toLowerCase()]) return false
+    if (difficultyLevel === difficulty.normal) return true
+    const guessedLetters = Object.entries(letterStatuses).filter(([letter, letterStatus]) =>
+      [status.yellow, status.green].includes(letterStatus)
+    );
+    return guessedLetters.every(([letter, _]) => word.includes(letter))
   }
 
   const onEnterPress = () => {
+    console.log(letterStatuses)
     const word = board[currentRow].join('')
     if (!isValidWord(word)) {
       setSubmittedInvalidWord(true)
@@ -192,6 +206,15 @@ function App() {
 
       return newCellStatuses
     })
+  }
+
+  const onPageUpDownPress = (isUp) => {
+    const transitions = {
+        [difficulty.easy]: [difficulty.normal, difficulty.hard],
+        [difficulty.normal]: [difficulty.hard, difficulty.easy],
+        [difficulty.hard]: [difficulty.easy, difficulty.normal],
+    }
+    setDifficultyLevel((currentLevel) => transitions[currentLevel][isUp ? 0 : 1])
   }
 
   const isRowAllGreen = (row) => {
@@ -257,6 +280,7 @@ function App() {
   return (
     <div className="flex flex-col justify-between h-fill bg-background">
       <header className="flex items-center py-2 px-3 text-primary">
+        <h3 onClick={() => onPageUpDownPress(true)} className="font-righteous">{difficultyLevel}</h3>
         <h1 className="flex-1 text-center text-xl xxs:text-2xl -mr-6 sm:text-4xl tracking-wide font-bold font-righteous">
           WORD MASTER
         </h1>
@@ -327,6 +351,7 @@ function App() {
         onEnterPress={onEnterPress}
         onDeletePress={onDeletePress}
         gameDisabled={gameState !== state.playing}
+        onPageUpDownPress={onPageUpDownPress}
       />
       <Modal
         isOpen={infoModalIsOpen}
