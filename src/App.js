@@ -178,7 +178,7 @@ function App() {
   }
 
   const updateCellStatuses = (word, rowNumber) => {
-    const fixedLetters = exactGuesses
+    const fixedLetters = {}
     setCellStatuses((prev) => {
       const newCellStatuses = [...prev]
       newCellStatuses[rowNumber] = [...prev[rowNumber]]
@@ -212,13 +212,13 @@ function App() {
     setExactGuesses(fixedLetters)
   }
 
-  const onPageUpDownPress = (isUp) => {
+  const changeDifficulty = () => {
     const transitions = {
-        [difficulty.easy]: [difficulty.normal, difficulty.hard],
-        [difficulty.normal]: [difficulty.hard, difficulty.easy],
-        [difficulty.hard]: [difficulty.easy, difficulty.normal],
+        [difficulty.easy]: difficulty.normal,
+        [difficulty.normal]: difficulty.hard,
+        [difficulty.hard]: difficulty.easy,
     }
-    setDifficultyLevel((currentLevel) => transitions[currentLevel][isUp ? 0 : 1])
+    setDifficultyLevel(currentLevel => transitions[currentLevel])
   }
 
   const isRowAllGreen = (row) => {
@@ -285,7 +285,7 @@ function App() {
   return (
     <div className="flex flex-col justify-between h-fill bg-background">
       <header className="flex items-center py-2 px-3 text-primary">
-        <h3 onClick={() => onPageUpDownPress(true)} className="font-righteous">{difficultyLevel}</h3>
+        <h3 onClick={changeDifficulty} className="font-righteous">{difficultyLevel}</h3>
         <h1 className="flex-1 text-center text-xl xxs:text-2xl -mr-6 sm:text-4xl tracking-wide font-bold font-righteous">
           WORD MASTER
         </h1>
@@ -356,7 +356,6 @@ function App() {
         onEnterPress={onEnterPress}
         onDeletePress={onDeletePress}
         gameDisabled={gameState !== state.playing}
-        onPageUpDownPress={onPageUpDownPress}
       />
       <Modal
         isOpen={infoModalIsOpen}
