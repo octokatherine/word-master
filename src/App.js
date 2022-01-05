@@ -285,7 +285,9 @@ function App() {
   return (
     <div className="flex flex-col justify-between h-fill bg-background">
       <header className="flex items-center py-2 px-3 text-primary">
-        <h3 onClick={changeDifficulty} className="font-righteous">{difficultyLevel}</h3>
+        <div className="cursor-pointer w-16" onClick={changeDifficulty}>
+            <h3 className="text-center font-righteous capitalize">{difficultyLevel}</h3>
+        </div>
         <h1 className="flex-1 text-center text-xl xxs:text-2xl -mr-6 sm:text-4xl tracking-wide font-bold font-righteous">
           WORD MASTER
         </h1>
