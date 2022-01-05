@@ -285,6 +285,8 @@ function App() {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
+        shouldCloseOnEsc={false}
+        shouldCloseOnOverlayClick={false}
         style={customStyles}
         contentLabel="Game End Modal"
       >
