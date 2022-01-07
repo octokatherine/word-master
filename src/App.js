@@ -70,7 +70,7 @@ function App() {
   }
 
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
-  const toggleDarkMode = () => setDarkMode(!darkMode)
+  const toggleDarkMode = () => setDarkMode(prev => !prev)
 
   useEffect(() => {
     if (gameState !== state.playing) {
