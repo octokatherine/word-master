@@ -24,6 +24,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+#root,
+body,
+html {
+  /* Prevent overscroll on chrome (not supported on safari) */
+  overscroll-behavior-y: none;
+}
+
 .h-fill {
   height: 100vh;
   max-height: -webkit-fill-available;
