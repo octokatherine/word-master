@@ -113,7 +113,7 @@ function App() {
       case status.gray:
         return 'nm-inset-n-gray text-gray-50'
       default:
-        return 'nm-flat-background dark:nm-inset-background-dark text-primary dark:text-primary-dark'
+        return 'nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark'
     }
   }
 
