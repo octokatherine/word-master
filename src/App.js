@@ -274,7 +274,7 @@ function App() {
                   rowNumber,
                   colNumber,
                   letter
-                )} inline-flex items-center justify-center text-lg font-bold w-[14vw] h-[14vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
+                )} inline-flex items-center justify-center text-lg font-medium w-[14vw] h-[14vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
               >
                 {letter}
               </span>
