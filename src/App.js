@@ -70,7 +70,7 @@ function App() {
   }
 
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
-  const toggleDarkMode = () => setDarkMode(prev => !prev)
+  const toggleDarkMode = () => setDarkMode((prev) => !prev)
 
   useEffect(() => {
     if (gameState !== state.playing) {
@@ -318,44 +318,6 @@ function App() {
               ))
             )}
           </div>
-      </div>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        style={customStyles}
-        contentLabel="Game End Modal"
-      >
-        <div className="h-full flex flex-col items-center justify-center max-w-[300px] mx-auto">
-          {gameState === state.won && (
-            <>
-              <img src={Success} alt="success" height="auto" width="auto" />
-              <h1 className="text-primary text-3xl">Congrats!</h1>
-              <p className="mt-6">
-                Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
-              </p>
-              <p>
-                Longest streak: <strong>{longestStreak}</strong>
-              </p>
-            </>
-          )}
-          {gameState === state.lost && (
-            <>
-              <img src={Fail} alt="success" height="auto" width="80%" />
-              <div className="text-primary text-4xl text-center">
-                <p>Oops!</p>
-                <p className="mt-3 text-2xl">
-                  The word was <strong>{answer}</strong>
-                </p>
-                <p className="mt-6 text-base">
-                  Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
-                </p>
-                <p className="text-base">
-                  Longest streak: <strong>{longestStreak}</strong>
-                </p>
-              </div>
-            </>
-          )}
-          <PlayAgainButton />
         </div>
         <Modal
           isOpen={modalIsOpen}
@@ -419,7 +381,7 @@ function App() {
               <Close />
             </button>
             <div className="h-full flex flex-col items-center justify-center max-w-[390px] mx-auto pt-9 text-primary dark:text-primary-dark">
-              <div className="flex-1 w-full border sm:text-base text-sm">
+              <div className="flex-1 w-full sm:text-base text-sm">
                 <h1 className="text-center sm:text-3xl text-2xl">How to play</h1>
                 <ul className="list-disc pl-5 block sm:text-base text-sm">
                   <li className="mt-6 mb-2">You have 6 guesses to guess the correct word.</li>
