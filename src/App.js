@@ -69,6 +69,9 @@ function App() {
     setInfoModalIsOpen(false)
   }
 
+  const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
+  const toggleDarkMode = () => setDarkMode(prev => !prev)
+
   useEffect(() => {
     if (gameState !== state.playing) {
       setTimeout(() => {
@@ -95,11 +98,11 @@ function App() {
   const getCellStyles = (rowNumber, colNumber, letter) => {
     if (rowNumber === currentRow) {
       if (letter) {
-        return `nm-inset-background text-primary ${
+        return `nm-inset-background dark:nm-inset-background-dark text-primary dark:text-primary-dark ${
           submittedInvalidWord ? 'border border-red-800' : ''
         }`
       }
-      return 'nm-flat-background text-primary'
+      return 'nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark'
     }
 
     switch (cellStatuses[rowNumber][colNumber]) {
@@ -110,7 +113,7 @@ function App() {
       case status.gray:
         return 'nm-inset-n-gray text-gray-50'
       default:
-        return 'nm-flat-background text-primary'
+        return 'nm-flat-background dark:nm-inset-background-dark text-primary dark:text-primary-dark'
     }
   }
 
@@ -167,7 +170,7 @@ function App() {
       const newCellStatuses = [...prev]
       newCellStatuses[rowNumber] = [...prev[rowNumber]]
       const wordLength = word.length
-      const answerLetters = answer.split("");
+      const answerLetters = answer.split('')
 
       // set all to gray
       for (let i = 0; i < wordLength; i++) {
@@ -234,53 +237,87 @@ function App() {
 
   const PlayAgainButton = () => {
     return (
-      <button
-        type="button"
-        className="rounded-lg px-6 py-2 mt-8 text-lg nm-flat-background hover:nm-inset-background"
-        onClick={() => {
-          setAnswer(initialStates.answer)
-          setGameState(initialStates.gameState)
-          setBoard(initialStates.board)
-          setCellStatuses(initialStates.cellStatuses)
-          setCurrentRow(initialStates.currentRow)
-          setCurrentCol(initialStates.currentCol)
-          setLetterStatuses(initialStates.letterStatuses)
-          closeModal()
-          streakUpdated.current = false
-        }}
-      >
-        Play Again
-      </button>
+      <div className={darkMode ? 'dark' : ''}>
+        <button
+          type="button"
+          className="rounded-lg px-6 py-2 mt-8 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
+          onClick={() => {
+            setAnswer(initialStates.answer)
+            setGameState(initialStates.gameState)
+            setBoard(initialStates.board)
+            setCellStatuses(initialStates.cellStatuses)
+            setCurrentRow(initialStates.currentRow)
+            setCurrentCol(initialStates.currentCol)
+            setLetterStatuses(initialStates.letterStatuses)
+            closeModal()
+            streakUpdated.current = false
+          }}
+        >
+          Play Again
+        </button>
+      </div>
     )
   }
 
+  const customStyles = {
+    overlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: darkMode ? 'hsl(231, 16%, 25%)' : 'hsl(231, 16%, 92%)',
+    },
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      transform: 'translate(-50%, -50%)',
+      height: 'calc(100% - 2rem)',
+      width: 'calc(100% - 2rem)',
+      backgroundColor: darkMode ? 'hsl(231, 16%, 25%)' : 'hsl(231, 16%, 92%)',
+      boxShadow: `${
+        darkMode
+          ? '0.2em 0.2em calc(0.2em * 2) #1E2029, calc(0.2em * -1) calc(0.2em * -1) calc(0.2em * 2) #36394A'
+          : '0.2em 0.2em calc(0.2em * 2) #A3A7BD, calc(0.2em * -1) calc(0.2em * -1) calc(0.2em * 2) #FFFFFF'
+      }`,
+      border: 'none',
+      borderRadius: '1rem',
+      maxWidth: '475px',
+      maxHeight: '650px',
+      position: 'relative',
+    },
+  }
+
   return (
-    <div className="flex flex-col justify-between h-fill bg-background">
-      <header className="flex items-center py-2 px-3 text-primary">
-        <h1 className="flex-1 text-center text-xl xxs:text-2xl -mr-6 sm:text-4xl tracking-wide font-bold font-righteous">
-          WORD MASTER
-        </h1>
-        <button type="button" onClick={() => setInfoModalIsOpen(true)}>
-          <Info />
-        </button>
-      </header>
-      <div className="flex items-center flex-col py-3">
-        <div className="grid grid-cols-5 grid-flow-row gap-4">
-          {board.map((row, rowNumber) =>
-            row.map((letter, colNumber) => (
-              <span
-                key={colNumber}
-                className={`${getCellStyles(
-                  rowNumber,
-                  colNumber,
-                  letter
-                )} inline-flex items-center justify-center text-lg font-medium w-[14vw] h-[14vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
-              >
-                {letter}
-              </span>
-            ))
-          )}
-        </div>
+    <div className={darkMode ? 'dark' : ''}>
+      <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
+        <header className="flex items-center py-2 px-3 text-primary dark:text-primary-dark">
+          <h1 className="flex-1 text-center text-xl xxs:text-2xl -mr-6 sm:text-4xl tracking-wide font-bold font-righteous">
+            WORD MASTER
+          </h1>
+          <button type="button" onClick={() => setInfoModalIsOpen(true)}>
+            <Info />
+          </button>
+        </header>
+        <div className="flex items-center flex-col py-3">
+          <div className="grid grid-cols-5 grid-flow-row gap-4">
+            {board.map((row, rowNumber) =>
+              row.map((letter, colNumber) => (
+                <span
+                  key={colNumber}
+                  className={`${getCellStyles(
+                    rowNumber,
+                    colNumber,
+                    letter
+                  )} inline-flex items-center font-medium justify-center text-lg w-[14vw] h-[14vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
+                >
+                  {letter}
+                </span>
+              ))
+            )}
+          </div>
       </div>
       <Modal
         isOpen={modalIsOpen}
@@ -320,99 +357,123 @@ function App() {
           )}
           <PlayAgainButton />
         </div>
-      </Modal>
-      <Keyboard
-        letterStatuses={letterStatuses}
-        addLetter={addLetter}
-        onEnterPress={onEnterPress}
-        onDeletePress={onDeletePress}
-        gameDisabled={gameState !== state.playing}
-      />
-      <Modal
-        isOpen={infoModalIsOpen}
-        onRequestClose={handleInfoClose}
-        style={customStyles}
-        contentLabel="Game Info Modal"
-      >
-        <button
-          className="absolute top-4 right-4 rounded-full nm-flat-background text-primary p-1 w-6 h-6 sm:p-2 sm:h-8 sm:w-8"
-          onClick={handleInfoClose}
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={customStyles}
+          contentLabel="Game End Modal"
         >
-          <Close />
-        </button>
-        <div className="h-full flex flex-col items-center justify-center max-w-[390px] mx-auto pt-9 text-primary">
-          <div className="flex-1 w-full border sm:text-base text-sm">
-            <h1 className="text-center sm:text-3xl text-2xl">How to play</h1>
-            <ul className="list-disc pl-5 block sm:text-base text-sm">
-              <li className="mt-6 mb-2">You have 6 guesses to guess the correct word.</li>
-              <li className="mb-2">You can guess any valid word.</li>
-              <li className="mb-2">
-                After each guess, each letter will turn green, yellow, or gray.
-              </li>
-            </ul>
-            <div className="mb-3 mt-8 flex items-center">
-              <span className="nm-inset-n-green text-gray-50 inline-flex items-center justify-center text-3x w-10 h-10 rounded-full">
-                W
-              </span>
-              <span className="mx-2">=</span>
-              <span>Correct letter, correct spot</span>
+          <div className={darkMode ? 'dark' : ''}>
+            <div className="h-full flex flex-col items-center justify-center max-w-[300px] mx-auto">
+              {gameState === state.won && (
+                <>
+                  <img src={Success} alt="success" height="auto" width="auto" />
+                  <h1 className="text-primary dark:text-primary-dark text-3xl">Congrats!</h1>
+                  <p className="mt-6">
+                    Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
+                  </p>
+                  <p>
+                    Longest streak: <strong>{longestStreak}</strong>
+                  </p>
+                </>
+              )}
+              {gameState === state.lost && (
+                <>
+                  <img src={Fail} alt="success" height="auto" width="80%" />
+                  <div className="text-primary dark:text-primary-dark text-4xl text-center">
+                    <p>Oops!</p>
+                    <p className="mt-3 text-2xl">
+                      The word was <strong>{answer}</strong>
+                    </p>
+                    <p className="mt-6 text-base">
+                      Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
+                    </p>
+                    <p className="text-base">
+                      Longest streak: <strong>{longestStreak}</strong>
+                    </p>
+                  </div>
+                </>
+              )}
+              <PlayAgainButton />
             </div>
-            <div className="mb-3">
-              <span className="nm-inset-yellow-500 text-gray-50 inline-flex items-center justify-center text-3x w-10 h-10 rounded-full">
-                W
-              </span>
-              <span className="mx-2">=</span>
-              <span>Correct letter, wrong spot</span>
-            </div>
-            <span className="nm-inset-n-gray text-gray-50 inline-flex items-center justify-center text-3x w-10 h-10 rounded-full">
-              W
-            </span>
-            <span className="mx-2">=</span>
-            <span>Wrong letter</span>
           </div>
-          <div className="flex justify-center sm:text-base text-sm">
-            <span>This project is open source on</span>
-            <a
-              className="ml-[6px] rounded-full h-5 w-5 sm:h-6 sm:w-6"
-              href="https://github.com/octokatherine/word-master"
-              target="_blank"
-              rel="noreferrer"
+        </Modal>
+        <Keyboard
+          letterStatuses={letterStatuses}
+          addLetter={addLetter}
+          onEnterPress={onEnterPress}
+          onDeletePress={onDeletePress}
+          gameDisabled={gameState !== state.playing}
+        />
+        <Modal
+          isOpen={infoModalIsOpen}
+          onRequestClose={handleInfoClose}
+          style={customStyles}
+          contentLabel="Game Info Modal"
+        >
+          <div className={darkMode ? 'dark' : ''}>
+            <button
+              className="absolute top-4 right-4 rounded-full nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark p-1 w-6 h-6 sm:p-2 sm:h-8 sm:w-8"
+              onClick={handleInfoClose}
             >
-              <Github />
-            </a>
+              <Close />
+            </button>
+            <div className="h-full flex flex-col items-center justify-center max-w-[390px] mx-auto pt-9 text-primary dark:text-primary-dark">
+              <div className="flex-1 w-full border sm:text-base text-sm">
+                <h1 className="text-center sm:text-3xl text-2xl">How to play</h1>
+                <ul className="list-disc pl-5 block sm:text-base text-sm">
+                  <li className="mt-6 mb-2">You have 6 guesses to guess the correct word.</li>
+                  <li className="mb-2">You can guess any valid word.</li>
+                  <li className="mb-2">
+                    After each guess, each letter will turn green, yellow, or gray.
+                  </li>
+                </ul>
+                <div className="mb-3 mt-8 flex items-center">
+                  <span className="nm-inset-n-green text-gray-50 inline-flex items-center justify-center text-3x w-10 h-10 rounded-full">
+                    W
+                  </span>
+                  <span className="mx-2">=</span>
+                  <span>Correct letter, correct spot</span>
+                </div>
+                <div className="mb-3">
+                  <span className="nm-inset-yellow-500 text-gray-50 inline-flex items-center justify-center text-3x w-10 h-10 rounded-full">
+                    W
+                  </span>
+                  <span className="mx-2">=</span>
+                  <span>Correct letter, wrong spot</span>
+                </div>
+                <span className="nm-inset-n-gray text-gray-50 inline-flex items-center justify-center text-3x w-10 h-10 rounded-full">
+                  W
+                </span>
+                <span className="mx-2">=</span>
+                <span>Wrong letter</span>
+                <label className="flex my-4 items-center">
+                  <input
+                    className="m-2"
+                    type="checkbox"
+                    checked={darkMode}
+                    onClick={toggleDarkMode}
+                  />
+                  <span>Dark Mode</span>
+                </label>
+              </div>
+              <div className="flex justify-center sm:text-base text-sm">
+                <span>This project is open source on</span>
+                <a
+                  className="ml-[6px] rounded-full h-5 w-5 sm:h-6 sm:w-6"
+                  href="https://github.com/octokatherine/word-master"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Github />
+                </a>
+              </div>
+            </div>
           </div>
-        </div>
-      </Modal>
+        </Modal>
+      </div>
     </div>
   )
-}
-
-const customStyles = {
-  overlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'hsl(231, 16%, 92%)',
-  },
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    transform: 'translate(-50%, -50%)',
-    height: 'calc(100% - 2rem)',
-    width: 'calc(100% - 2rem)',
-    backgroundColor: 'hsl(231, 16%, 92%)',
-    boxShadow:
-      '0.2em 0.2em calc(0.2em * 2) #A3A7BD, calc(0.2em * -1) calc(0.2em * -1) calc(0.2em * 2) #FFFFFF',
-    border: 'none',
-    borderRadius: '1rem',
-    maxWidth: '475px',
-    maxHeight: '650px',
-    position: 'relative',
-  },
 }
 
 export default App
