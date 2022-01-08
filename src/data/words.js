@@ -2638,6 +2638,7 @@ const words = {
   farms: true,
   faros: true,
   farro: true,
+  farts: true,
   fasts: true,
   fatal: true,
   fated: true,

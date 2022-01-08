@@ -311,13 +311,51 @@ function App() {
                     rowNumber,
                     colNumber,
                     letter
-                  )} inline-flex items-center justify-center text-lg w-[14vw] h-[14vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
+                  )} inline-flex items-center font-medium justify-center text-lg w-[14vw] h-[14vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
                 >
                   {letter}
                 </span>
               ))
             )}
           </div>
+      </div>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Game End Modal"
+      >
+        <div className="h-full flex flex-col items-center justify-center max-w-[300px] mx-auto">
+          {gameState === state.won && (
+            <>
+              <img src={Success} alt="success" height="auto" width="auto" />
+              <h1 className="text-primary text-3xl">Congrats!</h1>
+              <p className="mt-6">
+                Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
+              </p>
+              <p>
+                Longest streak: <strong>{longestStreak}</strong>
+              </p>
+            </>
+          )}
+          {gameState === state.lost && (
+            <>
+              <img src={Fail} alt="success" height="auto" width="80%" />
+              <div className="text-primary text-4xl text-center">
+                <p>Oops!</p>
+                <p className="mt-3 text-2xl">
+                  The word was <strong>{answer}</strong>
+                </p>
+                <p className="mt-6 text-base">
+                  Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
+                </p>
+                <p className="text-base">
+                  Longest streak: <strong>{longestStreak}</strong>
+                </p>
+              </div>
+            </>
+          )}
+          <PlayAgainButton />
         </div>
         <Modal
           isOpen={modalIsOpen}

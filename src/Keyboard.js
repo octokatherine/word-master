@@ -55,7 +55,7 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
           {idx === 2 && (
             <button
               onClick={onEnterPress}
-              className="h-10 xxs:h-14 w-12 px-1 text-xs mx-[3.5px] rounded nm-flat-background-sm dark:nm-flat-background-dark-sm text-primary dark:text-primary-dark"
+              className="h-10 xxs:h-14 w-12 px-1 text-xs font-medium mx-[3.5px] rounded nm-flat-background-sm dark:nm-flat-background-dark-sm text-primary dark:text-primary-dark"
             >
               ENTER
             </button>
@@ -64,7 +64,7 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
             <button
               onClick={() => onKeyButtonPress(letter)}
               key={letter}
-              className="h-10 xxs:h-14 w-[2rem] sm:w-10 mx-[3.5px] text-sm rounded-[4px] nm-flat-background-sm dark:nm-flat-background-dark-sm"
+              className="h-10 xxs:h-14 w-[2rem] sm:w-10 mx-[3.5px] text-sm font-medium rounded-[4px] nm-flat-background-sm dark:nm-flat-background-dark-sm"
             >
               <div
                 className={`h-full w-full rounded-[3px] flex items-center justify-center ${getKeyStyle(
