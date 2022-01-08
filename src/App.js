@@ -3,15 +3,12 @@ import { letters, status } from './constants'
 import { Keyboard } from './components/Keyboard'
 import answers from './data/answers'
 import words from './data/words'
-import Modal from 'react-modal'
-import Success from './data/Success.png'
-import Fail from './data/Cross.png'
+
 import { useLocalStorage } from './hooks/useLocalStorage'
-
 import { ReactComponent as Info } from './data/Info.svg'
-import { InfoModal } from './components/InfoModal'
 
-Modal.setAppElement('#root')
+import { InfoModal } from './components/InfoModal'
+import { EndGameModal } from './components/EndGameModal'
 
 const state = {
   playing: 'playing',
@@ -235,30 +232,6 @@ function App() {
     })
   }
 
-  const PlayAgainButton = () => {
-    return (
-      <div className={darkMode ? 'dark' : ''}>
-        <button
-          type="button"
-          className="rounded-lg px-6 py-2 mt-8 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
-          onClick={() => {
-            setAnswer(initialStates.answer)
-            setGameState(initialStates.gameState)
-            setBoard(initialStates.board)
-            setCellStatuses(initialStates.cellStatuses)
-            setCurrentRow(initialStates.currentRow)
-            setCurrentCol(initialStates.currentCol)
-            setLetterStatuses(initialStates.letterStatuses)
-            closeModal()
-            streakUpdated.current = false
-          }}
-        >
-          Play Again
-        </button>
-      </div>
-    )
-  }
-
   const modalStyles = {
     overlay: {
       position: 'fixed',
@@ -326,47 +299,28 @@ function App() {
           darkMode={darkMode}
           styles={modalStyles}
         />
-        <Modal
+        <EndGameModal
           isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          style={modalStyles}
-          contentLabel="Game End Modal"
-        >
-          <div className={darkMode ? 'dark' : ''}>
-            <div className="h-full flex flex-col items-center justify-center max-w-[300px] mx-auto">
-              {gameState === state.won && (
-                <>
-                  <img src={Success} alt="success" height="auto" width="auto" />
-                  <h1 className="text-primary dark:text-primary-dark text-3xl">Congrats!</h1>
-                  <p className="mt-6">
-                    Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
-                  </p>
-                  <p>
-                    Longest streak: <strong>{longestStreak}</strong>
-                  </p>
-                </>
-              )}
-              {gameState === state.lost && (
-                <>
-                  <img src={Fail} alt="success" height="auto" width="80%" />
-                  <div className="text-primary dark:text-primary-dark text-4xl text-center">
-                    <p>Oops!</p>
-                    <p className="mt-3 text-2xl">
-                      The word was <strong>{answer}</strong>
-                    </p>
-                    <p className="mt-6 text-base">
-                      Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
-                    </p>
-                    <p className="text-base">
-                      Longest streak: <strong>{longestStreak}</strong>
-                    </p>
-                  </div>
-                </>
-              )}
-              <PlayAgainButton />
-            </div>
-          </div>
-        </Modal>
+          handleClose={closeModal}
+          styles={modalStyles}
+          darkMode={darkMode}
+          gameState={gameState}
+          state={state}
+          currentStreak={currentStreak}
+          longestStreak={longestStreak}
+          answer={answer}
+          playAgain={() => {
+            setAnswer(initialStates.answer)
+            setGameState(initialStates.gameState)
+            setBoard(initialStates.board)
+            setCellStatuses(initialStates.cellStatuses)
+            setCurrentRow(initialStates.currentRow)
+            setCurrentCol(initialStates.currentCol)
+            setLetterStatuses(initialStates.letterStatuses)
+            closeModal()
+            streakUpdated.current = false
+          }}
+        />
         <Keyboard
           letterStatuses={letterStatuses}
           addLetter={addLetter}
