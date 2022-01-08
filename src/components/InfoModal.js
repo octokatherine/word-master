@@ -2,6 +2,8 @@ import { ReactComponent as Github } from '../data/Github.svg'
 import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 
+Modal.setAppElement('#root')
+
 export const InfoModal = ({ isOpen, handleClose, toggleDarkMode, darkMode, styles }) => (
   <Modal isOpen={isOpen} onRequestClose={handleClose} style={styles} contentLabel="Game Info Modal">
     <div className={`h-full ${darkMode ? 'dark' : ''}`}>
