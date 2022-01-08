@@ -6,8 +6,10 @@ import words from './data/words'
 
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { ReactComponent as Info } from './data/Info.svg'
+import { ReactComponent as Settings } from './data/Settings.svg'
 
 import { InfoModal } from './components/InfoModal'
+import { SettingsModal } from './components/SettingsModal'
 import { EndGameModal } from './components/EndGameModal'
 
 const state = {
@@ -64,6 +66,7 @@ function App() {
   const [modalIsOpen, setIsOpen] = useState(false)
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
+  const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
   const [difficultyLevel, setDifficultyLevel] = useState(difficulty.normal)
   const [exactGuesses, setExactGuesses] = useState({})
 
@@ -387,7 +390,6 @@ function App() {
         <InfoModal
           isOpen={infoModalIsOpen}
           handleClose={handleInfoClose}
-          toggleDarkMode={toggleDarkMode}
           darkMode={darkMode}
           styles={modalStyles}
         />
@@ -412,6 +414,13 @@ function App() {
             closeModal()
             streakUpdated.current = false
           }}
+        />
+        <SettingsModal
+          isOpen={settingsModalIsOpen}
+          handleClose={() => setSettingsModalIsOpen(false)}
+          styles={modalStyles}
+          darkMode={darkMode}
+          toggleDarkMode={toggleDarkMode}
         />
         <Keyboard
           letterStatuses={letterStatuses}
