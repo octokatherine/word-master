@@ -35,7 +35,7 @@ export const SettingsModal = ({ isOpen, handleClose, styles, darkMode, toggleDar
               </a>{' '}
               💛
             </div>
-            <a href="https://www.buymeacoffee.com/katherinecodes">
+            <a href="https://www.buymeacoffee.com/katherinecodes" target="_blank">
               <img
                 alt="buy me a coffee"
                 src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=katherinecodes&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"
