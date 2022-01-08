@@ -1,4 +1,4 @@
-import { keyboardLetters, status, letters } from './constants'
+import { keyboardLetters, status, letters } from '../constants'
 import { useEffect, useCallback } from 'react'
 
 const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, gameDisabled }) => {
