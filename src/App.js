@@ -6,8 +6,10 @@ import words from './data/words'
 
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { ReactComponent as Info } from './data/Info.svg'
+import { ReactComponent as Settings } from './data/Settings.svg'
 
 import { InfoModal } from './components/InfoModal'
+import { SettingsModal } from './components/SettingsModal'
 import { EndGameModal } from './components/EndGameModal'
 
 const state = {
@@ -58,6 +60,7 @@ function App() {
   const [modalIsOpen, setIsOpen] = useState(false)
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
+  const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -267,6 +270,9 @@ function App() {
     <div className={darkMode ? 'dark' : ''}>
       <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
         <header className="flex items-center py-2 px-3 text-primary dark:text-primary-dark">
+          <button type="button" onClick={() => setSettingsModalIsOpen(true)}>
+            <Settings />
+          </button>
           <h1 className="flex-1 text-center text-xl xxs:text-2xl -mr-6 sm:text-4xl tracking-wide font-bold font-righteous">
             WORD MASTER
           </h1>
@@ -295,7 +301,6 @@ function App() {
         <InfoModal
           isOpen={infoModalIsOpen}
           handleClose={handleInfoClose}
-          toggleDarkMode={toggleDarkMode}
           darkMode={darkMode}
           styles={modalStyles}
         />
@@ -320,6 +325,13 @@ function App() {
             closeModal()
             streakUpdated.current = false
           }}
+        />
+        <SettingsModal
+          isOpen={settingsModalIsOpen}
+          handleClose={() => setSettingsModalIsOpen(false)}
+          styles={modalStyles}
+          darkMode={darkMode}
+          toggleDarkMode={toggleDarkMode}
         />
         <Keyboard
           letterStatuses={letterStatuses}

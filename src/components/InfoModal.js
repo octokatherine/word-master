@@ -4,7 +4,7 @@ import Modal from 'react-modal'
 
 Modal.setAppElement('#root')
 
-export const InfoModal = ({ isOpen, handleClose, toggleDarkMode, darkMode, styles }) => (
+export const InfoModal = ({ isOpen, handleClose, darkMode, styles }) => (
   <Modal isOpen={isOpen} onRequestClose={handleClose} style={styles} contentLabel="Game Info Modal">
     <div className={`h-full ${darkMode ? 'dark' : ''}`}>
       <button
@@ -42,10 +42,6 @@ export const InfoModal = ({ isOpen, handleClose, toggleDarkMode, darkMode, style
           </span>
           <span className="mx-2">=</span>
           <span>Wrong letter</span>
-          <label className="flex my-4 items-center">
-            <input className="m-2" type="checkbox" checked={darkMode} onClick={toggleDarkMode} />
-            <span>Dark Mode</span>
-          </label>
         </div>
         <div className="flex justify-center sm:text-base text-sm">
           <span>This project is open source on</span>
