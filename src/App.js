@@ -270,13 +270,21 @@ function App() {
     <div className={darkMode ? 'dark' : ''}>
       <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
         <header className="flex items-center py-2 px-3 text-primary dark:text-primary-dark">
-          <button type="button" onClick={() => setSettingsModalIsOpen(true)}>
+          <button
+            type="button"
+            onClick={() => setSettingsModalIsOpen(true)}
+            className="p-1 rounded-full"
+          >
             <Settings />
           </button>
-          <h1 className="flex-1 text-center text-xl xxs:text-2xl -mr-6 sm:text-4xl tracking-wide font-bold font-righteous">
+          <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
             WORD MASTER
           </h1>
-          <button type="button" onClick={() => setInfoModalIsOpen(true)}>
+          <button
+            type="button"
+            onClick={() => setInfoModalIsOpen(true)}
+            className="p-1 rounded-full"
+          >
             <Info />
           </button>
         </header>
