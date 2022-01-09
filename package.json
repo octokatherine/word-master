@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "http://octokatherine.github.io/word-master",
   "dependencies": {
+    "@headlessui/react": "^1.4.2",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",

@@ -12,11 +12,11 @@ module.exports = {
     extend: {
       colors: {
         background: 'hsl(231, 16%, 92%)',
-        primary: '#323549',
+        primary: 'hsl(231, 16%, 25%)',
         'background-dark': 'hsl(231, 16%, 25%)',
         'primary-dark': 'hsl(231, 16%, 92%)',
         'n-green': 'hsl(110, 33%, 50%)',
-        'n-gray': 'hsl(231, 12%, 45%)',
+        'n-gray': 'hsl(231, 16%, 45%)',
       },
     },
     neumorphismSize: {
