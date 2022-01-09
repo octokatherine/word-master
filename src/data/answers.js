@@ -532,7 +532,6 @@ const answers = [
   'doted',
   'doter',
   'dotes',
-  'dotty',
   'doubt',
   'dough',
   'dowel',
