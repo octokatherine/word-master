@@ -7467,6 +7467,7 @@ const words = {
   soaks: true,
   soaps: true,
   soapy: true,
+  soare: true,
   soars: true,
   soave: true,
   sobas: true,
