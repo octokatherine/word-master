@@ -255,7 +255,7 @@ function App() {
       backgroundColor: darkMode ? 'hsl(231, 16%, 25%)' : 'hsl(231, 16%, 92%)',
       boxShadow: `${
         darkMode
-          ? '0.2em 0.2em calc(0.2em * 2) #1E2029, calc(0.2em * -1) calc(0.2em * -1) calc(0.2em * 2) #36394A'
+          ? '0.2em 0.2em calc(0.2em * 2) #252834, calc(0.2em * -1) calc(0.2em * -1) calc(0.2em * 2) #43475C'
           : '0.2em 0.2em calc(0.2em * 2) #A3A7BD, calc(0.2em * -1) calc(0.2em * -1) calc(0.2em * 2) #FFFFFF'
       }`,
       border: 'none',
