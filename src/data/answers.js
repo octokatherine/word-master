@@ -1177,7 +1177,6 @@ const answers = [
   'mints',
   'minty',
   'minus',
-  'mirky',
   'mists',
   'misty',
   'mixer',
