@@ -206,7 +206,10 @@ function App() {
       setGameState(state.lost)
       setCurrentStreak(0)
     }
-  }, [cellStatuses, currentRow])
+  }, [
+   cellStatuses, currentRow, gameState, setGameState,
+   currentStreak, setCurrentStreak, setLongestStreak
+  ])
 
   const updateLetterStatuses = (word) => {
     setLetterStatuses((prev) => {
