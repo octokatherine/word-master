@@ -26,8 +26,8 @@ const getRandomAnswer = () => {
 function App() {
   const initialStates = {
     answer: () => getRandomAnswer(),
-    gameState: state.playing,
-    board: [
+    gameState: () => state.playing,
+    board: () => [
       ['', '', '', '', ''],
       ['', '', '', '', ''],
       ['', '', '', '', ''],
@@ -36,8 +36,8 @@ function App() {
       ['', '', '', '', ''],
     ],
     cellStatuses: () => Array(6).fill(Array(5).fill(status.unguessed)),
-    currentRow: 0,
-    currentCol: 0,
+    currentRow: () => 0,
+    currentCol: () => 0,
     letterStatuses: () => {
       const letterStatuses = {}
       letters.forEach((letter) => {
@@ -45,15 +45,18 @@ function App() {
       })
       return letterStatuses
     },
+    submittedInvalidWord: () => false,
   }
-  const [answer, setAnswer] = useState(initialStates.answer)
-  const [gameState, setGameState] = useState(initialStates.gameState)
-  const [board, setBoard] = useState(initialStates.board)
-  const [cellStatuses, setCellStatuses] = useState(initialStates.cellStatuses)
-  const [currentRow, setCurrentRow] = useState(initialStates.currentRow)
-  const [currentCol, setCurrentCol] = useState(initialStates.currentCol)
-  const [letterStatuses, setLetterStatuses] = useState(initialStates.letterStatuses)
-  const [submittedInvalidWord, setSubmittedInvalidWord] = useState(false)
+
+  const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer())
+  const [gameState, setGameState] = useLocalStorage('stateGameState', initialStates.gameState())
+  const [board, setBoard] = useLocalStorage('stateBoard', initialStates.board())
+  const [cellStatuses, setCellStatuses] = useLocalStorage('stateCellStatuses', initialStates.cellStatuses())
+  const [currentRow, setCurrentRow] = useLocalStorage('stateCurrentRow', initialStates.currentRow())
+  const [currentCol, setCurrentCol] = useLocalStorage('stateCurrentCol', initialStates.currentCol())
+  const [letterStatuses, setLetterStatuses] = useLocalStorage('stateLetterStatuses', initialStates.letterStatuses())
+  const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage('stateSubmittedInvalidWord', initialStates.submittedInvalidWord())
+
   const [currentStreak, setCurrentStreak] = useLocalStorage('current-streak', 0)
   const [longestStreak, setLongestStreak] = useLocalStorage('longest-streak', 0)
   const [modalIsOpen, setIsOpen] = useState(false)
@@ -225,13 +228,15 @@ function App() {
   }
 
   const playAgain = () => {
-    setAnswer(initialStates.answer)
-    setGameState(initialStates.gameState)
-    setBoard(initialStates.board)
-    setCellStatuses(initialStates.cellStatuses)
-    setCurrentRow(initialStates.currentRow)
-    setCurrentCol(initialStates.currentCol)
-    setLetterStatuses(initialStates.letterStatuses)
+    setAnswer(initialStates.answer())
+    setGameState(initialStates.gameState())
+    setBoard(initialStates.board())
+    setCellStatuses(initialStates.cellStatuses())
+    setCurrentRow(initialStates.currentRow())
+    setCurrentCol(initialStates.currentCol())
+    setLetterStatuses(initialStates.letterStatuses())
+    setSubmittedInvalidWord(initialStates.submittedInvalidWord())
+
     closeModal()
   }
 
