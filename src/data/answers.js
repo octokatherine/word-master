@@ -1072,7 +1072,6 @@ const answers = [
   'lemon',
   'lemur',
   'lends',
-  'lense',
   'level',
   'lever',
   'licks',
