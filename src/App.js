@@ -69,8 +69,6 @@ function App() {
   const [difficultyLevel, setDifficultyLevel] = useState(difficulty.normal)
   const [exactGuesses, setExactGuesses] = useState({})
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
-  const [difficultyLevel, setDifficultyLevel] = useState(difficulty.normal)
-  const [exactGuesses, setExactGuesses] = useState({})
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -227,15 +225,6 @@ function App() {
     setDifficultyLevel(currentLevel => transitions[currentLevel])
   }
 
-  const changeDifficulty = () => {
-    const transitions = {
-        [difficulty.easy]: difficulty.normal,
-        [difficulty.normal]: difficulty.hard,
-        [difficulty.hard]: difficulty.easy,
-    }
-    setDifficultyLevel(currentLevel => transitions[currentLevel])
-  }
-
   const isRowAllGreen = (row) => {
     return row.every((cell) => cell === status.green)
   }
@@ -272,6 +261,18 @@ function App() {
       }
       return newLetterStatuses
     })
+  }
+
+  const playAgain = () => {
+    setAnswer(initialStates.answer)
+    setGameState(initialStates.gameState)
+    setBoard(initialStates.board)
+    setCellStatuses(initialStates.cellStatuses)
+    setCurrentRow(initialStates.currentRow)
+    setCurrentCol(initialStates.currentCol)
+    setLetterStatuses(initialStates.letterStatuses)
+    closeModal()
+    streakUpdated.current = false
   }
 
   const PlayAgainButton = () => {
@@ -332,73 +333,44 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col justify-between h-fill bg-background">
-      <header className="flex items-center py-2 px-3 text-primary">
-        <div className="cursor-pointer w-16" onClick={changeDifficulty}>
-            <h3 className="text-center font-righteous capitalize">{difficultyLevel}</h3>
-        </div>
-        <h1 className="flex-1 text-center text-xl xxs:text-2xl -mr-6 sm:text-4xl tracking-wide font-bold font-righteous">
-          WORD MASTER
-        </h1>
-        <button type="button" onClick={() => setInfoModalIsOpen(true)}>
-          <Info />
-        </button>
-      </header>
-      <div className="flex items-center flex-col py-3">
-        <div className="grid grid-cols-5 grid-flow-row gap-4">
-          {board.map((row, rowNumber) =>
-            row.map((letter, colNumber) => (
-              <span
-                key={colNumber}
-                className={`${getCellStyles(
-                  rowNumber,
-                  colNumber,
-                  letter
-                )} inline-flex items-center justify-center text-lg font-medium w-[14vw] h-[14vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
-              >
-                {letter}
-              </span>
-            ))
-          )}
-        </div>
-      </div>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        style={customStyles}
-        contentLabel="Game End Modal"
-      >
-        <div className="h-full flex flex-col items-center justify-center max-w-[300px] mx-auto">
-          {gameState === state.won && (
-            <>
-              <img src={Success} alt="success" height="auto" width="auto" />
-              <h1 className="text-primary text-3xl">Congrats!</h1>
-              <p className="mt-6">
-                Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
-              </p>
-              <p>
-                Longest streak: <strong>{longestStreak}</strong>
-              </p>
-            </>
-          )}
-          {gameState === state.lost && (
-            <>
-              <img src={Fail} alt="success" height="auto" width="80%" />
-              <div className="text-primary text-4xl text-center">
-                <p>Oops!</p>
-                <p className="mt-3 text-2xl">
-                  The word was <strong>{answer}</strong>
-                </p>
-                <p className="mt-6 text-base">
-                  Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
-                </p>
-                <p className="text-base">
-                  Longest streak: <strong>{longestStreak}</strong>
-                </p>
-              </div>
-            </>
-          )}
-          <PlayAgainButton />
+    <div className={darkMode ? 'dark' : ''}>
+      <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
+        <header className="flex items-center py-2 px-3 text-primary dark:text-primary-dark">
+          <button
+            type="button"
+            onClick={() => setSettingsModalIsOpen(true)}
+            className="p-1 rounded-full"
+          >
+            <Settings />
+          </button>
+          <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
+            WORD MASTER
+          </h1>
+          <button
+            type="button"
+            onClick={() => setInfoModalIsOpen(true)}
+            className="p-1 rounded-full"
+          >
+            <Info />
+          </button>
+        </header>
+        <div className="flex items-center flex-col py-3">
+          <div className="grid grid-cols-5 grid-flow-row gap-4">
+            {board.map((row, rowNumber) =>
+              row.map((letter, colNumber) => (
+                <span
+                  key={colNumber}
+                  className={`${getCellStyles(
+                    rowNumber,
+                    colNumber,
+                    letter
+                  )} inline-flex items-center font-medium justify-center text-lg w-[14vw] h-[14vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
+                >
+                  {letter}
+                </span>
+              ))
+            )}
+          </div>
         </div>
         <InfoModal
           isOpen={infoModalIsOpen}
