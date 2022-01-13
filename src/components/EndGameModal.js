@@ -1,3 +1,4 @@
+import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 import Success from '../data/Success.png'
 import Fail from '../data/Cross.png'
@@ -38,6 +39,12 @@ export const EndGameModal = ({
     >
       <div className={darkMode ? 'dark' : ''}>
         <div className="h-full flex flex-col items-center justify-center max-w-[300px] mx-auto text-primary dark:text-primary-dark">
+            <button
+              className="absolute top-4 right-4 rounded-full nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark p-1 w-6 h-6 sm:p-2 sm:h-8 sm:w-8 hover:nm-inset-background dark:hover:nm-inset-background-dark"
+              onClick={handleClose}
+            >
+              <Close />
+            </button>
           {gameState === state.won && (
             <>
               <img src={Success} alt="success" height="auto" width="auto" />

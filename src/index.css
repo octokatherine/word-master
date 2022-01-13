@@ -37,3 +37,7 @@ html {
 .font-righteous {
   font-family: 'Righteous', cursive;
 }
+
+.hidden {
+  display: none;
+}

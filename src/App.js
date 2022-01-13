@@ -403,17 +403,7 @@ function App() {
           currentStreak={currentStreak}
           longestStreak={longestStreak}
           answer={answer}
-          playAgain={() => {
-            setAnswer(initialStates.answer)
-            setGameState(initialStates.gameState)
-            setBoard(initialStates.board)
-            setCellStatuses(initialStates.cellStatuses)
-            setCurrentRow(initialStates.currentRow)
-            setCurrentCol(initialStates.currentCol)
-            setLetterStatuses(initialStates.letterStatuses)
-            closeModal()
-            streakUpdated.current = false
-          }}
+          playAgain={playAgain}
         />
         <SettingsModal
           isOpen={settingsModalIsOpen}
