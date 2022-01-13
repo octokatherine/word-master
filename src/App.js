@@ -235,6 +235,18 @@ function App() {
     })
   }
 
+  const playAgain = () => {
+    setAnswer(initialStates.answer)
+    setGameState(initialStates.gameState)
+    setBoard(initialStates.board)
+    setCellStatuses(initialStates.cellStatuses)
+    setCurrentRow(initialStates.currentRow)
+    setCurrentCol(initialStates.currentCol)
+    setLetterStatuses(initialStates.letterStatuses)
+    closeModal()
+    streakUpdated.current = false
+  }
+
   const modalStyles = {
     overlay: {
       position: 'fixed',
@@ -280,6 +292,15 @@ function App() {
           <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
             WORD MASTER
           </h1>
+          <div className={gameState === state.playing ? 'hidden' : (darkMode ? 'dark' : '')}>
+            <button
+              type="button"
+              className="rounded-lg px-6 py-2 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
+              onClick={playAgain}
+            >
+              Play Again
+            </button>
+          </div>
           <button
             type="button"
             onClick={() => setInfoModalIsOpen(true)}
@@ -322,17 +343,7 @@ function App() {
           currentStreak={currentStreak}
           longestStreak={longestStreak}
           answer={answer}
-          playAgain={() => {
-            setAnswer(initialStates.answer)
-            setGameState(initialStates.gameState)
-            setBoard(initialStates.board)
-            setCellStatuses(initialStates.cellStatuses)
-            setCurrentRow(initialStates.currentRow)
-            setCurrentCol(initialStates.currentCol)
-            setLetterStatuses(initialStates.letterStatuses)
-            closeModal()
-            streakUpdated.current = false
-          }}
+          playAgain={playAgain}
         />
         <SettingsModal
           isOpen={settingsModalIsOpen}
