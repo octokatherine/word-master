@@ -255,6 +255,7 @@ function App() {
       right: 0,
       bottom: 0,
       backgroundColor: darkMode ? 'hsl(231, 16%, 25%)' : 'hsl(231, 16%, 92%)',
+      zIndex: 99,
     },
     content: {
       top: '50%',
@@ -292,15 +293,6 @@ function App() {
           <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
             WORD MASTER
           </h1>
-          <div className={gameState === state.playing ? 'hidden' : (darkMode ? 'dark' : '')}>
-            <button
-              type="button"
-              className="rounded-lg px-6 py-2 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
-              onClick={playAgain}
-            >
-              Play Again
-            </button>
-          </div>
           <button
             type="button"
             onClick={() => setInfoModalIsOpen(true)}
@@ -352,13 +344,27 @@ function App() {
           darkMode={darkMode}
           toggleDarkMode={toggleDarkMode}
         />
-        <Keyboard
-          letterStatuses={letterStatuses}
-          addLetter={addLetter}
-          onEnterPress={onEnterPress}
-          onDeletePress={onDeletePress}
-          gameDisabled={gameState !== state.playing}
-        />
+        {gameState === state.playing ? (
+          <Keyboard
+            letterStatuses={letterStatuses}
+            addLetter={addLetter}
+            onEnterPress={onEnterPress}
+            onDeletePress={onDeletePress}
+            gameDisabled={gameState !== state.playing}
+          />
+        ) : (
+          <div className="flex-1 flex pt-8 items-start justify-center">
+            <div className={darkMode ? 'dark' : ''}>
+              <button
+                type="button"
+                className="rounded-lg z-10 px-6 py-2 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
+                onClick={playAgain}
+              >
+                Play Again
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
