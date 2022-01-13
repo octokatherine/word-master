@@ -1782,7 +1782,6 @@ const answers = [
   'steps',
   'stern',
   'stews',
-  'stich',
   'stick',
   'stiff',
   'still',
