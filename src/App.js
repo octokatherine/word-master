@@ -107,11 +107,6 @@ function App() {
   }
 
   const buildRegex = (cellStatuses, letterStatuses) => {
-  //  include previous regex
-    console.log(cellStatuses)
-    console.log(letterStatuses)
-    console.log(currentRow)
-    console.log(board)
     const letterString = '[' + Object.keys(letterStatuses).filter(letter => letterStatuses[letter] != 'gray').join('').toLowerCase() + ']'
     const regexArray = new Array(5).fill(letterString)
     for (let x =0; x<currentRow; x++) {
@@ -128,7 +123,6 @@ function App() {
 
   const availableAnswers = (cellStatuses, letterStatuses) => {
     const wordRE = buildRegex(cellStatuses, letterStatuses)
-    console.log(wordRE)
     const availableWords = answers.filter(word => word.match(wordRE))
     setTotalAnswers(availableWords.length)
   }
@@ -168,8 +162,8 @@ function App() {
 
     if (currentRow === 6) return
 
-    let newCellStatuses = updateCellStatuses(word, currentRow)
-    let newLetterStatuses = updateLetterStatuses(word)
+    updateCellStatuses(word, currentRow)
+    updateLetterStatuses(word)
     setCurrentRow((prev) => prev + 1)
     setCurrentCol(0)
   }
