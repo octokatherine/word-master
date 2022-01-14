@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState} from 'react'
 import { letters, status } from './constants'
 import { Keyboard } from './components/Keyboard'
 import answers from './data/answers'
@@ -35,7 +35,7 @@ function App() {
       ['', '', '', '', ''],
       ['', '', '', '', ''],
     ],
-    cellStatuses: () => Array(6).fill(Array(5).fill(status.unguessed)),
+    cellStatuses: Array(6).fill(Array(5).fill(status.unguessed)),
     currentRow: 0,
     currentCol: 0,
     letterStatuses: () => {
@@ -45,18 +45,20 @@ function App() {
       })
       return letterStatuses
     },
+    submittedInvalidWord: false,
   }
-  const [answer, setAnswer] = useState(initialStates.answer)
-  const [gameState, setGameState] = useState(initialStates.gameState)
-  const [board, setBoard] = useState(initialStates.board)
-  const [cellStatuses, setCellStatuses] = useState(initialStates.cellStatuses)
-  const [currentRow, setCurrentRow] = useState(initialStates.currentRow)
-  const [currentCol, setCurrentCol] = useState(initialStates.currentCol)
-  const [letterStatuses, setLetterStatuses] = useState(initialStates.letterStatuses)
-  const [submittedInvalidWord, setSubmittedInvalidWord] = useState(false)
+
+  const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer())
+  const [gameState, setGameState] = useLocalStorage('stateGameState', initialStates.gameState)
+  const [board, setBoard] = useLocalStorage('stateBoard', initialStates.board)
+  const [cellStatuses, setCellStatuses] = useLocalStorage('stateCellStatuses', initialStates.cellStatuses)
+  const [currentRow, setCurrentRow] = useLocalStorage('stateCurrentRow', initialStates.currentRow)
+  const [currentCol, setCurrentCol] = useLocalStorage('stateCurrentCol', initialStates.currentCol)
+  const [letterStatuses, setLetterStatuses] = useLocalStorage('stateLetterStatuses', initialStates.letterStatuses())
+  const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage('stateSubmittedInvalidWord', initialStates.submittedInvalidWord)
+
   const [currentStreak, setCurrentStreak] = useLocalStorage('current-streak', 0)
   const [longestStreak, setLongestStreak] = useLocalStorage('longest-streak', 0)
-  const streakUpdated = useRef(false)
   const [modalIsOpen, setIsOpen] = useState(false)
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
@@ -79,21 +81,6 @@ function App() {
       }, 500)
     }
   }, [gameState])
-
-  useEffect(() => {
-    if (!streakUpdated.current) {
-      if (gameState === state.won) {
-        if (currentStreak >= longestStreak) {
-          setLongestStreak((prev) => prev + 1)
-        }
-        setCurrentStreak((prev) => prev + 1)
-        streakUpdated.current = true
-      } else if (gameState === state.lost) {
-        setCurrentStreak(0)
-        streakUpdated.current = true
-      }
-    }
-  }, [gameState, currentStreak, longestStreak, setLongestStreak, setCurrentStreak])
 
   const getCellStyles = (rowNumber, colNumber, letter) => {
     if (rowNumber === currentRow) {
@@ -209,12 +196,20 @@ function App() {
       return r[0] !== status.unguessed
     })
 
-    if (lastFilledRow && isRowAllGreen(lastFilledRow)) {
+    if (gameState === state.playing && lastFilledRow && isRowAllGreen(lastFilledRow)) {
       setGameState(state.won)
-    } else if (currentRow === 6) {
+
+      var streak = currentStreak + 1
+      setCurrentStreak(streak)
+      setLongestStreak((prev) => streak > prev ? streak : prev)
+    } else if (gameState === state.playing && currentRow === 6) {
       setGameState(state.lost)
+      setCurrentStreak(0)
     }
-  }, [cellStatuses, currentRow])
+  }, [
+   cellStatuses, currentRow, gameState, setGameState,
+   currentStreak, setCurrentStreak, setLongestStreak
+  ])
 
   const updateLetterStatuses = (word) => {
     setLetterStatuses((prev) => {
@@ -236,15 +231,16 @@ function App() {
   }
 
   const playAgain = () => {
-    setAnswer(initialStates.answer)
+    setAnswer(initialStates.answer())
     setGameState(initialStates.gameState)
     setBoard(initialStates.board)
     setCellStatuses(initialStates.cellStatuses)
     setCurrentRow(initialStates.currentRow)
     setCurrentCol(initialStates.currentCol)
-    setLetterStatuses(initialStates.letterStatuses)
+    setLetterStatuses(initialStates.letterStatuses())
+    setSubmittedInvalidWord(initialStates.submittedInvalidWord)
+
     closeModal()
-    streakUpdated.current = false
   }
 
   const modalStyles = {
