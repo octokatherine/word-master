@@ -46,8 +46,10 @@ function App() {
       return letterStatuses
     },
     submittedInvalidWord: false,
+    totalAnswer : answers.length
   }
 
+  const [totalAnswers, setTotalAnswers] = useLocalStorage('stateTotalAnswer', initialStates.totalAnswer)
   const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer())
   const [gameState, setGameState] = useLocalStorage('stateGameState', initialStates.gameState)
   const [board, setBoard] = useLocalStorage('stateBoard', initialStates.board)
@@ -104,6 +106,39 @@ function App() {
     }
   }
 
+  const buildRegex = (cellStatuses, letterStatuses) => {
+  //  include previous regex
+    console.log(cellStatuses)
+    console.log(letterStatuses)
+    console.log(currentRow)
+    console.log(board)
+    const letterString = '[' + Object.keys(letterStatuses).filter(letter => letterStatuses[letter] != 'gray').join('').toLowerCase() + ']'
+    const regexArray = new Array(5).fill(letterString)
+    for (let x =0; x<currentRow; x++) {
+      for (let y=0; y<5; y++) {
+        if (cellStatuses[x][y]=='green') {
+          regexArray[y]=board[x][y].toLowerCase()
+        }
+
+      }
+    }
+    return regexArray.join('')
+  }
+
+
+  const availableAnswers = (cellStatuses, letterStatuses) => {
+    const wordRE = buildRegex(cellStatuses, letterStatuses)
+    console.log(wordRE)
+    const availableWords = answers.filter(word => word.match(wordRE))
+    setTotalAnswers(availableWords.length)
+  }
+
+  useEffect(()=> {
+    const cellStatusesCopy = [...cellStatuses]
+    const letterStatusesCopy = {...letterStatuses}
+    availableAnswers(cellStatusesCopy, letterStatusesCopy)
+  }, [cellStatuses, currentRow, letterStatuses])
+
   const addLetter = (letter) => {
     setSubmittedInvalidWord(false)
     setBoard((prev) => {
@@ -133,8 +168,8 @@ function App() {
 
     if (currentRow === 6) return
 
-    updateCellStatuses(word, currentRow)
-    updateLetterStatuses(word)
+    let newCellStatuses = updateCellStatuses(word, currentRow)
+    let newLetterStatuses = updateLetterStatuses(word)
     setCurrentRow((prev) => prev + 1)
     setCurrentCol(0)
   }
@@ -195,7 +230,8 @@ function App() {
     const lastFilledRow = reversedStatuses.find((r) => {
       return r[0] !== status.unguessed
     })
-
+    
+    
     if (gameState === state.playing && lastFilledRow && isRowAllGreen(lastFilledRow)) {
       setGameState(state.won)
 
@@ -210,6 +246,7 @@ function App() {
    cellStatuses, currentRow, gameState, setGameState,
    currentStreak, setCurrentStreak, setLongestStreak
   ])
+
 
   const updateLetterStatuses = (word) => {
     setLetterStatuses((prev) => {
@@ -289,6 +326,9 @@ function App() {
           <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
             WORD MASTER
           </h1>
+          <h2 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
+          {totalAnswers} possibilities remaining
+          </h2>
           <button
             type="button"
             onClick={() => setInfoModalIsOpen(true)}
