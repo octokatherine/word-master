@@ -18,7 +18,7 @@ const state = {
   lost: 'lost',
 }
 
-const difficulty = {
+export const difficulty = {
   easy: 'easy',
   normal: 'normal',
   hard: 'hard',
@@ -216,15 +216,6 @@ function App() {
     setExactGuesses(fixedLetters)
   }
 
-  const changeDifficulty = () => {
-    const transitions = {
-        [difficulty.easy]: difficulty.normal,
-        [difficulty.normal]: difficulty.hard,
-        [difficulty.hard]: difficulty.easy,
-    }
-    setDifficultyLevel(currentLevel => transitions[currentLevel])
-  }
-
   const isRowAllGreen = (row) => {
     return row.every((cell) => cell === status.green)
   }
@@ -271,6 +262,7 @@ function App() {
     setCurrentRow(initialStates.currentRow)
     setCurrentCol(initialStates.currentCol)
     setLetterStatuses(initialStates.letterStatuses)
+    setExactGuesses({})
     closeModal()
     streakUpdated.current = false
   }
@@ -396,6 +388,8 @@ function App() {
           styles={modalStyles}
           darkMode={darkMode}
           toggleDarkMode={toggleDarkMode}
+          difficultyLevel={difficultyLevel}
+          setDifficultyLevel={setDifficultyLevel}
         />
         {gameState === state.playing ? (
           <Keyboard
