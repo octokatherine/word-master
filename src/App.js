@@ -1,4 +1,4 @@
-import { useEffect, useState} from 'react'
+import { useEffect, useState, useLayoutEffect } from 'react'
 import { letters, status } from './constants'
 import { Keyboard } from './components/Keyboard'
 import answers from './data/answers'
@@ -21,6 +21,26 @@ const state = {
 const getRandomAnswer = () => {
   const randomIndex = Math.floor(Math.random() * answers.length)
   return answers[randomIndex].toUpperCase()
+}
+
+const useGridSize = () => {
+  const [size, setSize] = useState([0, 0])
+  useLayoutEffect(() => {
+    const updateSize = () => {
+      const innerh = window.innerHeight
+      const maxHeight = 400
+      const maxWidth = (maxHeight * 5) / 6
+
+      const height = Math.min(maxHeight, innerh - 275)
+      const width = Math.min(maxWidth, (height * 5) / 6)
+
+      setSize([width, height])
+    }
+    window.addEventListener('resize', updateSize)
+    updateSize()
+    return () => window.removeEventListener('resize', updateSize)
+  }, [])
+  return size
 }
 
 function App() {
@@ -51,11 +71,20 @@ function App() {
   const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer())
   const [gameState, setGameState] = useLocalStorage('stateGameState', initialStates.gameState)
   const [board, setBoard] = useLocalStorage('stateBoard', initialStates.board)
-  const [cellStatuses, setCellStatuses] = useLocalStorage('stateCellStatuses', initialStates.cellStatuses)
+  const [cellStatuses, setCellStatuses] = useLocalStorage(
+    'stateCellStatuses',
+    initialStates.cellStatuses
+  )
   const [currentRow, setCurrentRow] = useLocalStorage('stateCurrentRow', initialStates.currentRow)
   const [currentCol, setCurrentCol] = useLocalStorage('stateCurrentCol', initialStates.currentCol)
-  const [letterStatuses, setLetterStatuses] = useLocalStorage('stateLetterStatuses', initialStates.letterStatuses())
-  const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage('stateSubmittedInvalidWord', initialStates.submittedInvalidWord)
+  const [letterStatuses, setLetterStatuses] = useLocalStorage(
+    'stateLetterStatuses',
+    initialStates.letterStatuses()
+  )
+  const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage(
+    'stateSubmittedInvalidWord',
+    initialStates.submittedInvalidWord
+  )
 
   const [currentStreak, setCurrentStreak] = useLocalStorage('current-streak', 0)
   const [longestStreak, setLongestStreak] = useLocalStorage('longest-streak', 0)
@@ -201,14 +230,19 @@ function App() {
 
       var streak = currentStreak + 1
       setCurrentStreak(streak)
-      setLongestStreak((prev) => streak > prev ? streak : prev)
+      setLongestStreak((prev) => (streak > prev ? streak : prev))
     } else if (gameState === state.playing && currentRow === 6) {
       setGameState(state.lost)
       setCurrentStreak(0)
     }
   }, [
-   cellStatuses, currentRow, gameState, setGameState,
-   currentStreak, setCurrentStreak, setLongestStreak
+    cellStatuses,
+    currentRow,
+    gameState,
+    setGameState,
+    currentStreak,
+    setCurrentStreak,
+    setLongestStreak,
   ])
 
   const updateLetterStatuses = (word) => {
@@ -275,10 +309,12 @@ function App() {
     },
   }
 
+  const [widthGrid, heightGrid] = useGridSize()
+
   return (
     <div className={darkMode ? 'dark' : ''}>
       <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
-        <header className="flex items-center py-2 px-3 text-primary dark:text-primary-dark">
+        <header className="flex items-center pt-2 px-3 text-primary dark:text-primary-dark">
           <button
             type="button"
             onClick={() => setSettingsModalIsOpen(true)}
@@ -297,8 +333,11 @@ function App() {
             <Info />
           </button>
         </header>
-        <div className="flex items-center flex-col py-3">
-          <div className="grid grid-cols-5 grid-flow-row gap-4">
+        <div className="flex items-center flex-col py-1">
+          <div
+            className="grid grid-cols-5 grid-rows-6 gap-x-[10px] gap-y-[10px]"
+            style={{ height: `${heightGrid}px`, width: `${widthGrid}px` }}
+          >
             {board.map((row, rowNumber) =>
               row.map((letter, colNumber) => (
                 <span
@@ -307,7 +346,7 @@ function App() {
                     rowNumber,
                     colNumber,
                     letter
-                  )} inline-flex items-center font-medium justify-center text-lg w-[14vw] h-[14vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
+                  )} inline-flex items-center font-medium justify-center text-lg rounded-full`}
                 >
                   {letter}
                 </span>
