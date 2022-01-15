@@ -115,7 +115,9 @@ function App() {
     for (let x=0; x<currentRow; x++) {
       for (let y=0; y<5; y++) {
         if (cellStatuses[x][y]==='green') {
-          regexArray[y]=board[x][y].toLowerCase()
+          regexArray[y] = board[x][y].toLowerCase()
+        } if (cellStatuses[x][y]==='yellow') {
+          regexArray[y] = regexArray[y].replace(board[x][y].toLowerCase(), '')
         }
 
       }
@@ -126,6 +128,7 @@ function App() {
 
   const availableAnswers = (cellStatuses, letterStatuses) => {
     const wordRE = buildRegex(cellStatuses, letterStatuses)
+    console.log(wordRE)
     const availableWords = answers.filter(word => word.match(wordRE))
     setTotalAnswers(availableWords.length)
   }
