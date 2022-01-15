@@ -107,17 +107,20 @@ function App() {
   }
 
   const buildRegex = (cellStatuses, letterStatuses) => {
-    const letterString = '[' + Object.keys(letterStatuses).filter(letter => letterStatuses[letter] != 'gray').join('').toLowerCase() + ']'
-    const regexArray = new Array(5).fill(letterString)
-    for (let x =0; x<currentRow; x++) {
+  const letterString = '[' + Object.keys(letterStatuses).filter(letter => letterStatuses[letter] !== 'gray').join('').toLowerCase() + ']'
+  const knownLetters =  Object.keys(letterStatuses).filter(letter => letterStatuses[letter] === 'yellow')
+  const regexStart = knownLetters.map( (letter) => '(?=.*'+ letter.toLowerCase() +'.*)' ).join('')
+
+  const regexArray = new Array(5).fill(letterString)
+    for (let x=0; x<currentRow; x++) {
       for (let y=0; y<5; y++) {
-        if (cellStatuses[x][y]=='green') {
+        if (cellStatuses[x][y]==='green') {
           regexArray[y]=board[x][y].toLowerCase()
         }
 
       }
     }
-    return regexArray.join('')
+    return regexStart + regexArray.join('')
   }
 
 
