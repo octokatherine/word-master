@@ -130,7 +130,6 @@ function App() {
 
   const availableAnswers = (cellStatuses, letterStatuses) => {
     const wordRE = buildRegex(cellStatuses, letterStatuses)
-    console.log(wordRE)
     const availableWords = answers.filter(word => word.match(wordRE))
     setTotalAnswers(availableWords.length)
   }
