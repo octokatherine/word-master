@@ -46,7 +46,8 @@ function App() {
       return letterStatuses
     },
     submittedInvalidWord: false,
-    totalAnswer : answers.length
+    totalAnswer : answers.length,
+    words: words
   }
 
   const [totalAnswers, setTotalAnswers] = useLocalStorage('stateTotalAnswer', initialStates.totalAnswer)
@@ -58,12 +59,14 @@ function App() {
   const [currentCol, setCurrentCol] = useLocalStorage('stateCurrentCol', initialStates.currentCol)
   const [letterStatuses, setLetterStatuses] = useLocalStorage('stateLetterStatuses', initialStates.letterStatuses())
   const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage('stateSubmittedInvalidWord', initialStates.submittedInvalidWord)
+  const [gameWords, setGameWords] = useLocalStorage('gameWords', initialStates.words)
 
   const [currentStreak, setCurrentStreak] = useLocalStorage('current-streak', 0)
   const [longestStreak, setLongestStreak] = useLocalStorage('longest-streak', 0)
   const [modalIsOpen, setIsOpen] = useState(false)
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [answerRemainPref, setAnswerRemainPref] = useLocalStorage('answer-remaining-pref', true)
+  const [hardMode, setHardMode] = useLocalStorage('hard-mode', false)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
 
@@ -77,6 +80,7 @@ function App() {
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
   const toggleDarkMode = () => setDarkMode((prev) => !prev)
   const toggleAnswerRemainPref = () => setAnswerRemainPref((prev) => !prev)
+  const toggleHardMode = () => setHardMode((prev)=> !prev)
 
   useEffect(() => {
     if (gameState !== state.playing) {
@@ -132,6 +136,7 @@ function App() {
     const wordRE = buildRegex(cellStatuses, letterStatuses)
     const availableWords = answers.filter(word => word.match(wordRE))
     setTotalAnswers(availableWords.length)
+    if (hardMode)  { setGameWords((prev) => prev.filter(word => word.match(wordRE))) }
   }
 
   useEffect(()=> {
@@ -157,7 +162,7 @@ function App() {
 
   const isValidWord = (word) => {
     if (word.length < 5) return false
-    return words[word.toLowerCase()]
+    return gameWords[word.toLowerCase()]
   }
 
   const onEnterPress = () => {
@@ -277,6 +282,7 @@ function App() {
     setCurrentCol(initialStates.currentCol)
     setLetterStatuses(initialStates.letterStatuses())
     setSubmittedInvalidWord(initialStates.submittedInvalidWord)
+    setGameWords(initialStates.words)
 
     closeModal()
   }
@@ -380,8 +386,10 @@ function App() {
           styles={modalStyles}
           darkMode={darkMode}
           answerRemainPref={answerRemainPref}
+          hardMode={hardMode}
           toggleDarkMode={toggleDarkMode}
           toggleAnswerRemainPref = {toggleAnswerRemainPref}
+          toggleHardMode={toggleHardMode}
         />
         {gameState === state.playing ? (
           <Keyboard
