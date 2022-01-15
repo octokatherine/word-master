@@ -80,7 +80,7 @@ function App() {
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
   const toggleDarkMode = () => setDarkMode((prev) => !prev)
   const toggleAnswerRemainPref = () => setAnswerRemainPref((prev) => !prev)
-  const toggleHardMode = () => setHardMode((prev)=> !prev)
+  const toggleHardMode = () => {setHardMode((prev)=> !prev); setGameWords(initialStates.words) }
 
   useEffect(() => {
     if (gameState !== state.playing) {
@@ -136,7 +136,15 @@ function App() {
     const wordRE = buildRegex(cellStatuses, letterStatuses)
     const availableWords = answers.filter(word => word.match(wordRE))
     setTotalAnswers(availableWords.length)
-    if (hardMode)  { setGameWords((prev) => prev.filter(word => word.match(wordRE))) }
+    if (hardMode)  { 
+      setGameWords( (prev) => {
+        const newWords = Object.keys(prev).filter(word => word.match(wordRE)).reduce( (obj,key) => {
+          obj[key] = prev[key];
+          return obj;
+        }, {})
+        return newWords
+      })
+    }
   }
 
   useEffect(()=> {
