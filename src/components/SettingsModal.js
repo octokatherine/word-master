@@ -4,7 +4,7 @@ import { Switch, RadioGroup } from '@headlessui/react'
 
 Modal.setAppElement('#root')
 
-export const SettingsModal = ({ isOpen, handleClose, styles, darkMode, toggleDarkMode }) => {
+export const SettingsModal = ({ isOpen, handleClose, styles, darkMode, answerRemainPref, toggleDarkMode, toggleAnswerRemainPref }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -44,6 +44,28 @@ export const SettingsModal = ({ isOpen, handleClose, styles, darkMode, toggleDar
               </Switch>
               <Switch.Label as="span" className="ml-3 cursor-pointer">
                 Dark Mode
+              </Switch.Label>
+            </Switch.Group>
+
+            <Switch.Group as="div" className="flex items-center">
+              <Switch
+                checked={answerRemainPref}
+                onChange={toggleAnswerRemainPref}
+                className={`${
+                  darkMode
+                    ? 'nm-inset-yellow-500 border-background-dark'
+                    : 'nm-inset-background border-transparent'
+                } relative inline-flex flex-shrink-0 h-8 w-14 p-1 border-2 rounded-full cursor-pointer transition ease-in-out duration-200`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`${
+                    darkMode ? 'translate-x-[1.55rem]' : 'translate-x-0'
+                  } absolute pointer-events-none inline-block top-1/2 -translate-y-1/2 h-5 w-5 shadow rounded-full bg-white transform ring-0 transition ease-in-out duration-200`}
+                />
+              </Switch>
+              <Switch.Label as="span" className="ml-3 cursor-pointer">
+                {answerRemainPref ? 'Hide' : 'Show'} # Answers Remaining
               </Switch.Label>
             </Switch.Group>
 

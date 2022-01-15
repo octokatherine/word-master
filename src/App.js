@@ -63,6 +63,7 @@ function App() {
   const [longestStreak, setLongestStreak] = useLocalStorage('longest-streak', 0)
   const [modalIsOpen, setIsOpen] = useState(false)
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
+  const [answerRemainPref, setAnswerRemainPref] = useLocalStorage('answer-remaining-pref', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
 
@@ -75,6 +76,7 @@ function App() {
 
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
   const toggleDarkMode = () => setDarkMode((prev) => !prev)
+  const toggleAnswerRemainPref = () => setAnswerRemainPref((prev) => !prev)
 
   useEffect(() => {
     if (gameState !== state.playing) {
@@ -326,9 +328,9 @@ function App() {
           <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
             WORD MASTER
           </h1>
-          <h2 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
+          {answerRemainPref ? <h2 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
           {totalAnswers} possibilities remaining
-          </h2>
+          </h2> : ''}
           <button
             type="button"
             onClick={() => setInfoModalIsOpen(true)}
@@ -378,7 +380,9 @@ function App() {
           handleClose={() => setSettingsModalIsOpen(false)}
           styles={modalStyles}
           darkMode={darkMode}
+          answerRemainPref={answerRemainPref}
           toggleDarkMode={toggleDarkMode}
+          toggleAnswerRemainPref = {toggleAnswerRemainPref}
         />
         {gameState === state.playing ? (
           <Keyboard
