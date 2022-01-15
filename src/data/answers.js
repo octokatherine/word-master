@@ -91,7 +91,6 @@ const answers = [
   'arena',
   'argue',
   'array',
-  'arris',
   'arrow',
   'arson',
   'artsy',
