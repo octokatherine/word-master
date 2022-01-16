@@ -1,16 +1,15 @@
-import { useEffect, useState} from 'react'
 import { letters, status } from './constants'
-import { Keyboard } from './components/Keyboard'
-import answers from './data/answers'
-import words from './data/words'
+import { useEffect, useState } from 'react'
 
-import { useLocalStorage } from './hooks/useLocalStorage'
-import { ReactComponent as Info } from './data/Info.svg'
-import { ReactComponent as Settings } from './data/Settings.svg'
-
-import { InfoModal } from './components/InfoModal'
-import { SettingsModal } from './components/SettingsModal'
 import { EndGameModal } from './components/EndGameModal'
+import { ReactComponent as Info } from './data/Info.svg'
+import { InfoModal } from './components/InfoModal'
+import { Keyboard } from './components/Keyboard'
+import { ReactComponent as Settings } from './data/Settings.svg'
+import { SettingsModal } from './components/SettingsModal'
+import answers from './data/answers'
+import { useLocalStorage } from './hooks/useLocalStorage'
+import words from './data/words'
 
 const state = {
   playing: 'playing',
@@ -297,7 +296,7 @@ function App() {
             <Info />
           </button>
         </header>
-        <div className="flex items-center flex-col py-3">
+        <div className="flex items-center flex-col py-3 sm:mb-8">
           <div className="grid grid-cols-5 grid-flow-row gap-4">
             {board.map((row, rowNumber) =>
               row.map((letter, colNumber) => (
@@ -341,15 +340,17 @@ function App() {
           toggleDarkMode={toggleDarkMode}
         />
         {gameState === state.playing ? (
-          <Keyboard
-            letterStatuses={letterStatuses}
-            addLetter={addLetter}
-            onEnterPress={onEnterPress}
-            onDeletePress={onDeletePress}
-            gameDisabled={gameState !== state.playing}
-          />
+          <>
+            <Keyboard
+              letterStatuses={letterStatuses}
+              addLetter={addLetter}
+              onEnterPress={onEnterPress}
+              onDeletePress={onDeletePress}
+              gameDisabled={gameState !== state.playing}
+            />
+          </>
         ) : (
-          <div className="flex-1 flex pt-8 items-start justify-center">
+          <div className="flex items-start justify-center">
             <div className={darkMode ? 'dark' : ''}>
               <button
                 type="button"
@@ -361,6 +362,7 @@ function App() {
             </div>
           </div>
         )}
+        <div className="flex-1" />
       </div>
     </div>
   )
