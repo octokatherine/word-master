@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/word-master/static/css/main.209ac89c.css",
-    "main.js": "/word-master/static/js/main.39a7d28d.js",
+    "main.css": "/word-master/static/css/main.bceaebb0.css",
+    "main.js": "/word-master/static/js/main.50e32be1.js",
     "static/media/Cross.png": "/word-master/static/media/Cross.cbf77228e847522eff11.png",
     "static/media/Success.png": "/word-master/static/media/Success.df533be8f86a57bc5946.png",
     "static/media/Ranade-Variable.ttf": "/word-master/static/media/Ranade-Variable.bb177f94a709e8e8f396.ttf",
@@ -10,11 +10,11 @@
     "static/media/Settings.svg": "/word-master/static/media/Settings.0808c435ed629b919ffa742a20d897f6.svg",
     "static/media/Info.svg": "/word-master/static/media/Info.ee717ac430bb01bfbbd42aa3dbffe913.svg",
     "static/media/Close.svg": "/word-master/static/media/Close.f34771d5d250820d8c5ec83c816bf8f5.svg",
-    "main.209ac89c.css.map": "/word-master/static/css/main.209ac89c.css.map",
-    "main.39a7d28d.js.map": "/word-master/static/js/main.39a7d28d.js.map"
+    "main.bceaebb0.css.map": "/word-master/static/css/main.bceaebb0.css.map",
+    "main.50e32be1.js.map": "/word-master/static/js/main.50e32be1.js.map"
   },
   "entrypoints": [
-    "static/css/main.209ac89c.css",
-    "static/js/main.39a7d28d.js"
+    "static/css/main.bceaebb0.css",
+    "static/js/main.50e32be1.js"
   ]
 }
