@@ -49,7 +49,7 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
   }, [handleKeyDown])
 
   return (
-    <div className="w-full flex flex-col items-center mb-3 select-none">
+    <div className="w-full flex flex-col items-center mb-3 select-none h-auto justify-end">
       {keyboardLetters.map((row, idx) => (
         <div key={idx} className="w-full flex justify-center my-[5px]">
           {idx === 2 && (
