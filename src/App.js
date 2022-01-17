@@ -210,6 +210,10 @@ function App() {
    currentStreak, setCurrentStreak, setLongestStreak
   ])
 
+  const getCharCount = (word, charToCount) => {
+    return word.split(charToCount).length - 1;
+  }
+  
   const updateLetterStatuses = (word) => {
     setLetterStatuses((prev) => {
       const newLetterStatuses = { ...prev }
@@ -217,7 +221,7 @@ function App() {
       for (let i = 0; i < wordLength; i++) {
         if (newLetterStatuses[word[i]] === status.green) continue
 
-        if (word[i] === answer[i]) {
+        if (word[i] === answer[i] && getCharCount(answer, word[i]) === getCharCount(word, word[i])) {
           newLetterStatuses[word[i]] = status.green
         } else if (answer.includes(word[i])) {
           newLetterStatuses[word[i]] = status.yellow
