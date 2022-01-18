@@ -2149,7 +2149,6 @@ const answers = [
   'youth',
   'yummy',
   'zesty',
-  'zippo',
   'zippy',
   'zoned',
   'zones',
