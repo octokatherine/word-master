@@ -1512,6 +1512,7 @@ const answers = [
   'rival',
   'river',
   'roast',
+  'roate',
   'robot',
   'rocks',
   'rocky',
