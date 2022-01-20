@@ -17,6 +17,12 @@ const state = {
   lost: 'lost',
 }
 
+export const difficulty = {
+  easy: 'easy',
+  normal: 'normal',
+  hard: 'hard',
+}
+
 const getRandomAnswer = () => {
   const randomIndex = Math.floor(Math.random() * answers.length)
   return answers[randomIndex].toUpperCase()
@@ -62,6 +68,8 @@ function App() {
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
+  const [difficultyLevel, setDifficultyLevel] = useState(difficulty.normal)
+  const [exactGuesses, setExactGuesses] = useState({})
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -120,7 +128,14 @@ function App() {
 
   const isValidWord = (word) => {
     if (word.length < 5) return false
-    return words[word.toLowerCase()]
+    if (difficultyLevel === difficulty.easy) return true
+    if (!words[word.toLowerCase()]) return false
+    if (difficultyLevel === difficulty.normal) return true
+    const guessedLetters = Object.entries(letterStatuses).filter(([letter, letterStatus]) =>
+      [status.yellow, status.green].includes(letterStatus)
+    );
+    if (!guessedLetters.every(([letter, _]) => word.includes(letter))) return false
+    return Object.entries(exactGuesses).every(([position, letter]) => word[position] === letter)
   }
 
   const onEnterPress = () => {
@@ -152,6 +167,7 @@ function App() {
   }
 
   const updateCellStatuses = (word, rowNumber) => {
+    const fixedLetters = {}
     setCellStatuses((prev) => {
       const newCellStatuses = [...prev]
       newCellStatuses[rowNumber] = [...prev[rowNumber]]
@@ -168,6 +184,7 @@ function App() {
         if (word[i] === answer[i]) {
           newCellStatuses[rowNumber][i] = status.green
           answerLetters.splice(i, 1)
+          fixedLetters[i] = answer[i]
         }
       }
 
@@ -181,6 +198,7 @@ function App() {
 
       return newCellStatuses
     })
+    setExactGuesses(fixedLetters)
   }
 
   const isRowAllGreen = (row) => {
@@ -238,6 +256,7 @@ function App() {
     setCurrentCol(initialStates.currentCol)
     setLetterStatuses(initialStates.letterStatuses())
     setSubmittedInvalidWord(initialStates.submittedInvalidWord)
+    setExactGuesses({})
 
     closeModal()
   }
@@ -355,6 +374,8 @@ function App() {
           styles={modalStyles}
           darkMode={darkMode}
           toggleDarkMode={toggleDarkMode}
+          difficultyLevel={difficultyLevel}
+          setDifficultyLevel={setDifficultyLevel}
         />
         <div className={`h-auto relative ${gameState === state.playing ? '' : 'invisible'}`}>
           <Keyboard
