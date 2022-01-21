@@ -21,6 +21,7 @@ export const EndGameModal = ({
     return (
       <div className={darkMode ? 'dark' : ''}>
         <button
+          autoFocus
           type="button"
           className="rounded-lg px-6 py-2 mt-8 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
           onClick={playAgain}
