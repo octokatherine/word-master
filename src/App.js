@@ -128,7 +128,7 @@ function App() {
     const word = board[currentRow].join('')
     if (!isValidWord(word)) {
       setSubmittedInvalidWord(true)
-      alert(` ${word} is not a valid word. Please try again.`)
+      alert(`${word} is not a valid word. Please try again.`)
       return
     }
 
