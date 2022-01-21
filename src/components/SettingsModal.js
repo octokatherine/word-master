@@ -1,10 +1,11 @@
 import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 import { Switch, RadioGroup } from '@headlessui/react'
+import { difficulty } from '../App'
 
 Modal.setAppElement('#root')
 
-export const SettingsModal = ({ isOpen, handleClose, styles, darkMode, toggleDarkMode }) => {
+export const SettingsModal = ({ isOpen, handleClose, styles, darkMode, toggleDarkMode, difficultyLevel, setDifficultyLevel }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -47,13 +48,10 @@ export const SettingsModal = ({ isOpen, handleClose, styles, darkMode, toggleDar
               </Switch.Label>
             </Switch.Group>
 
-            {/*
-            UI switch for selecting difficulty level. Uncomment when difficulty level functionality is implemented
-
             <RadioGroup value={difficultyLevel} onChange={setDifficultyLevel} className="mt-6">
               <RadioGroup.Label className="w-full text-center">Difficulty Level</RadioGroup.Label>
               <div className="grid grid-cols-3 gap-2 rounded-full mt-2 p-1 nm-inset-background dark:nm-inset-background-dark">
-                {Object.keys(difficultyOptions).map((option) => (
+                {Object.keys(difficulty).map((option) => (
                   <RadioGroup.Option
                     key={option}
                     value={option}
@@ -70,7 +68,7 @@ export const SettingsModal = ({ isOpen, handleClose, styles, darkMode, toggleDar
                   </RadioGroup.Option>
                 ))}
               </div>
-            </RadioGroup>*/}
+            </RadioGroup>
           </div>
           <div className="flex flex-col items-center">
             <div className="mb-4">
