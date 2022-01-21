@@ -56,11 +56,20 @@ function App() {
   const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer())
   const [gameState, setGameState] = useLocalStorage('stateGameState', initialStates.gameState)
   const [board, setBoard] = useLocalStorage('stateBoard', initialStates.board)
-  const [cellStatuses, setCellStatuses] = useLocalStorage('stateCellStatuses', initialStates.cellStatuses)
+  const [cellStatuses, setCellStatuses] = useLocalStorage(
+    'stateCellStatuses',
+    initialStates.cellStatuses
+  )
   const [currentRow, setCurrentRow] = useLocalStorage('stateCurrentRow', initialStates.currentRow)
   const [currentCol, setCurrentCol] = useLocalStorage('stateCurrentCol', initialStates.currentCol)
-  const [letterStatuses, setLetterStatuses] = useLocalStorage('stateLetterStatuses', initialStates.letterStatuses())
-  const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage('stateSubmittedInvalidWord', initialStates.submittedInvalidWord)
+  const [letterStatuses, setLetterStatuses] = useLocalStorage(
+    'stateLetterStatuses',
+    initialStates.letterStatuses()
+  )
+  const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage(
+    'stateSubmittedInvalidWord',
+    initialStates.submittedInvalidWord
+  )
 
   const [currentStreak, setCurrentStreak] = useLocalStorage('current-streak', 0)
   const [longestStreak, setLongestStreak] = useLocalStorage('longest-streak', 0)
@@ -68,7 +77,7 @@ function App() {
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
-  const [difficultyLevel, setDifficultyLevel] = useState(difficulty.normal)
+  const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', difficulty.normal)
   const [exactGuesses, setExactGuesses] = useState({})
 
   const openModal = () => setIsOpen(true)
@@ -126,23 +135,25 @@ function App() {
     }
   }
 
+  // returns an array with a boolean of if the word is valid and an error message if it is not
   const isValidWord = (word) => {
-    if (word.length < 5) return false
-    if (difficultyLevel === difficulty.easy) return true
-    if (!words[word.toLowerCase()]) return false
-    if (difficultyLevel === difficulty.normal) return true
+    if (word.length < 5) return [false, `please enter a 5 letter word`]
+    if (difficultyLevel === difficulty.easy) return [true]
+    if (!words[word.toLowerCase()]) return [false, `${word} is not a valid word. Please try again.`]
+    if (difficultyLevel === difficulty.normal) return [true]
     const guessedLetters = Object.entries(letterStatuses).filter(([letter, letterStatus]) =>
       [status.yellow, status.green].includes(letterStatus)
-    );
-    if (!guessedLetters.every(([letter, _]) => word.includes(letter))) return false
-    return Object.entries(exactGuesses).every(([position, letter]) => word[position] === letter)
+    )
+    if (!guessedLetters.every(([letter, _]) => word.includes(letter))) return [false, `In hard mode, you must use all the hints you've been given.`]
+    return [Object.entries(exactGuesses).every(([position, letter]) => word[position] === letter)]
   }
 
   const onEnterPress = () => {
     const word = board[currentRow].join('')
-    if (!isValidWord(word)) {
+    const [valid, err] = isValidWord(word)
+    if (!valid) {
       setSubmittedInvalidWord(true)
-      alert(`${word} is not a valid word. Please try again.`)
+      alert(err)
       return
     }
 
@@ -219,14 +230,19 @@ function App() {
 
       var streak = currentStreak + 1
       setCurrentStreak(streak)
-      setLongestStreak((prev) => streak > prev ? streak : prev)
+      setLongestStreak((prev) => (streak > prev ? streak : prev))
     } else if (gameState === state.playing && currentRow === 6) {
       setGameState(state.lost)
       setCurrentStreak(0)
     }
   }, [
-   cellStatuses, currentRow, gameState, setGameState,
-   currentStreak, setCurrentStreak, setLongestStreak
+    cellStatuses,
+    currentRow,
+    gameState,
+    setGameState,
+    currentStreak,
+    setCurrentStreak,
+    setLongestStreak,
   ])
 
   const updateLetterStatuses = (word) => {
