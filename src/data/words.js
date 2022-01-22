@@ -6680,6 +6680,7 @@ const words = {
   roans: true,
   roars: true,
   roast: true,
+  roate: true,
   robed: true,
   robes: true,
   robin: true,
