@@ -78,7 +78,7 @@ function App() {
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
   const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', difficulty.normal)
-  const [exactGuesses, setExactGuesses] = useState({})
+  const [exactGuesses, setExactGuesses] = useLocalStorage('exact-guesses', {})
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -144,8 +144,13 @@ function App() {
     const guessedLetters = Object.entries(letterStatuses).filter(([letter, letterStatus]) =>
       [status.yellow, status.green].includes(letterStatus)
     )
-    if (!guessedLetters.every(([letter, _]) => word.includes(letter))) return [false, `In hard mode, you must use all the hints you've been given.`]
-    return [Object.entries(exactGuesses).every(([position, letter]) => word[position] === letter)]
+    const yellowsUsed = guessedLetters.every(([letter, _]) => word.includes(letter))
+    const greensUsed = Object.entries(exactGuesses).every(
+      ([position, letter]) => word[position] === letter
+    )
+    if (!yellowsUsed || !greensUsed)
+      return [false, `In hard mode, you must use all the hints you've been given.`]
+    return [true]
   }
 
   const onEnterPress = () => {
@@ -210,7 +215,7 @@ function App() {
 
       return newCellStatuses
     })
-    setExactGuesses(fixedLetters)
+    setExactGuesses(prev => ({...prev, ...fixedLetters}))
   }
 
   const isRowAllGreen = (row) => {
