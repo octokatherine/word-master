@@ -1150,7 +1150,6 @@ const answers = [
   'lured',
   'lures',
   'lymph',
-  'lynch',
   'lyric',
   'macro',
   'magic',
