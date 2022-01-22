@@ -78,6 +78,15 @@ function App() {
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
   const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', difficulty.normal)
+  const getDifficultyLevelInstructions = () => {
+    if (difficultyLevel === difficulty.easy) {
+      return 'Guess any 5 letters'
+    } else if (difficultyLevel === difficulty.hard) {
+      return 'Guess any valid word using all the hints you\'ve been given'
+    } else {
+      return 'Guess any valid word'
+    }
+  }
   const [exactGuesses, setExactGuesses] = useLocalStorage('exact-guesses', {})
 
   const openModal = () => setIsOpen(true)
@@ -399,6 +408,7 @@ function App() {
           toggleDarkMode={toggleDarkMode}
           difficultyLevel={difficultyLevel}
           setDifficultyLevel={setDifficultyLevel}
+          levelInstructions={getDifficultyLevelInstructions()}
         />
         <div className={`h-auto relative ${gameState === state.playing ? '' : 'invisible'}`}>
           <Keyboard
