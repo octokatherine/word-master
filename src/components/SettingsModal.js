@@ -6,7 +6,7 @@ import { difficulty } from '../App'
 
 Modal.setAppElement('#root')
 
-export const SettingsModal = ({ isOpen, handleClose, styles, darkMode, toggleDarkMode, difficultyLevel, setDifficultyLevel, levelInstructions }) => {
+export const SettingsModal = ({ isOpen, handleClose, styles, darkMode, toggleDarkMode, popUpErrors, togglePopUpErrors, difficultyLevel, setDifficultyLevel, levelInstructions }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -46,6 +46,28 @@ export const SettingsModal = ({ isOpen, handleClose, styles, darkMode, toggleDar
               </Switch>
               <Switch.Label as="span" className="ml-3 cursor-pointer">
                 Dark Mode
+              </Switch.Label>
+            </Switch.Group>
+
+            <Switch.Group as="div" className="flex items-center">
+              <Switch
+                checked={popUpErrors}
+                onChange={togglePopUpErrors}
+                className={`${
+                  popUpErrors
+                    ? 'nm-inset-green-500 border-background-dark'
+                    : 'nm-inset-background border-transparent'
+                } relative inline-flex flex-shrink-0 h-8 w-14 p-1 border-2 rounded-full cursor-pointer transition ease-in-out duration-200`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`${
+                    popUpErrors ? 'translate-x-[1.55rem]' : 'translate-x-0'
+                  } absolute pointer-events-none inline-block top-1/2 -translate-y-1/2 h-5 w-5 shadow rounded-full bg-white transform ring-0 transition ease-in-out duration-200`}
+                />
+              </Switch>
+              <Switch.Label as="span" className="ml-3 cursor-pointer">
+                Toggle Pop Up Warnings
               </Switch.Label>
             </Switch.Group>
 

@@ -97,7 +97,9 @@ function App() {
   }
 
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
+  const [popUpErrors, setPopUpErrors] = useLocalStorage('pop-up-errors', true)
   const toggleDarkMode = () => setDarkMode((prev) => !prev)
+  const togglePopUpErrors = () => setPopUpErrors((prev) => !prev)
 
   useEffect(() => {
     if (gameState !== state.playing) {
@@ -167,7 +169,7 @@ function App() {
     const [valid, err] = isValidWord(word)
     if (!valid) {
       setSubmittedInvalidWord(true)
-      alert(err)
+      if (popUpErrors) alert(err)
       return
     }
 
@@ -406,6 +408,8 @@ function App() {
           styles={modalStyles}
           darkMode={darkMode}
           toggleDarkMode={toggleDarkMode}
+          popUpErrors={popUpErrors}
+          togglePopUpErrors={togglePopUpErrors}
           difficultyLevel={difficultyLevel}
           setDifficultyLevel={setDifficultyLevel}
           levelInstructions={getDifficultyLevelInstructions()}
