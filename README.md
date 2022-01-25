@@ -1,3 +1,7 @@
+This is a fork of https://github.com/octokatherine/word-master with the font changed to Sakeozo's [Secret ASL Font](https://ko-fi.com/s/afbfa7ae55)
+
+---
+
 # Word Master
 
 🔗 https://octokatherine.github.io/word-master/
@@ -19,4 +23,4 @@ After submitting a guess, the letters will turn gray, green, or yellow.
 
 Feel free to open an issue for any bugs or feature requests.
 
-To contribute to the code, see [CONTRIBUTING.md](https://github.com/octokatherine/word-master/blob/main/CONTRIBUTING.md)
+To contribute to the code, see [CONTRIBUTING.md](./CONTRIBUTING.md)

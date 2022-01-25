@@ -1,8 +1,7 @@
 {
-  "name": "word-master",
+  "name": "dactle",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://octokatherine.github.io/word-master",
   "dependencies": {
     "@headlessui/react": "^1.4.2",
     "@testing-library/jest-dom": "^5.16.1",

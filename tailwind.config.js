@@ -26,6 +26,9 @@ module.exports = {
       lg: '0.4em',
       xl: '0.8em',
     },
+    fontFamily: {
+      asl: ['SakeozosAslFont', 'cursive'],
+    },
   },
   plugins: [require('tailwindcss-neumorphism')],
 }

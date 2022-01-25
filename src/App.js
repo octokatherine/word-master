@@ -82,7 +82,7 @@ function App() {
     if (difficultyLevel === difficulty.easy) {
       return 'Guess any 5 letters'
     } else if (difficultyLevel === difficulty.hard) {
-      return 'Guess any valid word using all the hints you\'ve been given'
+      return "Guess any valid word using all the hints you've been given"
     } else {
       return 'Guess any valid word'
     }
@@ -224,7 +224,7 @@ function App() {
 
       return newCellStatuses
     })
-    setExactGuesses(prev => ({...prev, ...fixedLetters}))
+    setExactGuesses((prev) => ({ ...prev, ...fixedLetters }))
   }
 
   const isRowAllGreen = (row) => {
@@ -336,7 +336,7 @@ function App() {
             <Settings />
           </button>
           <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
-            WORD MASTER
+            DACTLE
           </h1>
           <button
             type="button"
@@ -357,7 +357,7 @@ function App() {
                       rowNumber,
                       colNumber,
                       letter
-                    )} inline-flex items-center font-medium justify-center text-lg w-[13vw] h-[13vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
+                    )} inline-flex items-center font-medium justify-center text-5xl w-[13vw] h-[13vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full font-asl`}
                   >
                     {letter}
                   </span>
