@@ -55,9 +55,10 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
           {idx === 2 && (
             <button
               onClick={onEnterPress}
-              className="h-10 xxs:h-14 w-12 px-1 text-xs font-medium mx-[3.5px] rounded nm-flat-background-sm dark:nm-flat-background-dark-sm text-primary dark:text-primary-dark"
+              className="h-10 xxs:h-14 w-12 px-1 text-2xl font-medium mx-[3.5px] rounded nm-flat-background-sm dark:nm-flat-background-dark-sm text-primary dark:text-primary-dark"
             >
-              ENTER
+              <span aria-hidden="true">↲</span>
+              <span class="sr-only">Enter</span>
             </button>
           )}
           {row.map((letter) => (
