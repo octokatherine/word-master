@@ -1,4 +1,4 @@
-const words = {
+const words: { [key: string]: boolean } = {
   aahed: true,
   aalii: true,
   aargh: true,
