@@ -325,7 +325,7 @@ function App() {
 
   return (
     <div className={darkMode ? 'dark' : ''}>
-      <div className="flex flex-col justify-between h-screen sm:h-full bg-background dark:bg-background-dark">
+      <div className="flex flex-col justify-between h-screen bg-background dark:bg-background-dark">
         <header className="flex items-center py-2 px-3 text-primary dark:text-primary-dark">
           <button
             type="button"
