@@ -334,7 +334,7 @@ function App() {
           >
             <Settings />
           </button>
-          <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
+          <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-brand">
             DACTLE
           </h1>
           <button
