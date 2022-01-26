@@ -47,7 +47,7 @@ export const InfoModal = ({ isOpen, handleClose, darkMode, styles }) => (
           <span>This project is open source on</span>
           <a
             className="ml-[6px] rounded-full h-5 w-5 sm:h-6 sm:w-6"
-            href="https://github.com/octokatherine/word-master"
+            href="https://github.com/iancanderson/nerdle"
             target="_blank"
             rel="noreferrer"
           >
