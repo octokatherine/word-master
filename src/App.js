@@ -207,10 +207,9 @@ function Puzzle() {
 
   const onEnterPress = () => {
     const word = board[currentRow].join('')
-    const [valid, err] = isValidWord(word)
+    const [valid] = isValidWord(word)
     if (!valid) {
       setSubmittedInvalidWord(true)
-      // alert(err)
       return
     }
 
