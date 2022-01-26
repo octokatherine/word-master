@@ -1,5 +1,7 @@
-import { letters, status } from './constants'
+import { letters, status, cipherKey } from './constants'
 import { useEffect, useState } from 'react'
+import { Routes, Route, useParams, useNavigate } from 'react-router-dom'
+import Encrypt from 'ciphervgnr'
 
 import { EndGameModal } from './components/EndGameModal'
 import { ReactComponent as Info } from './data/Info.svg'
@@ -28,9 +30,50 @@ const getRandomAnswer = () => {
   return answers[randomIndex].toUpperCase()
 }
 
+// Adapted from https://github.com/hannahcode/wordle/blob/f8aa91766d7e2918ab6361efb7bdc5321bd93774/src/lib/words.ts#L15-L28
+// MIT Licensed
+const getDailyAnswer = () => {
+  // January 1, 2022 Game Epoch
+  const epochMs = 1641013200000
+  const now = Date.now()
+  const msInDay = 86400000
+  const index = Math.floor((now - epochMs) / msInDay)
+  return answers[index].toUpperCase()
+}
+
 function App() {
+  return (
+    <Routes>
+      <Route path="/">
+        <Route index element={<DailyPuzzle />} />
+        <Route path=":answerXor" element={<Puzzle />} />
+        <Route
+          path="404"
+          element={
+            <h1 className="flex-1 text-center text-xl xxs:text-2xl -mr-6 sm:text-4xl tracking-wide font-bold">
+              Invalid URL!
+            </h1>
+          }
+        />
+      </Route>
+    </Routes>
+  )
+}
+
+function Puzzle() {
+  const navigate = useNavigate()
+  const params = useParams()
+
+  const decipheredAnswer = Encrypt(params.answerXor, cipherKey, true).toLowerCase()
+  const shareUrl = `${window.location.origin}/#/${params.answerXor}`
+
+  useEffect(() => {
+    if (!answers.includes(decipheredAnswer)) {
+      navigate('/404')
+    }
+  })
   const initialStates = {
-    answer: () => getRandomAnswer(),
+    answer: decipheredAnswer.toUpperCase(),
     gameState: state.playing,
     board: [
       ['', '', '', '', ''],
@@ -53,7 +96,7 @@ function App() {
     submittedInvalidWord: false,
   }
 
-  const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer())
+  const [answer, setAnswer] = useState(initialStates.answer)
   const [gameState, setGameState] = useLocalStorage('stateGameState', initialStates.gameState)
   const [board, setBoard] = useLocalStorage('stateBoard', initialStates.board)
   const [cellStatuses, setCellStatuses] = useLocalStorage(
@@ -82,7 +125,7 @@ function App() {
     if (difficultyLevel === difficulty.easy) {
       return 'Guess any 5 letters'
     } else if (difficultyLevel === difficulty.hard) {
-      return 'Guess any valid word using all the hints you\'ve been given'
+      return "Guess any valid word using all the hints you've been given"
     } else {
       return 'Guess any valid word'
     }
@@ -224,7 +267,7 @@ function App() {
 
       return newCellStatuses
     })
-    setExactGuesses(prev => ({...prev, ...fixedLetters}))
+    setExactGuesses((prev) => ({ ...prev, ...fixedLetters }))
   }
 
   const isRowAllGreen = (row) => {
@@ -279,7 +322,9 @@ function App() {
   }
 
   const playAgain = () => {
-    setAnswer(initialStates.answer())
+    const newAnswer = getRandomAnswer()
+    setAnswer(newAnswer)
+    navigate('/' + Encrypt(newAnswer, cipherKey))
     setGameState(initialStates.gameState)
     setBoard(initialStates.board)
     setCellStatuses(initialStates.cellStatuses)
@@ -323,7 +368,6 @@ function App() {
       position: 'relative',
     },
   }
-
   return (
     <div className={darkMode ? 'dark' : ''}>
       <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
@@ -394,11 +438,15 @@ function App() {
           styles={modalStyles}
           darkMode={darkMode}
           gameState={gameState}
+          cellStatuses={cellStatuses}
+          currentRow={currentRow}
+          status={status}
           state={state}
           currentStreak={currentStreak}
           longestStreak={longestStreak}
           answer={answer}
           playAgain={playAgain}
+          shareUrl={shareUrl}
         />
         <SettingsModal
           isOpen={settingsModalIsOpen}
@@ -424,4 +472,12 @@ function App() {
   )
 }
 
+function DailyPuzzle() {
+  const navigate = useNavigate()
+  const answer = getDailyAnswer()
+  useEffect(() => {
+    navigate('/' + Encrypt(answer, cipherKey))
+  })
+  return null
+}
 export default App
