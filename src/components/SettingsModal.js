@@ -1,5 +1,6 @@
 import { RadioGroup, Switch } from '@headlessui/react'
 
+import { ReactComponent as Github } from '../data/Github.svg'
 import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 import { difficulty } from '../App'
@@ -83,14 +84,22 @@ export const SettingsModal = ({
           </div>
           <div className="flex flex-col items-center">
             <div className="mb-4">
-              <a href="https://ko-fi.com/s/afbfa7ae55" target="_blank" rel="noreferrer">
-                Buy the Secret ASL Font 👌
+              Buy the{' '}
+              <a
+                className="underline"
+                href="https://ko-fi.com/s/afbfa7ae55"
+                target="_blank"
+                rel="noreferrer"
+              >
+                ASL Font
               </a>
+              👌
             </div>
             <div className="mb-4">
               If you're enjoying this game, you can show your support by{' '}
               <a
                 href="https://www.buymeacoffee.com/katherinecodes"
+                className="underline"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -98,17 +107,17 @@ export const SettingsModal = ({
               </a>
               <span className="ml-1 text-xs">💛</span>
             </div>
-            <a
-              href="https://www.buymeacoffee.com/katherinecodes"
-              target="_blank"
-              rel="noreferrer"
-              className="nm-flat-background dark:nm-flat-background-dark rounded-xl hover:nm-inset-background dark:hover:nm-inset-background-dark"
-            >
-              <img
-                alt="buy me a coffee"
-                src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=katherinecodes&button_colour=eab308&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"
-              />
-            </a>
+            <div className="flex justify-center sm:text-base text-sm">
+              <span>This project is open source on</span>
+              <a
+                className="ml-[6px] rounded-full h-5 w-5 sm:h-6 sm:w-6"
+                href="https://github.com/sloria/word-master/tree/asl"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Github />
+              </a>
+            </div>
           </div>
         </div>
       </div>
