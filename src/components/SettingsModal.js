@@ -83,6 +83,11 @@ export const SettingsModal = ({
           </div>
           <div className="flex flex-col items-center">
             <div className="mb-4">
+              <a href="https://ko-fi.com/s/afbfa7ae55" target="_blank" rel="noreferrer">
+                Buy the Secret ASL Font 👌
+              </a>
+            </div>
+            <div className="mb-4">
               If you're enjoying this game, you can show your support by{' '}
               <a
                 href="https://www.buymeacoffee.com/katherinecodes"
