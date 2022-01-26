@@ -1,6 +1,5 @@
 import { RadioGroup, Switch } from '@headlessui/react'
 
-import { ReactComponent as Github } from '../data/Github.svg'
 import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 import { difficulty } from '../App'
