@@ -82,7 +82,7 @@ export const SettingsModal = ({
             </RadioGroup>
             <p className="text-center w-10/12 mx-auto font-medium">{levelInstructions}</p>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center text-sm">
             <div className="mb-4">
               Buy the{' '}
               <a
@@ -96,27 +96,25 @@ export const SettingsModal = ({
               👌
             </div>
             <div className="mb-4">
-              If you're enjoying this game, you can show your support by{' '}
+              Forked from{' '}
               <a
-                href="https://www.buymeacoffee.com/katherinecodes"
+                href="https://octokatherine.github.io/word-master/"
                 className="underline"
                 target="_blank"
                 rel="noreferrer"
               >
-                buying the original developer a coffee
+                Word Master
               </a>
-              <span className="ml-1 text-xs">💛</span>
-            </div>
-            <div className="flex justify-center sm:text-base text-sm">
-              <span>This project is open source on</span>
+              , which was inspired by{' '}
               <a
-                className="ml-[6px] rounded-full h-5 w-5 sm:h-6 sm:w-6"
-                href="https://github.com/sloria/word-master/tree/asl"
+                href="https://www.powerlanguage.co.uk/wordle/"
+                className="underline"
                 target="_blank"
                 rel="noreferrer"
               >
-                <Github />
+                Wordle
               </a>
+              💛
             </div>
           </div>
         </div>
