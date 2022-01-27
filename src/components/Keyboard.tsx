@@ -44,7 +44,6 @@ const Keyboard = ({
 
       const key = event.key.toUpperCase()
 
-      debugger
       if (numbers.includes(key) || operators.includes(key)) {
         addLetter(key)
       } else if (key === 'ENTER') {

@@ -243,7 +243,6 @@ function App() {
       const newBoard = [...prev]
       const row = newBoard[currentRow]
       addCharacter(row, currentCol, character)
-      debugger
       return newBoard
     })
     if (currentCol < 5) {
