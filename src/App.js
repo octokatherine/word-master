@@ -33,8 +33,7 @@ const getRandomAnswer = () => {
 // Adapted from https://github.com/hannahcode/wordle/blob/f8aa91766d7e2918ab6361efb7bdc5321bd93774/src/lib/words.ts#L15-L28
 // MIT Licensed
 const getDailyAnswer = () => {
-  // January 1, 2022 Game Epoch
-  const epochMs = 1641013200000
+  const epochMs = new Date('January 1, 2022 00:00:00').valueOf()
   const now = Date.now()
   const msInDay = 86400000
   const index = Math.floor((now - epochMs) / msInDay) % answers.length
