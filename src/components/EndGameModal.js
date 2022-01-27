@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 import Success from '../data/Success.png'
@@ -5,29 +6,83 @@ import Fail from '../data/Cross.png'
 
 Modal.setAppElement('#root')
 
+const ModalButton = ({ children, ...props }) => (
+  <button
+    className="rounded-lg px-6 py-2 mt-8 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
+    {...props}
+  >
+    {children}
+  </button>
+)
+
 export const EndGameModal = ({
   isOpen,
   handleClose,
   styles,
   darkMode,
   gameState,
+  cellStatuses,
+  currentRow,
   state,
+  status,
   currentStreak,
   longestStreak,
   answer,
   playAgain,
+  shareUrl,
 }) => {
   const PlayAgainButton = () => {
     return (
       <div className={darkMode ? 'dark' : ''}>
-        <button
-          autoFocus
-          type="button"
-          className="rounded-lg px-6 py-2 mt-8 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
-          onClick={playAgain}
-        >
+        <ModalButton autoFocus type="button" onClick={playAgain}>
           Play Again
-        </button>
+        </ModalButton>
+      </div>
+    )
+  }
+  const ShareButton = () => {
+    const [buttonPressed, setButtonPressed] = useState(false)
+    useEffect(() => {
+      if (buttonPressed !== false) {
+        setTimeout(() => setButtonPressed(false), [3000])
+      }
+    }, [buttonPressed])
+    return (
+      <div className={darkMode ? 'dark' : ''}>
+        <ModalButton
+          onClick={() => {
+            setButtonPressed(true)
+            navigator.clipboard.writeText(
+              `${shareUrl} ${gameState === state.won ? currentRow : 'X'}/6\n\n` +
+                cellStatuses
+                  .map((row) => {
+                    if (row.every((item) => item !== status.unguessed)) {
+                      return (
+                        row
+                          .map((state) => {
+                            switch (state) {
+                              case status.gray:
+                                return '⬛'
+                              case status.green:
+                                return '🟩'
+                              case status.yellow:
+                                return '🟨'
+                              default:
+                                return '  '
+                            }
+                          })
+                          .join('') + '\n'
+                      )
+                    } else {
+                      return ''
+                    }
+                  })
+                  .join('')
+            )
+          }}
+        >
+          {buttonPressed ? 'Copied!' : 'Share'}
+        </ModalButton>
       </div>
     )
   }
@@ -40,12 +95,12 @@ export const EndGameModal = ({
     >
       <div className={darkMode ? 'dark' : ''}>
         <div className="h-full flex flex-col items-center justify-center max-w-[300px] mx-auto text-primary dark:text-primary-dark">
-            <button
-              className="absolute top-4 right-4 rounded-full nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark p-1 w-6 h-6 sm:p-2 sm:h-8 sm:w-8 hover:nm-inset-background dark:hover:nm-inset-background-dark"
-              onClick={handleClose}
-            >
-              <Close />
-            </button>
+          <button
+            className="absolute top-4 right-4 rounded-full nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark p-1 w-6 h-6 sm:p-2 sm:h-8 sm:w-8 hover:nm-inset-background dark:hover:nm-inset-background-dark"
+            onClick={handleClose}
+          >
+            <Close />
+          </button>
           {gameState === state.won && (
             <>
               <img src={Success} alt="success" height="auto" width="auto" />
@@ -76,6 +131,7 @@ export const EndGameModal = ({
             </>
           )}
           <PlayAgainButton />
+          <ShareButton />
         </div>
       </div>
     </Modal>
