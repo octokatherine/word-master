@@ -1,4 +1,4 @@
-import { keyboardChars, status, numbers, operators } from '../constants'
+import { status, numbers, operators } from '../constants'
 import { useEffect, useCallback } from 'react'
 
 type Props = {
@@ -67,6 +67,8 @@ const Keyboard = ({
 
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [handleKeyDown])
+
+  const keyboardChars = nextCharIsAnOperator ? [operators] : [numbers]
 
   return (
     <div className="w-full flex flex-col items-center mb-3 select-none h-auto justify-end">
