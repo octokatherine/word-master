@@ -13,7 +13,7 @@ export const InfoModal = ({ isOpen, handleClose, darkMode, styles }) => (
         <Close />
       </button>
       <div className="h-full flex flex-col items-center justify-center max-w-[390px] mx-auto pt-9 text-primary dark:text-primary-dark">
-        <div className="flex-1 w-full sm:text-base text-sm">
+        <div className="flex-1 w-full sm:text-base text-sm border-b border-slate-400 mb-4">
           <h1 className="text-center sm:text-3xl text-2xl">How to play</h1>
           <ul className="list-disc pl-5 block sm:text-base text-sm">
             <li className="mt-6 mb-2">You have 6 guesses to guess the correct word.</li>
@@ -41,6 +41,41 @@ export const InfoModal = ({ isOpen, handleClose, darkMode, styles }) => (
           </span>
           <span className="mx-2">=</span>
           <span>Wrong letter</span>
+        </div>
+        <div className="flex flex-col items-center text-sm">
+          <div className="mb-4">
+            Buy the{' '}
+            <a
+              className="underline"
+              href="https://ko-fi.com/s/afbfa7ae55"
+              target="_blank"
+              rel="noreferrer"
+            >
+              ASL Font
+            </a>
+            👌
+          </div>
+          <div className="mb-4">
+            Forked from{' '}
+            <a
+              href="https://octokatherine.github.io/word-master/"
+              className="underline"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Word Master
+            </a>
+            , which was inspired by{' '}
+            <a
+              href="https://www.powerlanguage.co.uk/wordle/"
+              className="underline"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Wordle
+            </a>
+            💛
+          </div>
         </div>
       </div>
     </div>
