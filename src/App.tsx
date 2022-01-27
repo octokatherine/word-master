@@ -2,14 +2,14 @@ import { letters, status } from './constants'
 import { useEffect, useState } from 'react'
 
 import { EndGameModal } from './components/EndGameModal'
-import { ReactComponent as Info } from './data/Info.svg'
 import { InfoModal } from './components/InfoModal'
 import { Keyboard } from './components/Keyboard'
-import { ReactComponent as Settings } from './data/Settings.svg'
 import { SettingsModal } from './components/SettingsModal'
 import answers from './data/answers'
 import { useLocalStorage } from './hooks/useLocalStorage'
-import words from './data/words'
+import { ReactComponent as Info } from './data/Info.svg'
+import { ReactComponent as Settings } from './data/Settings.svg'
+const words = require('./data/words').default as { [key: string]: boolean }
 
 const state = {
   playing: 'playing',
@@ -28,8 +28,19 @@ const getRandomAnswer = () => {
   return answers[randomIndex].toUpperCase()
 }
 
+type State = {
+  answer: () => string
+  gameState: string
+  board: string[][]
+  cellStatuses: string[][]
+  currentRow: number
+  currentCol: number
+  letterStatuses: () => { [key: string]: string }
+  submittedInvalidWord: boolean
+}
+
 function App() {
-  const initialStates = {
+  const initialStates: State = {
     answer: () => getRandomAnswer(),
     gameState: state.playing,
     board: [
@@ -44,7 +55,7 @@ function App() {
     currentRow: 0,
     currentCol: 0,
     letterStatuses: () => {
-      const letterStatuses = {}
+      const letterStatuses: { [key: string]: string } = {}
       letters.forEach((letter) => {
         letterStatuses[letter] = status.unguessed
       })
@@ -82,12 +93,13 @@ function App() {
     if (difficultyLevel === difficulty.easy) {
       return 'Guess any 5 letters'
     } else if (difficultyLevel === difficulty.hard) {
-      return 'Guess any valid word using all the hints you\'ve been given'
+      return "Guess any valid word using all the hints you've been given"
     } else {
       return 'Guess any valid word'
     }
   }
-  const [exactGuesses, setExactGuesses] = useLocalStorage('exact-guesses', {})
+  const eg: { [key: number]: string } = {}
+  const [exactGuesses, setExactGuesses] = useLocalStorage('exact-guesses', eg)
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -97,7 +109,7 @@ function App() {
   }
 
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
-  const toggleDarkMode = () => setDarkMode((prev) => !prev)
+  const toggleDarkMode = () => setDarkMode((prev: boolean) => !prev)
 
   useEffect(() => {
     if (gameState !== state.playing) {
@@ -107,7 +119,7 @@ function App() {
     }
   }, [gameState])
 
-  const getCellStyles = (rowNumber, colNumber, letter) => {
+  const getCellStyles = (rowNumber: number, colNumber: number, letter: string) => {
     if (rowNumber === currentRow) {
       if (letter) {
         return `nm-inset-background dark:nm-inset-background-dark text-primary dark:text-primary-dark ${
@@ -129,9 +141,9 @@ function App() {
     }
   }
 
-  const addLetter = (letter) => {
+  const addLetter = (letter: string) => {
     setSubmittedInvalidWord(false)
-    setBoard((prev) => {
+    setBoard((prev: string[][]) => {
       if (currentCol > 4) {
         return prev
       }
@@ -140,14 +152,15 @@ function App() {
       return newBoard
     })
     if (currentCol < 5) {
-      setCurrentCol((prev) => prev + 1)
+      setCurrentCol((prev: number) => prev + 1)
     }
   }
 
   // returns an array with a boolean of if the word is valid and an error message if it is not
-  const isValidWord = (word) => {
+  const isValidWord = (word: string): [boolean] | [boolean, string] => {
     if (word.length < 5) return [false, `please enter a 5 letter word`]
     if (difficultyLevel === difficulty.easy) return [true]
+    debugger
     if (!words[word.toLowerCase()]) return [false, `${word} is not a valid word. Please try again.`]
     if (difficultyLevel === difficulty.normal) return [true]
     const guessedLetters = Object.entries(letterStatuses).filter(([letter, letterStatus]) =>
@@ -155,7 +168,7 @@ function App() {
     )
     const yellowsUsed = guessedLetters.every(([letter, _]) => word.includes(letter))
     const greensUsed = Object.entries(exactGuesses).every(
-      ([position, letter]) => word[position] === letter
+      ([position, letter]) => word[parseInt(position)] === letter
     )
     if (!yellowsUsed || !greensUsed)
       return [false, `In hard mode, you must use all the hints you've been given.`]
@@ -164,10 +177,11 @@ function App() {
 
   const onEnterPress = () => {
     const word = board[currentRow].join('')
-    const [valid, err] = isValidWord(word)
+    const [valid, _err] = isValidWord(word)
     if (!valid) {
+      console.log({ valid, _err })
       setSubmittedInvalidWord(true)
-      // alert(err)
+      // alert(_err)
       return
     }
 
@@ -175,7 +189,7 @@ function App() {
 
     updateCellStatuses(word, currentRow)
     updateLetterStatuses(word)
-    setCurrentRow((prev) => prev + 1)
+    setCurrentRow((prev: number) => prev + 1)
     setCurrentCol(0)
   }
 
@@ -183,22 +197,22 @@ function App() {
     setSubmittedInvalidWord(false)
     if (currentCol === 0) return
 
-    setBoard((prev) => {
+    setBoard((prev: any) => {
       const newBoard = [...prev]
       newBoard[currentRow][currentCol - 1] = ''
       return newBoard
     })
 
-    setCurrentCol((prev) => prev - 1)
+    setCurrentCol((prev: number) => prev - 1)
   }
 
-  const updateCellStatuses = (word, rowNumber) => {
-    const fixedLetters = {}
-    setCellStatuses((prev) => {
+  const updateCellStatuses = (word: string, rowNumber: number) => {
+    const fixedLetters: { [key: number]: string } = {}
+    setCellStatuses((prev: any) => {
       const newCellStatuses = [...prev]
       newCellStatuses[rowNumber] = [...prev[rowNumber]]
       const wordLength = word.length
-      const answerLetters = answer.split('')
+      const answerLetters: string[] = answer.split('')
 
       // set all to gray
       for (let i = 0; i < wordLength; i++) {
@@ -224,11 +238,11 @@ function App() {
 
       return newCellStatuses
     })
-    setExactGuesses(prev => ({...prev, ...fixedLetters}))
+    setExactGuesses((prev: { [key: number]: string }) => ({ ...prev, ...fixedLetters }))
   }
 
-  const isRowAllGreen = (row) => {
-    return row.every((cell) => cell === status.green)
+  const isRowAllGreen = (row: string[]) => {
+    return row.every((cell: string) => cell === status.green)
   }
 
   // every time cellStatuses updates, check if the game is won or lost
@@ -244,7 +258,7 @@ function App() {
 
       var streak = currentStreak + 1
       setCurrentStreak(streak)
-      setLongestStreak((prev) => (streak > prev ? streak : prev))
+      setLongestStreak((prev: number) => (streak > prev ? streak : prev))
     } else if (gameState === state.playing && currentRow === 6) {
       setGameState(state.lost)
       setCurrentStreak(0)
@@ -259,8 +273,8 @@ function App() {
     setLongestStreak,
   ])
 
-  const updateLetterStatuses = (word) => {
-    setLetterStatuses((prev) => {
+  const updateLetterStatuses = (word: string) => {
+    setLetterStatuses((prev: { [key: string]: string }) => {
       const newLetterStatuses = { ...prev }
       const wordLength = word.length
       for (let i = 0; i < wordLength; i++) {
@@ -349,8 +363,8 @@ function App() {
         <div className="flex items-center flex-col py-3 flex-1 justify-center relative">
           <div className="relative">
             <div className="grid grid-cols-5 grid-flow-row gap-4">
-              {board.map((row, rowNumber) =>
-                row.map((letter, colNumber) => (
+              {board.map((row: string[], rowNumber: number) =>
+                row.map((letter: string, colNumber: number) => (
                   <span
                     key={colNumber}
                     className={`${getCellStyles(
