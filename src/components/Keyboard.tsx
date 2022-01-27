@@ -69,7 +69,7 @@ const Keyboard = ({
   }, [handleKeyDown])
 
   const keyboardChars = nextCharIsAnOperator
-    ? [operators.slice(0, 2), operators.slice(2, 4)]
+    ? [operators.slice(0, 3), operators.slice(3, 6)]
     : [numbers.slice(0, 6), numbers.slice(6, 10)]
 
   return (

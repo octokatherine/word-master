@@ -75,6 +75,10 @@ function validEquation(row: Row): boolean {
     return equation.operandA * equation.operandB === equation.result
   } else if (equation.operator === '/') {
     return equation.operandA / equation.operandB === equation.result
+  } else if (equation.operator === '^') {
+    return Math.pow(equation.operandA, equation.operandB) === equation.result
+  } else if (equation.operator === '%') {
+    return equation.operandA % equation.operandB === equation.result
   } else {
     throw new Error('Invalid operator ' + equation.operator)
   }
