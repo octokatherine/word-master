@@ -37,7 +37,7 @@ const getDailyAnswer = () => {
   const epochMs = 1641013200000
   const now = Date.now()
   const msInDay = 86400000
-  const index = Math.floor((now - epochMs) / msInDay)
+  const index = Math.floor((now - epochMs) / msInDay) % answers.length
   return answers[index].toUpperCase()
 }
 
