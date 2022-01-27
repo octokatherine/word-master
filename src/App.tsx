@@ -75,8 +75,7 @@ function rowCharacters(row: Row): string[] {
 }
 
 function isCellCorrect(row: Row, i: number, answer: Answer): boolean {
-  //TODO
-  return false
+  return rowCharacter(row, i) === rowCharacter(answer, i)
 }
 
 function hasNumber(row: Row, num?: number): boolean {
