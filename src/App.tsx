@@ -23,13 +23,26 @@ export const difficulty = {
 }
 
 function getRandomAnswer(): Answer {
-  // TODO make this actually random
-  return {
-    operandA: 2,
-    operator: '+',
-    operandB: 5,
-    result: 7,
+  while (true) {
+    const potentialAnswer: Answer = {
+      operandA: getRandomDigit(),
+      operator: getRandomOperator(),
+      operandB: getRandomDigit(),
+      result: getRandomDigit(),
+    }
+    if (validEquation(potentialAnswer)) {
+      return potentialAnswer
+    }
   }
+}
+
+const getRandomDigit = (): number => {
+  return Math.floor(Math.random() * 10)
+}
+
+const getRandomOperator = (): string => {
+  const randomOperatorIndex = Math.floor(Math.random() * operators.length)
+  return operators[randomOperatorIndex]
 }
 
 type CellStatus = string
