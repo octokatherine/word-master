@@ -2,6 +2,7 @@ import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 import Success from '../data/Success.png'
 import Fail from '../data/Cross.png'
+import { Answer, rowCharacters } from '../coreTypes'
 
 Modal.setAppElement('#root')
 
@@ -10,12 +11,12 @@ type Props = {
   handleClose: () => void
   styles: any
   darkMode: boolean
-  gameState: any
-  state: any
-  currentStreak: any
-  longestStreak: any
-  answer: any
-  playAgain: any
+  gameState: string
+  state: { [key: string]: string }
+  currentStreak: number
+  longestStreak: number
+  answer: Answer
+  playAgain: () => void
 }
 
 export const EndGameModal = ({
@@ -77,7 +78,7 @@ export const EndGameModal = ({
               <div className="text-primary dark:text-primary-dark text-4xl text-center">
                 <p>Oops!</p>
                 <p className="mt-3 text-2xl">
-                  The word was <strong>{answer}</strong>
+                  The equation was <strong>{rowCharacters(answer)}</strong>
                 </p>
                 <p className="mt-6 text-base">
                   Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}

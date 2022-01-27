@@ -1,6 +1,7 @@
 import { numbers, operators, status } from './constants'
 import { useEffect, useState } from 'react'
 
+import { Answer, Equation, Row, rowCharacter, rowCharacters } from './coreTypes'
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
 import { Keyboard } from './components/Keyboard'
@@ -31,15 +32,6 @@ function getRandomAnswer(): Answer {
   }
 }
 
-interface Row {
-  operandA?: number
-  operator?: string
-  operandB?: number
-  result?: number
-}
-type Equation = Required<Row>
-type Answer = Required<Row>
-
 type CellStatus = string
 type State = {
   answer: () => Answer
@@ -50,29 +42,6 @@ type State = {
   currentCol: number
   charStatuses: () => { [key: string]: string }
   submittedInvalidWord: boolean
-}
-
-function rowCharacter(row: Row, col: number): string {
-  switch (col) {
-    case 0:
-      return row.operandA?.toString() || ''
-    case 1:
-      return row.operator || ''
-    case 2:
-      return row.operandB?.toString() || ''
-    case 3:
-      return '='
-    case 4:
-      return row.result?.toString() || ''
-  }
-
-  throw new Error('Something bad happened')
-}
-
-function rowCharacters(row: Row): string[] {
-  return [0, 1, 2, 3, 4].map((col) => {
-    return rowCharacter(row, col)
-  })
 }
 
 function isCellCorrect(row: Row, i: number, answer: Answer): boolean {
