@@ -1,7 +1,15 @@
 import { numbers, operators, status } from './constants'
 import { useEffect, useState } from 'react'
 
-import { Answer, Equation, PlayState, Row, rowCharacter, rowCharacters } from './coreTypes'
+import {
+  Answer,
+  Difficulty,
+  Equation,
+  PlayState,
+  Row,
+  rowCharacter,
+  rowCharacters,
+} from './coreTypes'
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
 import { Keyboard } from './components/Keyboard'
@@ -9,12 +17,6 @@ import { SettingsModal } from './components/SettingsModal'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { ReactComponent as Info } from './data/Info.svg'
 import { ReactComponent as Settings } from './data/Settings.svg'
-
-export const difficulty = {
-  easy: 'easy',
-  normal: 'normal',
-  hard: 'hard',
-}
 
 function getRandomAnswer(): Answer {
   while (true) {
@@ -203,11 +205,11 @@ function App() {
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
-  const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', difficulty.normal)
+  const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', Difficulty.Normal)
   const getDifficultyLevelInstructions = () => {
-    if (difficultyLevel === difficulty.easy) {
+    if (difficultyLevel === Difficulty.Easy) {
       return 'Guess any 5 letters'
-    } else if (difficultyLevel === difficulty.hard) {
+    } else if (difficultyLevel === Difficulty.Hard) {
       return "Guess any valid word using all the hints you've been given"
     } else {
       return 'Guess any valid word'
@@ -277,10 +279,10 @@ function App() {
   // returns an array with a boolean of if the word is valid and an error message if it is not
   const isValidRow = (row: Row): [boolean] | [boolean, string] => {
     // if (word.length < 5) return [false, `please enter a 5 letter word`]
-    if (difficultyLevel === difficulty.easy) return [true]
+    if (difficultyLevel === Difficulty.Easy) return [true]
     if (!validEquation(row))
       return [false, `${rowCharacters(row)} is not a valid equation. Please try again.`]
-    if (difficultyLevel === difficulty.normal) return [true]
+    if (difficultyLevel === Difficulty.Normal) return [true]
     const guessedLetters = Object.entries(charStatuses).filter(([letter, charStatus]) =>
       [status.yellow, status.green].includes(charStatus)
     )

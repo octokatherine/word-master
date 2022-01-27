@@ -11,6 +11,11 @@ export enum PlayState {
   Won = 'won',
   Lost = 'lost',
 }
+export enum Difficulty {
+  Easy = 'easy',
+  Normal = 'normal',
+  Hard = 'hard',
+}
 
 export function rowCharacter(row: Row, col: number): string {
   switch (col) {
