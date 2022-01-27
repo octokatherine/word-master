@@ -46,7 +46,7 @@ function App() {
       <Route path="/">
         <Route index element={<DailyPuzzle />} />
         <Route
-          path=":answerXor"
+          path=":gameCode"
           element={
             <Puzzle>
               <Board />
@@ -80,7 +80,7 @@ type State = {
 function Puzzle({ children }: { children: JSX.Element }) {
   const params = useParams()
   const location = useLocation()
-  const decipheredAnswer = Encrypt(params.answerXor!, cipherKey, true).toLowerCase()
+  const decipheredAnswer = Encrypt(params.gameCode!, cipherKey, true).toLowerCase()
 
   if (!answers.includes(decipheredAnswer)) {
     return <Navigate to="/404" state={{ from: location }} replace />
@@ -92,8 +92,8 @@ function Board() {
   const params = useParams()
   const navigate = useNavigate()
 
-  const decipheredAnswer = Encrypt(params.answerXor!, cipherKey, true).toLowerCase()
-  const shareUrl = `${window.location.origin}/#/${params.answerXor}`
+  const decipheredAnswer = Encrypt(params.gameCode!, cipherKey, true).toLowerCase()
+  const shareUrl = `${window.location.origin}/#/${params.gameCode}`
   const initialStates: State = {
     answer: decipheredAnswer.toUpperCase(),
     gameState: state.playing,
