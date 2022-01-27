@@ -61,6 +61,20 @@ export const InfoModal = ({ isOpen, handleClose, darkMode, styles }: Props) => (
             <Github />
           </a>
         </div>
+
+        <div className="flex justify-center sm:text-base text-sm">
+          <span>
+            Favicon is from the
+            <a
+              className="ml-[6px] rounded-full h-5 w-5 sm:h-6 sm:w-6"
+              href="https://twemoji.twitter.com"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Twemoji project
+            </a>
+          </span>
+        </div>
       </div>
     </div>
   </Modal>
