@@ -55,15 +55,15 @@ type State = {
 function rowCharacter(row: Row, col: number): string {
   switch (col) {
     case 0:
-      return row.operandA ? row.operandA.toString() : ''
+      return row.operandA?.toString() || ''
     case 1:
       return row.operator || ''
     case 2:
-      return row.operandB ? row.operandB.toString() : ''
+      return row.operandB?.toString() || ''
     case 3:
       return '='
     case 4:
-      return row.result ? row.result.toString() : ''
+      return row.result?.toString() || ''
   }
 
   throw new Error('Something bad happened')

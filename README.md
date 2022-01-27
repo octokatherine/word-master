@@ -4,7 +4,7 @@
 
 It's kind of like [Wordle](https://www.powerlanguage.co.uk/wordle/), but for numbers.
 
-Thanks to @octokatherine for [word-master](https://github.com/octokatherine/word-master)!
+Thanks to @octokatherine for [word-master](https://github.com/octokatherine/word-master), which Nerdle was forked from!
 
 ## Rules
 
