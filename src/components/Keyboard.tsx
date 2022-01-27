@@ -68,13 +68,15 @@ const Keyboard = ({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [handleKeyDown])
 
-  const keyboardChars = nextCharIsAnOperator ? [operators] : [numbers]
+  const keyboardChars = nextCharIsAnOperator
+    ? [operators.slice(0, 2), operators.slice(2, 4)]
+    : [numbers.slice(0, 6), numbers.slice(6, 10)]
 
   return (
     <div className="w-full flex flex-col items-center mb-3 select-none h-auto justify-end">
       {keyboardChars.map((row, idx) => (
         <div key={idx} className="w-full flex justify-center my-[5px]">
-          {idx === 2 && (
+          {idx === 1 && (
             <button
               onClick={onEnterPress}
               className="h-10 xxs:h-14 w-12 px-1 text-xs font-medium mx-[3.5px] rounded nm-flat-background-sm dark:nm-flat-background-dark-sm text-primary dark:text-primary-dark"
@@ -97,7 +99,7 @@ const Keyboard = ({
               </div>
             </button>
           ))}
-          {idx === 2 && (
+          {idx === 1 && (
             <button
               onClick={onDeletePress}
               className="h-10 xxs:h-14 w-12 flex items-center justify-center nm-flat-background-sm dark:nm-flat-background-dark-sm text-primary dark:text-primary-dark mx-[3.5px] text-sm  rounded"
