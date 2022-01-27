@@ -44,7 +44,6 @@ export const InfoModal = ({ isOpen, handleClose, darkMode, styles }) => (
         </div>
         <div className="flex flex-col items-center text-sm">
           <div className="mb-4">
-            Buy the{' '}
             <a
               className="underline"
               href="https://ko-fi.com/s/afbfa7ae55"
@@ -52,7 +51,16 @@ export const InfoModal = ({ isOpen, handleClose, darkMode, styles }) => (
               rel="noreferrer"
             >
               ASL Font
-            </a>
+            </a>{' '}
+            by{' '}
+            <a
+              className="underline"
+              href="https://daxterslater.com/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Daxter Slater
+            </a>{' '}
             👌
           </div>
           <div className="mb-4">
