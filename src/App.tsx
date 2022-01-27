@@ -1,4 +1,4 @@
-import { numbers, status } from './constants'
+import { numbers, operators, status } from './constants'
 import { useEffect, useState } from 'react'
 
 import { EndGameModal } from './components/EndGameModal'
@@ -24,10 +24,10 @@ export const difficulty = {
 function getRandomAnswer(): Answer {
   // TODO make this actually random
   return {
-    operandA: 1,
+    operandA: 2,
     operator: '+',
-    operandB: 2,
-    result: 3,
+    operandB: 5,
+    result: 7,
   }
 }
 
@@ -37,6 +37,7 @@ interface Row {
   operandB?: number
   result?: number
 }
+type Equation = Required<Row>
 type Answer = Required<Row>
 
 type CellStatus = string
@@ -97,39 +98,40 @@ function validEquation(row: Row): boolean {
   }
 }
 
-function calculateCharStatuses(row: Row, answer: Answer): CellStatus[] {
-  const result = []
-  if (row.operandA === answer.operandA) {
-    result.push(status.green)
-  } else if (hasNumber(answer, row.operandA)) {
-    result.push(status.yellow)
+function calculateCharStatuses(
+  prev: { [key: string]: string },
+  equation: Equation,
+  answer: Answer
+): { [key: string]: string } {
+  const result = prev
+  if (equation.operandA === answer.operandA) {
+    result[answer.operandA] = status.green
+  } else if (hasNumber(answer, equation.operandA)) {
+    result[equation.operandA] = status.yellow
   } else {
-    result.push(status.gray)
+    result[equation.operandA] = status.gray
   }
 
-  if (row.operator === answer.operator) {
-    result.push(status.green)
+  if (equation.operator === answer.operator) {
+    result[equation.operator] = status.green
   } else {
-    result.push(status.gray)
+    result[equation.operator] = status.gray
   }
 
-  if (row.operandB === answer.operandB) {
-    result.push(status.green)
-  } else if (hasNumber(answer, row.operandB)) {
-    result.push(status.yellow)
+  if (equation.operandB === answer.operandB) {
+    result[equation.operandB] = status.green
+  } else if (hasNumber(answer, equation.operandB)) {
+    result[equation.operandB] = status.yellow
   } else {
-    result.push(status.gray)
+    result[equation.operandB] = status.gray
   }
 
-  // Equals sign
-  result.push(status.green)
-
-  if (row.result === answer.result) {
-    result.push(status.green)
-  } else if (hasNumber(answer, row.result)) {
-    result.push(status.yellow)
+  if (equation.result === answer.result) {
+    result[equation.result] = status.green
+  } else if (hasNumber(answer, equation.result)) {
+    result[equation.result] = status.yellow
   } else {
-    result.push(status.gray)
+    result[equation.result] = status.gray
   }
 
   return result
@@ -179,12 +181,15 @@ function App() {
     cellStatuses: Array(6).fill(Array(5).fill(status.unguessed)),
     currentRow: 0,
     currentCol: 0,
-    charStatuses: () => {
-      const numberStatuses: { [key: string]: string } = {}
+    charStatuses: (): { [key: string]: string } => {
+      const statuses: { [key: string]: string } = {}
       numbers.forEach((char) => {
-        numberStatuses[char] = status.unguessed
+        statuses[char] = status.unguessed
       })
-      return numberStatuses
+      operators.forEach((char) => {
+        statuses[char] = status.unguessed
+      })
+      return statuses
     },
     submittedInvalidWord: false,
   }
@@ -409,8 +414,9 @@ function App() {
   ])
 
   const updateCharStatuses = (row: Row) => {
-    setCharStatuses(() => {
-      return calculateCharStatuses(row, answer)
+    setCharStatuses((prev: { [key: string]: string }) => {
+      const equation = row as Equation
+      return calculateCharStatuses(prev, equation, answer)
     })
   }
 
