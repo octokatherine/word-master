@@ -11,9 +11,9 @@ type Props = {
   handleClose: () => void
   styles: any
   darkMode: boolean
-  toggleDarkMode: () => void
+  toggleDarkMode: (dark: boolean) => void
   difficultyLevel: string
-  setDifficultyLevel: any
+  setDifficultyLevel: (d: Difficulty) => void
   levelInstructions: string
 }
 
