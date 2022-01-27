@@ -135,6 +135,23 @@ function calculateCharStatuses(row: Row, answer: Answer): CellStatus[] {
   return result
 }
 
+function backspace(row: Row, currentCol: number) {
+  switch (currentCol) {
+    case 2:
+      row.operandA = undefined
+      break
+    case 3:
+      row.operator = undefined
+      break
+    case 4:
+      row.operandB = undefined
+      break
+    case 5:
+      row.result = undefined
+      break
+  }
+}
+
 function addCharacter(row: Row, currentCol: number, character: string) {
   switch (currentCol) {
     case 0:
@@ -308,13 +325,17 @@ function App() {
     setSubmittedInvalidWord(false)
     if (currentCol === 0) return
 
-    setBoard((prev: any) => {
+    setBoard((prev: Row[]) => {
       const newBoard = [...prev]
-      newBoard[currentRow][currentCol - 1] = ''
+      backspace(newBoard[currentRow], currentCol)
       return newBoard
     })
 
-    setCurrentCol((prev: number) => prev - 1)
+    setCurrentCol((prev: number) => {
+      // Equals sign is fixed - skip over it
+      const delta = currentCol === 2 ? 2 : 1
+      return prev - delta
+    })
   }
 
   const updateCellStatuses = (row: Row, rowNumber: number) => {
