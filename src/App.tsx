@@ -103,6 +103,10 @@ function calculateCharStatuses(
   equation: Equation,
   answer: Answer
 ): { [key: string]: string } {
+  // Yellow if the char has been guessed in a spot where it is not,
+  //     AND there is a matching unguessed char in the answer
+  // Green if all instances of this character are correct
+
   const result = prev
   if (equation.operandA === answer.operandA) {
     result[answer.operandA] = status.green
@@ -121,6 +125,7 @@ function calculateCharStatuses(
   if (equation.operandB === answer.operandB) {
     result[equation.operandB] = status.green
   } else if (hasNumber(answer, equation.operandB)) {
+    // TODO: only mark as yellow if there's a remaining unguessed number
     result[equation.operandB] = status.yellow
   } else {
     result[equation.operandB] = status.gray
