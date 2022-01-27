@@ -246,7 +246,9 @@ function App() {
       return newBoard
     })
     if (currentCol < 5) {
-      setCurrentCol((prev: number) => prev + 1)
+      // Equals sign is fixed - skip over it
+      const delta = currentCol === 2 ? 2 : 1
+      setCurrentCol((prev: number) => prev + delta)
     }
   }
 
