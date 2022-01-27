@@ -421,6 +421,8 @@ function App() {
     },
   }
 
+  const nextCharIsAnOperator = currentCol === 1
+
   return (
     <div className={darkMode ? 'dark' : ''}>
       <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
@@ -514,6 +516,7 @@ function App() {
             onEnterPress={onEnterPress}
             onDeletePress={onDeletePress}
             gameDisabled={gameState !== state.playing}
+            nextCharIsAnOperator={nextCharIsAnOperator}
           />
         </div>
       </div>

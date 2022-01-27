@@ -7,6 +7,7 @@ type Props = {
   onDeletePress: () => void
   onEnterPress: () => void
   addLetter: (s: string) => void
+  nextCharIsAnOperator: boolean
 }
 
 const Keyboard = ({
@@ -15,6 +16,7 @@ const Keyboard = ({
   onEnterPress,
   onDeletePress,
   gameDisabled,
+  nextCharIsAnOperator,
 }: Props) => {
   const getKeyStyle = (char: string) => {
     switch (charStatuses[char]) {
@@ -44,7 +46,11 @@ const Keyboard = ({
 
       const key = event.key.toUpperCase()
 
-      if (numbers.includes(key) || operators.includes(key)) {
+      if (nextCharIsAnOperator) {
+        if (operators.includes(key)) {
+          addLetter(key)
+        }
+      } else if (numbers.includes(key)) {
         addLetter(key)
       } else if (key === 'ENTER') {
         onEnterPress()
