@@ -1,15 +1,13 @@
-import { letters, status } from './constants'
+import { numbers, status } from './constants'
 import { useEffect, useState } from 'react'
 
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
 import { Keyboard } from './components/Keyboard'
 import { SettingsModal } from './components/SettingsModal'
-import answers from './data/answers'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { ReactComponent as Info } from './data/Info.svg'
 import { ReactComponent as Settings } from './data/Settings.svg'
-const words = require('./data/words').default as { [key: string]: boolean }
 
 const state = {
   playing: 'playing',
@@ -23,43 +21,139 @@ export const difficulty = {
   hard: 'hard',
 }
 
-const getRandomAnswer = () => {
-  const randomIndex = Math.floor(Math.random() * answers.length)
-  return answers[randomIndex].toUpperCase()
+function getRandomAnswer(): Answer {
+  // TODO make this actually random
+  return {
+    operandA: 1,
+    operator: '+',
+    operandB: 2,
+    result: 3,
+  }
 }
 
+interface Row {
+  operandA?: number
+  operator?: string
+  operandB?: number
+  result?: number
+}
+type Answer = Required<Row>
+
+type CellStatus = string
 type State = {
-  answer: () => string
+  answer: () => Answer
   gameState: string
-  board: string[][]
-  cellStatuses: string[][]
+  board: Row[]
+  cellStatuses: CellStatus[][]
   currentRow: number
   currentCol: number
-  letterStatuses: () => { [key: string]: string }
+  charStatuses: () => { [key: string]: string }
   submittedInvalidWord: boolean
+}
+
+function rowCharacter(row: Row, col: number): string {
+  switch (col) {
+    case 0:
+      return row.operandA ? row.operandA.toString() : ''
+    case 1:
+      return row.operator || ''
+    case 2:
+      return row.operandB ? row.operandB.toString() : ''
+    case 3:
+      return '='
+    case 4:
+      return row.result ? row.result.toString() : ''
+  }
+
+  throw new Error('Something bad happened')
+}
+
+function rowCharacters(row: Row): string[] {
+  return [0, 1, 2, 3, 4].map((col) => {
+    return rowCharacter(row, col)
+  })
+}
+
+function isCellCorrect(row: Row, i: number, answer: Answer): boolean {
+  //TODO
+  return false
+}
+
+function hasNumber(row: Row, num?: number): boolean {
+  return row.operandA === num || row.operandB === num || row.result === num
+}
+
+function calculateCharStatuses(row: Row, answer: Answer): CellStatus[] {
+  const result = []
+  if (row.operandA === answer.operandA) {
+    result.push(status.green)
+  } else if (hasNumber(answer, row.operandA)) {
+    result.push(status.yellow)
+  } else {
+    result.push(status.gray)
+  }
+
+  if (row.operator === answer.operator) {
+    result.push(status.green)
+  } else {
+    result.push(status.gray)
+  }
+
+  if (row.operandB === answer.operandB) {
+    result.push(status.green)
+  } else if (hasNumber(answer, row.operandB)) {
+    result.push(status.yellow)
+  } else {
+    result.push(status.gray)
+  }
+
+  // Equals sign
+  result.push(status.green)
+
+  if (row.result === answer.result) {
+    result.push(status.green)
+  } else if (hasNumber(answer, row.result)) {
+    result.push(status.yellow)
+  } else {
+    result.push(status.gray)
+  }
+
+  return result
+}
+
+function addCharacter(row: Row, currentCol: number, character: string) {
+  switch (currentCol) {
+    case 0:
+      row.operandA = parseInt(character)
+      break
+    case 1:
+      row.operator = character
+      break
+    case 2:
+      row.operandB = parseInt(character)
+      break
+    case 3:
+      break
+    case 4:
+      row.result = parseInt(character)
+      break
+  }
 }
 
 function App() {
   const initialStates: State = {
     answer: () => getRandomAnswer(),
     gameState: state.playing,
-    board: [
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-    ],
+    board: [{}, {}, {}, {}, {}, {}],
     cellStatuses: Array(6).fill(Array(5).fill(status.unguessed)),
     currentRow: 0,
     currentCol: 0,
-    letterStatuses: () => {
-      const letterStatuses: { [key: string]: string } = {}
-      letters.forEach((letter) => {
-        letterStatuses[letter] = status.unguessed
+    charStatuses: () => {
+      const numberStatuses: { [key: string]: string } = {}
+      numbers.forEach((char) => {
+        numberStatuses[char] = status.unguessed
       })
-      return letterStatuses
+      return numberStatuses
     },
     submittedInvalidWord: false,
   }
@@ -73,9 +167,9 @@ function App() {
   )
   const [currentRow, setCurrentRow] = useLocalStorage('stateCurrentRow', initialStates.currentRow)
   const [currentCol, setCurrentCol] = useLocalStorage('stateCurrentCol', initialStates.currentCol)
-  const [letterStatuses, setLetterStatuses] = useLocalStorage(
-    'stateLetterStatuses',
-    initialStates.letterStatuses()
+  const [charStatuses, setCharStatuses] = useLocalStorage(
+    'stateCharStatuses',
+    initialStates.charStatuses()
   )
   const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage(
     'stateSubmittedInvalidWord',
@@ -141,14 +235,16 @@ function App() {
     }
   }
 
-  const addLetter = (letter: string) => {
+  const addLetter = (character: string) => {
     setSubmittedInvalidWord(false)
-    setBoard((prev: string[][]) => {
+    setBoard((prev: Row[]) => {
       if (currentCol > 4) {
         return prev
       }
       const newBoard = [...prev]
-      newBoard[currentRow][currentCol] = letter
+      const row = newBoard[currentRow]
+      addCharacter(row, currentCol, character)
+      debugger
       return newBoard
     })
     if (currentCol < 5) {
@@ -157,27 +253,26 @@ function App() {
   }
 
   // returns an array with a boolean of if the word is valid and an error message if it is not
-  const isValidWord = (word: string): [boolean] | [boolean, string] => {
-    if (word.length < 5) return [false, `please enter a 5 letter word`]
+  const isValidRow = (row: Row): [boolean] | [boolean, string] => {
+    // if (word.length < 5) return [false, `please enter a 5 letter word`]
     if (difficultyLevel === difficulty.easy) return [true]
-    debugger
-    if (!words[word.toLowerCase()]) return [false, `${word} is not a valid word. Please try again.`]
+    // if (!words[word.toLowerCase()]) return [false, `${word} is not a valid word. Please try again.`]
     if (difficultyLevel === difficulty.normal) return [true]
-    const guessedLetters = Object.entries(letterStatuses).filter(([letter, letterStatus]) =>
-      [status.yellow, status.green].includes(letterStatus)
+    const guessedLetters = Object.entries(charStatuses).filter(([letter, charStatus]) =>
+      [status.yellow, status.green].includes(charStatus)
     )
-    const yellowsUsed = guessedLetters.every(([letter, _]) => word.includes(letter))
-    const greensUsed = Object.entries(exactGuesses).every(
-      ([position, letter]) => word[parseInt(position)] === letter
-    )
-    if (!yellowsUsed || !greensUsed)
-      return [false, `In hard mode, you must use all the hints you've been given.`]
+    // const yellowsUsed = guessedLetters.every(([letter, _]) => word.includes(letter))
+    // const greensUsed = Object.entries(exactGuesses).every(
+    //   ([position, letter]) => word[parseInt(position)] === letter
+    // )
+    // if (!yellowsUsed || !greensUsed)
+    //   return [false, `In hard mode, you must use all the hints you've been given.`]
     return [true]
   }
 
   const onEnterPress = () => {
-    const word = board[currentRow].join('')
-    const [valid, _err] = isValidWord(word)
+    const row = board[currentRow]
+    const [valid, _err] = isValidRow(row)
     if (!valid) {
       console.log({ valid, _err })
       setSubmittedInvalidWord(true)
@@ -187,8 +282,8 @@ function App() {
 
     if (currentRow === 6) return
 
-    updateCellStatuses(word, currentRow)
-    updateLetterStatuses(word)
+    updateCellStatuses(row, currentRow)
+    updateCharStatuses(row)
     setCurrentRow((prev: number) => prev + 1)
     setCurrentCol(0)
   }
@@ -206,33 +301,36 @@ function App() {
     setCurrentCol((prev: number) => prev - 1)
   }
 
-  const updateCellStatuses = (word: string, rowNumber: number) => {
+  const updateCellStatuses = (row: Row, rowNumber: number) => {
     const fixedLetters: { [key: number]: string } = {}
-    setCellStatuses((prev: any) => {
+    setCellStatuses((prev: string[][]) => {
       const newCellStatuses = [...prev]
       newCellStatuses[rowNumber] = [...prev[rowNumber]]
-      const wordLength = word.length
-      const answerLetters: string[] = answer.split('')
+      const rowLength = rowCharacters(row).length
+      const answerChars: string[] = rowCharacters(answer)
 
       // set all to gray
-      for (let i = 0; i < wordLength; i++) {
+      for (let i = 0; i < rowLength; i++) {
         newCellStatuses[rowNumber][i] = status.gray
       }
 
       // check greens
-      for (let i = wordLength - 1; i >= 0; i--) {
-        if (word[i] === answer[i]) {
+      for (let i = rowLength - 1; i >= 0; i--) {
+        if (isCellCorrect(row, i, answer)) {
           newCellStatuses[rowNumber][i] = status.green
-          answerLetters.splice(i, 1)
-          fixedLetters[i] = answer[i]
+          answerChars.splice(i, 1)
+          fixedLetters[i] = rowCharacter(answer, i)
         }
       }
 
       // check yellows
-      for (let i = 0; i < wordLength; i++) {
-        if (answerLetters.includes(word[i]) && newCellStatuses[rowNumber][i] !== status.green) {
+      for (let i = 0; i < rowLength; i++) {
+        if (
+          answerChars.includes(rowCharacter(row, i)) &&
+          newCellStatuses[rowNumber][i] !== status.green
+        ) {
           newCellStatuses[rowNumber][i] = status.yellow
-          answerLetters.splice(answerLetters.indexOf(word[i]), 1)
+          answerChars.splice(answerChars.indexOf(rowCharacter(row, i)), 1)
         }
       }
 
@@ -273,22 +371,9 @@ function App() {
     setLongestStreak,
   ])
 
-  const updateLetterStatuses = (word: string) => {
-    setLetterStatuses((prev: { [key: string]: string }) => {
-      const newLetterStatuses = { ...prev }
-      const wordLength = word.length
-      for (let i = 0; i < wordLength; i++) {
-        if (newLetterStatuses[word[i]] === status.green) continue
-
-        if (word[i] === answer[i]) {
-          newLetterStatuses[word[i]] = status.green
-        } else if (answer.includes(word[i])) {
-          newLetterStatuses[word[i]] = status.yellow
-        } else {
-          newLetterStatuses[word[i]] = status.gray
-        }
-      }
-      return newLetterStatuses
+  const updateCharStatuses = (row: Row) => {
+    setCharStatuses(() => {
+      return calculateCharStatuses(row, answer)
     })
   }
 
@@ -299,7 +384,7 @@ function App() {
     setCellStatuses(initialStates.cellStatuses)
     setCurrentRow(initialStates.currentRow)
     setCurrentCol(initialStates.currentCol)
-    setLetterStatuses(initialStates.letterStatuses())
+    setCharStatuses(initialStates.charStatuses())
     setSubmittedInvalidWord(initialStates.submittedInvalidWord)
     setExactGuesses({})
 
@@ -363,17 +448,17 @@ function App() {
         <div className="flex items-center flex-col py-3 flex-1 justify-center relative">
           <div className="relative">
             <div className="grid grid-cols-5 grid-flow-row gap-4">
-              {board.map((row: string[], rowNumber: number) =>
-                row.map((letter: string, colNumber: number) => (
+              {board.map((row, rowNumber) =>
+                rowCharacters(row).map((value: string, colNumber: number) => (
                   <span
                     key={colNumber}
                     className={`${getCellStyles(
                       rowNumber,
                       colNumber,
-                      letter
+                      value
                     )} inline-flex items-center font-medium justify-center text-lg w-[13vw] h-[13vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
                   >
-                    {letter}
+                    {value}
                   </span>
                 ))
               )}
@@ -426,7 +511,7 @@ function App() {
         />
         <div className={`h-auto relative ${gameState === state.playing ? '' : 'invisible'}`}>
           <Keyboard
-            letterStatuses={letterStatuses}
+            charStatuses={charStatuses}
             addLetter={addLetter}
             onEnterPress={onEnterPress}
             onDeletePress={onDeletePress}

@@ -1,23 +1,23 @@
-import { keyboardLetters, status, letters } from '../constants'
+import { keyboardChars, status, numbers, operators } from '../constants'
 import { useEffect, useCallback } from 'react'
 
 type Props = {
-  letterStatuses: { [key: string]: string }
+  charStatuses: { [key: string]: string }
   gameDisabled: boolean
   onDeletePress: () => void
   onEnterPress: () => void
-  addLetter: any
+  addLetter: (s: string) => void
 }
 
 const Keyboard = ({
-  letterStatuses,
+  charStatuses,
   addLetter,
   onEnterPress,
   onDeletePress,
   gameDisabled,
 }: Props) => {
-  const getKeyStyle = (letter: string) => {
-    switch (letterStatuses[letter]) {
+  const getKeyStyle = (char: string) => {
+    switch (charStatuses[char]) {
       case status.green:
         return 'bg-n-green text-gray-50'
       case status.yellow:
@@ -39,17 +39,18 @@ const Keyboard = ({
   }
 
   const handleKeyDown = useCallback(
-    (event) => {
+    (event: KeyboardEvent) => {
       if (gameDisabled) return
 
-      const letter = event.key.toUpperCase()
+      const key = event.key.toUpperCase()
 
-      if (letters.includes(letter)) {
-        addLetter(letter)
-      } else if (letter === 'ENTER') {
+      debugger
+      if (numbers.includes(key) || operators.includes(key)) {
+        addLetter(key)
+      } else if (key === 'ENTER') {
         onEnterPress()
         event.preventDefault()
-      } else if (letter === 'BACKSPACE') {
+      } else if (key === 'BACKSPACE') {
         onDeletePress()
       }
     },
@@ -64,7 +65,7 @@ const Keyboard = ({
 
   return (
     <div className="w-full flex flex-col items-center mb-3 select-none h-auto justify-end">
-      {keyboardLetters.map((row, idx) => (
+      {keyboardChars.map((row, idx) => (
         <div key={idx} className="w-full flex justify-center my-[5px]">
           {idx === 2 && (
             <button
