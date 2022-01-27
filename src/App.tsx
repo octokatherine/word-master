@@ -82,6 +82,21 @@ function hasNumber(row: Row, num?: number): boolean {
   return row.operandA === num || row.operandB === num || row.result === num
 }
 
+function validEquation(row: Row): boolean {
+  const equation = row as Required<Row>
+  if (equation.operator === '+') {
+    return equation.operandA + equation.operandB === equation.result
+  } else if (equation.operator === '-') {
+    return equation.operandA - equation.operandB === equation.result
+  } else if (equation.operator === '*') {
+    return equation.operandA * equation.operandB === equation.result
+  } else if (equation.operator === '/') {
+    return equation.operandA / equation.operandB === equation.result
+  } else {
+    throw new Error('Invalid operator ' + equation.operator)
+  }
+}
+
 function calculateCharStatuses(row: Row, answer: Answer): CellStatus[] {
   const result = []
   if (row.operandA === answer.operandA) {
@@ -256,7 +271,8 @@ function App() {
   const isValidRow = (row: Row): [boolean] | [boolean, string] => {
     // if (word.length < 5) return [false, `please enter a 5 letter word`]
     if (difficultyLevel === difficulty.easy) return [true]
-    // if (!words[word.toLowerCase()]) return [false, `${word} is not a valid word. Please try again.`]
+    if (!validEquation(row))
+      return [false, `${rowCharacters(row)} is not a valid equation. Please try again.`]
     if (difficultyLevel === difficulty.normal) return [true]
     const guessedLetters = Object.entries(charStatuses).filter(([letter, charStatus]) =>
       [status.yellow, status.green].includes(charStatus)
