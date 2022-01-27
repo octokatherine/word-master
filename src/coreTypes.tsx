@@ -6,6 +6,11 @@ export interface Row {
 }
 export type Equation = Required<Row>
 export type Answer = Required<Row>
+export enum PlayState {
+  Playing = 'playing',
+  Won = 'won',
+  Lost = 'lost',
+}
 
 export function rowCharacter(row: Row, col: number): string {
   switch (col) {

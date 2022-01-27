@@ -1,7 +1,7 @@
 import { numbers, operators, status } from './constants'
 import { useEffect, useState } from 'react'
 
-import { Answer, Equation, Row, rowCharacter, rowCharacters } from './coreTypes'
+import { Answer, Equation, PlayState, Row, rowCharacter, rowCharacters } from './coreTypes'
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
 import { Keyboard } from './components/Keyboard'
@@ -9,12 +9,6 @@ import { SettingsModal } from './components/SettingsModal'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { ReactComponent as Info } from './data/Info.svg'
 import { ReactComponent as Settings } from './data/Settings.svg'
-
-const state = {
-  playing: 'playing',
-  won: 'won',
-  lost: 'lost',
-}
 
 export const difficulty = {
   easy: 'easy',
@@ -167,7 +161,7 @@ function addCharacter(row: Row, currentCol: number, character: string) {
 function App() {
   const initialStates: State = {
     answer: () => getRandomAnswer(),
-    gameState: state.playing,
+    gameState: PlayState.Playing,
     board: [{}, {}, {}, {}, {}, {}],
     cellStatuses: Array(6).fill(Array(5).fill(status.unguessed)),
     currentRow: 0,
@@ -233,7 +227,7 @@ function App() {
   const toggleDarkMode = () => setDarkMode((prev: boolean) => !prev)
 
   useEffect(() => {
-    if (gameState !== state.playing) {
+    if (gameState !== PlayState.Playing) {
       setTimeout(() => {
         openModal()
       }, 500)
@@ -384,14 +378,14 @@ function App() {
       return r[0] !== status.unguessed
     })
 
-    if (gameState === state.playing && lastFilledRow && isRowAllGreen(lastFilledRow)) {
-      setGameState(state.won)
+    if (gameState === PlayState.Playing && lastFilledRow && isRowAllGreen(lastFilledRow)) {
+      setGameState(PlayState.Won)
 
       var streak = currentStreak + 1
       setCurrentStreak(streak)
       setLongestStreak((prev: number) => (streak > prev ? streak : prev))
-    } else if (gameState === state.playing && currentRow === 6) {
-      setGameState(state.lost)
+    } else if (gameState === PlayState.Playing && currentRow === 6) {
+      setGameState(PlayState.Lost)
       setCurrentStreak(0)
     }
   }, [
@@ -501,7 +495,7 @@ function App() {
             </div>
             <div
               className={`absolute -bottom-24 left-1/2 transform -translate-x-1/2 ${
-                gameState === state.playing ? 'hidden' : ''
+                gameState === PlayState.Playing ? 'hidden' : ''
               }`}
             >
               <div className={darkMode ? 'dark' : ''}>
@@ -529,7 +523,6 @@ function App() {
           styles={modalStyles}
           darkMode={darkMode}
           gameState={gameState}
-          state={state}
           currentStreak={currentStreak}
           longestStreak={longestStreak}
           answer={answer}
@@ -545,13 +538,13 @@ function App() {
           setDifficultyLevel={setDifficultyLevel}
           levelInstructions={getDifficultyLevelInstructions()}
         />
-        <div className={`h-auto relative ${gameState === state.playing ? '' : 'invisible'}`}>
+        <div className={`h-auto relative ${gameState === PlayState.Playing ? '' : 'invisible'}`}>
           <Keyboard
             charStatuses={charStatuses}
             addLetter={addLetter}
             onEnterPress={onEnterPress}
             onDeletePress={onDeletePress}
-            gameDisabled={gameState !== state.playing}
+            gameDisabled={gameState !== PlayState.Playing}
             nextCharIsAnOperator={nextCharIsAnOperator}
           />
         </div>
