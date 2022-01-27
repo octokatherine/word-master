@@ -1,6 +1,6 @@
 import { letters, status, cipherKey } from './constants'
 import { useEffect, useState } from 'react'
-import { Routes, Route, useParams, useNavigate } from 'react-router-dom'
+import { Routes, Route, useParams, useNavigate, useLocation, Navigate } from 'react-router-dom'
 import Encrypt from 'ciphervgnr'
 
 import { EndGameModal } from './components/EndGameModal'
@@ -45,7 +45,14 @@ function App() {
     <Routes>
       <Route path="/">
         <Route index element={<DailyPuzzle />} />
-        <Route path=":answerXor" element={<Puzzle />} />
+        <Route
+          path=":answerXor"
+          element={
+            <Puzzle>
+              <Board />
+            </Puzzle>
+          }
+        />
         <Route
           path="404"
           element={
@@ -70,18 +77,23 @@ type State = {
   submittedInvalidWord: boolean
 }
 
-function Puzzle() {
-  const navigate = useNavigate()
+function Puzzle({ children }: { children: JSX.Element }) {
   const params = useParams()
+  const location = useLocation()
+  const decipheredAnswer = Encrypt(params.answerXor!, cipherKey, true).toLowerCase()
+
+  if (!answers.includes(decipheredAnswer)) {
+    return <Navigate to="/404" state={{ from: location }} replace />
+  }
+  return children
+}
+
+function Board() {
+  const params = useParams()
+  const navigate = useNavigate()
 
   const decipheredAnswer = Encrypt(params.answerXor!, cipherKey, true).toLowerCase()
   const shareUrl = `${window.location.origin}/#/${params.answerXor}`
-
-  useEffect(() => {
-    if (!answers.includes(decipheredAnswer)) {
-      navigate('/404')
-    }
-  })
   const initialStates: State = {
     answer: decipheredAnswer.toUpperCase(),
     gameState: state.playing,
