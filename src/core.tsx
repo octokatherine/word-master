@@ -18,6 +18,16 @@ export enum Difficulty {
   Normal = 'normal',
   Hard = 'hard',
 }
+export function validOperators(difficulty: Difficulty): string[] {
+  switch (difficulty) {
+    case Difficulty.Easy:
+      return operators.slice(0, 4)
+    case Difficulty.Normal:
+      return operators.slice(0, 5)
+    case Difficulty.Hard:
+      return operators.slice(0, 6)
+  }
+}
 
 export function rowCharacter(row: Row, col: number): string {
   switch (col) {

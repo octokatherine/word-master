@@ -1,4 +1,4 @@
-import { status, numbers, operators } from '../constants'
+import { status, numbers } from '../constants'
 import { useEffect, useCallback } from 'react'
 
 type Props = {
@@ -8,6 +8,7 @@ type Props = {
   onEnterPress: () => void
   addLetter: (s: string) => void
   nextCharIsAnOperator: boolean
+  validOperators: string[]
 }
 
 const Keyboard = ({
@@ -17,6 +18,7 @@ const Keyboard = ({
   onDeletePress,
   gameDisabled,
   nextCharIsAnOperator,
+  validOperators,
 }: Props) => {
   const getKeyStyle = (char: string) => {
     switch (charStatuses[char]) {
@@ -52,7 +54,7 @@ const Keyboard = ({
       } else if (key === 'BACKSPACE') {
         onDeletePress()
       } else if (nextCharIsAnOperator) {
-        if (operators.includes(key)) {
+        if (validOperators.includes(key)) {
           addLetter(key)
         }
       } else if (numbers.includes(key)) {
@@ -69,7 +71,7 @@ const Keyboard = ({
   }, [handleKeyDown])
 
   const keyboardChars = nextCharIsAnOperator
-    ? [operators.slice(0, 3), operators.slice(3, 6)]
+    ? [validOperators.slice(0, 3), validOperators.slice(3, 6)]
     : [numbers.slice(0, 6), numbers.slice(6, 10)]
 
   return (

@@ -11,6 +11,7 @@ import {
   rowCharacter,
   rowCharacters,
   validEquation,
+  validOperators,
 } from './core'
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
@@ -163,11 +164,21 @@ function App() {
   const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', Difficulty.Normal)
   const getDifficultyLevelInstructions = () => {
     if (difficultyLevel === Difficulty.Easy) {
-      return 'Guess any equation'
+      return `
+      Equation doesn't have to be correct
+      (e.g. 2 + 2 = 5)
+      Only uses +, -, *, / operators
+      `
     } else if (difficultyLevel === Difficulty.Hard) {
-      return "Guess any valid equation using all the hints you've been given"
+      return `
+      Adds the remainder operator %
+      (e.g. 5 % 2 = 1)
+      `
     } else {
-      return 'Guess any valid equation'
+      return `
+      Equation must be correct, and adds the exponent operator ^
+      (e.g. 2^3 = 8)
+      `
     }
   }
   const eg: { [key: number]: string } = {}
@@ -231,22 +242,12 @@ function App() {
     }
   }
 
-  // returns an array with a boolean of if the word is valid and an error message if it is not
+  // returns an array with a boolean of if the row is valid and an error message if it is not
   const isValidRow = (row: Row): [boolean] | [boolean, string] => {
-    // if (word.length < 5) return [false, `please enter a 5 letter word`]
     if (difficultyLevel === Difficulty.Easy) return [true]
     if (!validEquation(row))
       return [false, `${rowCharacters(row)} is not a valid equation. Please try again.`]
-    if (difficultyLevel === Difficulty.Normal) return [true]
-    const guessedLetters = Object.entries(charStatuses).filter(([letter, charStatus]) =>
-      [status.yellow, status.green].includes(charStatus)
-    )
-    // const yellowsUsed = guessedLetters.every(([letter, _]) => word.includes(letter))
-    // const greensUsed = Object.entries(exactGuesses).every(
-    //   ([position, letter]) => word[parseInt(position)] === letter
-    // )
-    // if (!yellowsUsed || !greensUsed)
-    //   return [false, `In hard mode, you must use all the hints you've been given.`]
+
     return [true]
   }
 
@@ -503,6 +504,7 @@ function App() {
             onDeletePress={onDeletePress}
             gameDisabled={gameState !== PlayState.Playing}
             nextCharIsAnOperator={nextCharIsAnOperator}
+            validOperators={validOperators(difficultyLevel)}
           />
         </div>
       </div>
