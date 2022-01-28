@@ -90,7 +90,9 @@ export const SettingsModal = ({
                 ))}
               </div>
             </RadioGroup>
-            <p className="text-center w-10/12 mx-auto font-medium">{levelInstructions}</p>
+            <p className="text-center w-10/12 mx-auto pt-4 font-medium whitespace-pre-line">
+              {levelInstructions}
+            </p>
           </div>
           <div className="flex flex-col items-center">
             <div className="mb-4">
