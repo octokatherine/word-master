@@ -1,10 +1,10 @@
-# Nerdle
+# hurdle
 
-🔗 https://iancanderson.github.io/nerdle/
+🔗 https://iancanderson.github.io/hurdle/
 
 It's kind of like [Wordle](https://www.powerlanguage.co.uk/wordle/), but for numbers.
 
-Thanks to @octokatherine for [word-master](https://github.com/octokatherine/word-master), which Nerdle was forked from!
+Thanks to @octokatherine for [word-master](https://github.com/octokatherine/word-master), which hurdle was forked from!
 
 ## Rules
 
@@ -20,4 +20,4 @@ After submitting a guess, the numbers/operators will turn gray, green, or yellow
 
 Feel free to open an issue for any bugs or feature requests.
 
-To contribute to the code, see [CONTRIBUTING.md](https://github.com/iancanderson/nerdle/blob/main/CONTRIBUTING.md)
+To contribute to the code, see [CONTRIBUTING.md](https://github.com/iancanderson/hurdle/blob/main/CONTRIBUTING.md)
