@@ -172,7 +172,7 @@ function Board() {
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
   const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', difficulty.normal)
-  const [lastFinishedAt, setLastFinishedAt] = useLocalStorage('lastFinishedAt', null)
+  const [, setLastFinishedAt] = useLocalStorage('lastFinishedAt', null)
   const getDifficultyLevelInstructions = () => {
     if (difficultyLevel === difficulty.easy) {
       return 'Guess any 5 letters'
