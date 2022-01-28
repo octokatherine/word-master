@@ -67,7 +67,6 @@ function App() {
 }
 
 type State = {
-  answer: string
   gameState: string
   board: string[][]
   cellStatuses: string[][]
@@ -88,52 +87,62 @@ function Puzzle({ children }: { children: JSX.Element }) {
   return children
 }
 
+const INITIAL_STATE: State = {
+  gameState: state.playing,
+  board: [
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+  ],
+  cellStatuses: Array(6).fill(Array(5).fill(status.unguessed)),
+  currentRow: 0,
+  currentCol: 0,
+  letterStatuses: () => {
+    const letterStatuses: { [key: string]: string } = {}
+    letters.forEach((letter) => {
+      letterStatuses[letter] = status.unguessed
+    })
+    return letterStatuses
+  },
+  submittedInvalidWord: false,
+}
+
 function Board() {
   const params = useParams()
   const navigate = useNavigate()
 
-  const decipheredAnswer = Encrypt(params.gameCode!, cipherKey, true).toLowerCase()
-  const shareUrl = `${window.location.origin}/#/${params.gameCode}`
-  const initialStates: State = {
-    answer: decipheredAnswer.toUpperCase(),
-    gameState: state.playing,
-    board: [
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-    ],
-    cellStatuses: Array(6).fill(Array(5).fill(status.unguessed)),
-    currentRow: 0,
-    currentCol: 0,
-    letterStatuses: () => {
-      const letterStatuses: { [key: string]: string } = {}
-      letters.forEach((letter) => {
-        letterStatuses[letter] = status.unguessed
-      })
-      return letterStatuses
-    },
-    submittedInvalidWord: false,
-  }
+  const gameCode = params.gameCode!
+  const decipheredAnswer = Encrypt(gameCode, cipherKey, true).toLowerCase()
+  const shareUrl = `${window.location.origin}/#/${gameCode}`
 
-  const [answer, setAnswer] = useState(initialStates.answer)
-  const [gameState, setGameState] = useLocalStorage('stateGameState', initialStates.gameState)
-  const [board, setBoard] = useLocalStorage('stateBoard', initialStates.board)
-  const [cellStatuses, setCellStatuses] = useLocalStorage(
-    'stateCellStatuses',
-    initialStates.cellStatuses
+  const [answer, setAnswer] = useState(decipheredAnswer.toUpperCase())
+  const [gameState, setGameState] = useLocalStorage(
+    `${gameCode}:stateGameState`,
+    INITIAL_STATE.gameState
   )
-  const [currentRow, setCurrentRow] = useLocalStorage('stateCurrentRow', initialStates.currentRow)
-  const [currentCol, setCurrentCol] = useLocalStorage('stateCurrentCol', initialStates.currentCol)
+  const [board, setBoard] = useLocalStorage(`${gameCode}:stateBoard`, INITIAL_STATE.board)
+  const [cellStatuses, setCellStatuses] = useLocalStorage(
+    `${gameCode}:stateCellStatuses`,
+    INITIAL_STATE.cellStatuses
+  )
+  const [currentRow, setCurrentRow] = useLocalStorage(
+    `${gameCode}:stateCurrentRow`,
+    INITIAL_STATE.currentRow
+  )
+  const [currentCol, setCurrentCol] = useLocalStorage(
+    `${gameCode}:stateCurrentCol`,
+    INITIAL_STATE.currentCol
+  )
   const [letterStatuses, setLetterStatuses] = useLocalStorage(
-    'stateLetterStatuses',
-    initialStates.letterStatuses()
+    `${gameCode}:stateLetterStatuses`,
+    INITIAL_STATE.letterStatuses()
   )
   const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage(
-    'stateSubmittedInvalidWord',
-    initialStates.submittedInvalidWord
+    `${gameCode}:stateSubmittedInvalidWord`,
+    INITIAL_STATE.submittedInvalidWord
   )
 
   const [currentStreak, setCurrentStreak] = useLocalStorage('current-streak', 0)
@@ -153,7 +162,7 @@ function Board() {
     }
   }
   const eg: { [key: number]: string } = {}
-  const [exactGuesses, setExactGuesses] = useLocalStorage('exact-guesses', eg)
+  const [exactGuesses, setExactGuesses] = useLocalStorage(`${gameCode}:exact-guesses`, eg)
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -349,13 +358,13 @@ function Board() {
     const newAnswer = getRandomAnswer()
     setAnswer(newAnswer)
     navigate('/' + Encrypt(newAnswer, cipherKey))
-    setGameState(initialStates.gameState)
-    setBoard(initialStates.board)
-    setCellStatuses(initialStates.cellStatuses)
-    setCurrentRow(initialStates.currentRow)
-    setCurrentCol(initialStates.currentCol)
-    setLetterStatuses(initialStates.letterStatuses())
-    setSubmittedInvalidWord(initialStates.submittedInvalidWord)
+    setGameState(INITIAL_STATE.gameState)
+    setBoard(INITIAL_STATE.board)
+    setCellStatuses(INITIAL_STATE.cellStatuses)
+    setCurrentRow(INITIAL_STATE.currentRow)
+    setCurrentCol(INITIAL_STATE.currentCol)
+    setLetterStatuses(INITIAL_STATE.letterStatuses())
+    setSubmittedInvalidWord(INITIAL_STATE.submittedInvalidWord)
     setExactGuesses({})
 
     closeModal()
