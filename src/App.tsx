@@ -203,11 +203,11 @@ function App() {
   const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', Difficulty.Normal)
   const getDifficultyLevelInstructions = () => {
     if (difficultyLevel === Difficulty.Easy) {
-      return 'Guess any 5 letters'
+      return 'Guess any equation'
     } else if (difficultyLevel === Difficulty.Hard) {
-      return "Guess any valid word using all the hints you've been given"
+      return "Guess any valid equation using all the hints you've been given"
     } else {
-      return 'Guess any valid word'
+      return 'Guess any valid equation'
     }
   }
   const eg: { [key: number]: string } = {}
