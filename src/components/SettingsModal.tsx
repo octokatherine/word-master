@@ -1,7 +1,7 @@
 import { RadioGroup, Switch } from '@headlessui/react'
 
 import Modal from 'react-modal'
-import { Difficulty } from '../coreTypes'
+import { Difficulty } from '../core'
 import { ReactComponent as Close } from '../data/Close.svg'
 
 Modal.setAppElement('#root')

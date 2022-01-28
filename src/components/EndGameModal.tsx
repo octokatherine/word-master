@@ -2,7 +2,7 @@ import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 import Success from '../data/Success.png'
 import Fail from '../data/Cross.png'
-import { Answer, PlayState, rowCharacters } from '../coreTypes'
+import { Answer, PlayState, rowCharacters } from '../core'
 
 Modal.setAppElement('#root')
 

@@ -5,11 +5,13 @@ import {
   Answer,
   Difficulty,
   Equation,
+  getRandomAnswer,
   PlayState,
   Row,
   rowCharacter,
   rowCharacters,
-} from './coreTypes'
+  validEquation,
+} from './core'
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
 import { Keyboard } from './components/Keyboard'
@@ -17,29 +19,6 @@ import { SettingsModal } from './components/SettingsModal'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { ReactComponent as Info } from './data/Info.svg'
 import { ReactComponent as Settings } from './data/Settings.svg'
-
-function getRandomAnswer(): Answer {
-  while (true) {
-    const potentialAnswer: Answer = {
-      operandA: getRandomDigit(),
-      operator: getRandomOperator(),
-      operandB: getRandomDigit(),
-      result: getRandomDigit(),
-    }
-    if (validEquation(potentialAnswer)) {
-      return potentialAnswer
-    }
-  }
-}
-
-const getRandomDigit = (): number => {
-  return Math.floor(Math.random() * 10)
-}
-
-const getRandomOperator = (): string => {
-  const randomOperatorIndex = Math.floor(Math.random() * operators.length)
-  return operators[randomOperatorIndex]
-}
 
 type CellStatus = string
 type State = {
@@ -59,25 +38,6 @@ function isCellCorrect(row: Row, i: number, answer: Answer): boolean {
 
 function hasNumber(row: Row, num?: number): boolean {
   return row.operandA === num || row.operandB === num || row.result === num
-}
-
-function validEquation(row: Row): boolean {
-  const equation = row as Required<Row>
-  if (equation.operator === '+') {
-    return equation.operandA + equation.operandB === equation.result
-  } else if (equation.operator === '-') {
-    return equation.operandA - equation.operandB === equation.result
-  } else if (equation.operator === '*') {
-    return equation.operandA * equation.operandB === equation.result
-  } else if (equation.operator === '/') {
-    return equation.operandA / equation.operandB === equation.result
-  } else if (equation.operator === '^') {
-    return Math.pow(equation.operandA, equation.operandB) === equation.result
-  } else if (equation.operator === '%') {
-    return equation.operandA % equation.operandB === equation.result
-  } else {
-    throw new Error('Invalid operator ' + equation.operator)
-  }
 }
 
 function calculateCharStatuses(
