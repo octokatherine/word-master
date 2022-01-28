@@ -1,8 +1,22 @@
 import { keyboardLetters, status, letters } from '../constants'
 import { useEffect, useCallback } from 'react'
 
-const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, gameDisabled }) => {
-  const getKeyStyle = (letter) => {
+type Props = {
+  letterStatuses: { [key: string]: string }
+  gameDisabled: boolean
+  onDeletePress: () => void
+  onEnterPress: () => void
+  addLetter: any
+}
+
+const Keyboard = ({
+  letterStatuses,
+  addLetter,
+  onEnterPress,
+  onDeletePress,
+  gameDisabled,
+}: Props) => {
+  const getKeyStyle = (letter: string) => {
     switch (letterStatuses[letter]) {
       case status.green:
         return 'bg-n-green text-gray-50'
@@ -15,7 +29,7 @@ const Keyboard = ({ letterStatuses, addLetter, onEnterPress, onDeletePress, game
     }
   }
 
-  const onKeyButtonPress = (letter) => {
+  const onKeyButtonPress = (letter: string) => {
     letter = letter.toLowerCase()
     window.dispatchEvent(
       new KeyboardEvent('keydown', {

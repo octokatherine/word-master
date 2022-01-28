@@ -1,12 +1,17 @@
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 import Success from '../data/Success.png'
 import Fail from '../data/Cross.png'
+import { status } from '../constants'
 
 Modal.setAppElement('#root')
 
-const ModalButton = ({ children, ...props }) => (
+interface ModalButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+  children: ReactNode
+}
+
+const ModalButton = ({ children, ...props }: ModalButtonProps) => (
   <button
     className="rounded-lg px-6 py-2 mt-8 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
     {...props}
@@ -14,6 +19,22 @@ const ModalButton = ({ children, ...props }) => (
     {children}
   </button>
 )
+
+type Props = {
+  isOpen: boolean
+  handleClose: () => void
+  styles: any
+  darkMode: boolean
+  gameState: string
+  cellStatuses: string[][]
+  currentRow: number
+  state: any
+  currentStreak: any
+  longestStreak: any
+  answer: any
+  playAgain: any
+  shareUrl: string
+}
 
 export const EndGameModal = ({
   isOpen,
@@ -24,13 +45,12 @@ export const EndGameModal = ({
   cellStatuses,
   currentRow,
   state,
-  status,
   currentStreak,
   longestStreak,
   answer,
   playAgain,
   shareUrl,
-}) => {
+}: Props) => {
   const PlayAgainButton = () => {
     return (
       <div className={darkMode ? 'dark' : ''}>
@@ -44,7 +64,7 @@ export const EndGameModal = ({
     const [buttonPressed, setButtonPressed] = useState(false)
     useEffect(() => {
       if (buttonPressed !== false) {
-        setTimeout(() => setButtonPressed(false), [3000])
+        setTimeout(() => setButtonPressed(false), 3000)
       }
     }, [buttonPressed])
     return (

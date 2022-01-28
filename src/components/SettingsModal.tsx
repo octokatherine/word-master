@@ -1,10 +1,21 @@
 import { RadioGroup, Switch } from '@headlessui/react'
 
-import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 import { difficulty } from '../App'
+import { ReactComponent as Close } from '../data/Close.svg'
 
 Modal.setAppElement('#root')
+
+type Props = {
+  isOpen: boolean
+  handleClose: () => void
+  styles: any
+  darkMode: boolean
+  toggleDarkMode: () => void
+  difficultyLevel: string
+  setDifficultyLevel: any
+  levelInstructions: string
+}
 
 export const SettingsModal = ({
   isOpen,
@@ -15,7 +26,7 @@ export const SettingsModal = ({
   difficultyLevel,
   setDifficultyLevel,
   levelInstructions,
-}) => {
+}: Props) => {
   return (
     <Modal
       isOpen={isOpen}

@@ -1,9 +1,16 @@
-import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
+import { ReactComponent as Close } from '../data/Close.svg'
 
 Modal.setAppElement('#root')
 
-export const InfoModal = ({ isOpen, handleClose, darkMode, styles }) => (
+type Props = {
+  isOpen: boolean
+  handleClose: () => void
+  darkMode: boolean
+  styles: any
+}
+
+export const InfoModal = ({ isOpen, handleClose, darkMode, styles }: Props) => (
   <Modal isOpen={isOpen} onRequestClose={handleClose} style={styles} contentLabel="Game Info Modal">
     <div className={`h-full ${darkMode ? 'dark' : ''}`}>
       <button
