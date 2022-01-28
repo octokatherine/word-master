@@ -32,15 +32,35 @@ const getRandomAnswer = () => {
 
 // Adapted from https://github.com/hannahcode/wordle/blob/f8aa91766d7e2918ab6361efb7bdc5321bd93774/src/lib/words.ts#L15-L28
 // MIT Licensed
+const MS_IN_DAY = 86400000
+
 const getDailyAnswer = () => {
   const epochMs = new Date('January 1, 2022 00:00:00').valueOf()
   const now = Date.now()
-  const msInDay = 86400000
-  const index = Math.floor((now - epochMs) / msInDay) % answers.length
+  const index = Math.floor((now - epochMs) / MS_IN_DAY) % answers.length
   return answers[index].toUpperCase()
 }
 
+// Time after which game states are expired in localStorage
+const GAME_STATE_TTL = MS_IN_DAY
+
+const maybeEvictStaleGameStates = () => {
+  const lastFinishedAtData = window.localStorage.getItem('lastFinishedAt')
+  const lastFinishedAt = lastFinishedAtData ? JSON.parse(lastFinishedAtData) : null
+  if (lastFinishedAt && Date.now() - lastFinishedAt > GAME_STATE_TTL) {
+    for (var key in window.localStorage) {
+      // Keys that are prefixed with g: are game state keys
+      if (key.substring(0, 2) === 'g:') {
+        window.localStorage.removeItem(key)
+      }
+    }
+    window.localStorage.removeItem('lastFinishedAt')
+  }
+}
+
 function App() {
+  // Clear old game states so that played words can be reused
+  maybeEvictStaleGameStates()
   return (
     <Routes>
       <Route path="/">
@@ -120,28 +140,28 @@ function Board() {
 
   const [answer, setAnswer] = useState(decipheredAnswer.toUpperCase())
   const [gameState, setGameState] = useLocalStorage(
-    `${gameCode}:stateGameState`,
+    `g:${gameCode}:stateGameState`,
     INITIAL_STATE.gameState
   )
-  const [board, setBoard] = useLocalStorage(`${gameCode}:stateBoard`, INITIAL_STATE.board)
+  const [board, setBoard] = useLocalStorage(`g:${gameCode}:stateBoard`, INITIAL_STATE.board)
   const [cellStatuses, setCellStatuses] = useLocalStorage(
-    `${gameCode}:stateCellStatuses`,
+    `g:${gameCode}:stateCellStatuses`,
     INITIAL_STATE.cellStatuses
   )
   const [currentRow, setCurrentRow] = useLocalStorage(
-    `${gameCode}:stateCurrentRow`,
+    `g:${gameCode}:stateCurrentRow`,
     INITIAL_STATE.currentRow
   )
   const [currentCol, setCurrentCol] = useLocalStorage(
-    `${gameCode}:stateCurrentCol`,
+    `g:${gameCode}:stateCurrentCol`,
     INITIAL_STATE.currentCol
   )
   const [letterStatuses, setLetterStatuses] = useLocalStorage(
-    `${gameCode}:stateLetterStatuses`,
+    `g:${gameCode}:stateLetterStatuses`,
     INITIAL_STATE.letterStatuses()
   )
   const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage(
-    `${gameCode}:stateSubmittedInvalidWord`,
+    `g:${gameCode}:stateSubmittedInvalidWord`,
     INITIAL_STATE.submittedInvalidWord
   )
 
@@ -152,6 +172,7 @@ function Board() {
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
   const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', difficulty.normal)
+  const [lastFinishedAt, setLastFinishedAt] = useLocalStorage('lastFinishedAt', null)
   const getDifficultyLevelInstructions = () => {
     if (difficultyLevel === difficulty.easy) {
       return 'Guess any 5 letters'
@@ -162,7 +183,7 @@ function Board() {
     }
   }
   const eg: { [key: number]: string } = {}
-  const [exactGuesses, setExactGuesses] = useLocalStorage(`${gameCode}:exact-guesses`, eg)
+  const [exactGuesses, setExactGuesses] = useLocalStorage(`g:${gameCode}:exact-guesses`, eg)
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -321,9 +342,11 @@ function Board() {
       var streak = currentStreak + 1
       setCurrentStreak(streak)
       setLongestStreak((prev: number) => (streak > prev ? streak : prev))
+      setLastFinishedAt(Date.now())
     } else if (gameState === state.playing && currentRow === 6) {
       setGameState(state.lost)
       setCurrentStreak(0)
+      setLastFinishedAt(Date.now())
     }
   }, [
     cellStatuses,
@@ -333,6 +356,7 @@ function Board() {
     currentStreak,
     setCurrentStreak,
     setLongestStreak,
+    setLastFinishedAt,
   ])
 
   const updateLetterStatuses = (word: string) => {
@@ -490,7 +514,7 @@ function Board() {
           setDifficultyLevel={setDifficultyLevel}
           levelInstructions={getDifficultyLevelInstructions()}
         />
-        <div className={`h-auto relative ${gameState === state.playing ? '' : 'invisible'}`}>
+        <div className={`h-auto relative g:${gameState === state.playing ? '' : 'invisible'}`}>
           <Keyboard
             letterStatuses={letterStatuses}
             addLetter={addLetter}
