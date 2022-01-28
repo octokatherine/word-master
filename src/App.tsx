@@ -124,20 +124,15 @@ function calculateCharStatuses(
   return result
 }
 
-function backspace(row: Row, currentCol: number) {
-  switch (currentCol) {
-    case 2:
-      row.operandA = undefined
-      break
-    case 3:
-      row.operator = undefined
-      break
-    case 4:
-      row.operandB = undefined
-      break
-    case 5:
-      row.result = undefined
-      break
+function backspace(row: Row) {
+  if (row.result) {
+    row.result = undefined
+  } else if (row.operandB) {
+    row.operandB = undefined
+  } else if (row.operator) {
+    row.operator = undefined
+  } else if (row.operandA) {
+    row.operandA = undefined
   }
 }
 
@@ -319,13 +314,13 @@ function App() {
 
     setBoard((prev: Row[]) => {
       const newBoard = [...prev]
-      backspace(newBoard[currentRow], currentCol)
+      backspace(newBoard[currentRow])
       return newBoard
     })
 
     setCurrentCol((prev: number) => {
       // Equals sign is fixed - skip over it
-      const delta = currentCol === 2 ? 2 : 1
+      const delta = currentCol === 4 ? 2 : 1
       return prev - delta
     })
   }
