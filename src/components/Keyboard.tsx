@@ -46,17 +46,17 @@ const Keyboard = ({
 
       const key = event.key.toUpperCase()
 
-      if (nextCharIsAnOperator) {
+      if (key === 'ENTER') {
+        onEnterPress()
+        event.preventDefault()
+      } else if (key === 'BACKSPACE') {
+        onDeletePress()
+      } else if (nextCharIsAnOperator) {
         if (operators.includes(key)) {
           addLetter(key)
         }
       } else if (numbers.includes(key)) {
         addLetter(key)
-      } else if (key === 'ENTER') {
-        onEnterPress()
-        event.preventDefault()
-      } else if (key === 'BACKSPACE') {
-        onDeletePress()
       }
     },
     [addLetter, onEnterPress, onDeletePress, gameDisabled]

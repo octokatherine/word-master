@@ -2,7 +2,7 @@ import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 import Success from '../data/Success.png'
 import Fail from '../data/Cross.png'
-import { Answer, rowCharacters } from '../coreTypes'
+import { Answer, PlayState, rowCharacters } from '../coreTypes'
 
 Modal.setAppElement('#root')
 
@@ -12,7 +12,6 @@ type Props = {
   styles: any
   darkMode: boolean
   gameState: string
-  state: { [key: string]: string }
   currentStreak: number
   longestStreak: number
   answer: Answer
@@ -25,7 +24,6 @@ export const EndGameModal = ({
   styles,
   darkMode,
   gameState,
-  state,
   currentStreak,
   longestStreak,
   answer,
@@ -60,7 +58,7 @@ export const EndGameModal = ({
           >
             <Close />
           </button>
-          {gameState === state.won && (
+          {gameState === PlayState.Won && (
             <>
               <img src={Success} alt="success" height="auto" width="auto" />
               <h1 className=" text-3xl">Congrats!</h1>
@@ -72,7 +70,7 @@ export const EndGameModal = ({
               </p>
             </>
           )}
-          {gameState === state.lost && (
+          {gameState === PlayState.Lost && (
             <>
               <img src={Fail} alt="success" height="auto" width="80%" />
               <div className="text-primary dark:text-primary-dark text-4xl text-center">

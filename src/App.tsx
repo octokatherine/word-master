@@ -1,7 +1,15 @@
 import { numbers, operators, status } from './constants'
 import { useEffect, useState } from 'react'
 
-import { Answer, Equation, Row, rowCharacter, rowCharacters } from './coreTypes'
+import {
+  Answer,
+  Difficulty,
+  Equation,
+  PlayState,
+  Row,
+  rowCharacter,
+  rowCharacters,
+} from './coreTypes'
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
 import { Keyboard } from './components/Keyboard'
@@ -9,18 +17,6 @@ import { SettingsModal } from './components/SettingsModal'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { ReactComponent as Info } from './data/Info.svg'
 import { ReactComponent as Settings } from './data/Settings.svg'
-
-const state = {
-  playing: 'playing',
-  won: 'won',
-  lost: 'lost',
-}
-
-export const difficulty = {
-  easy: 'easy',
-  normal: 'normal',
-  hard: 'hard',
-}
 
 function getRandomAnswer(): Answer {
   while (true) {
@@ -128,20 +124,15 @@ function calculateCharStatuses(
   return result
 }
 
-function backspace(row: Row, currentCol: number) {
-  switch (currentCol) {
-    case 2:
-      row.operandA = undefined
-      break
-    case 3:
-      row.operator = undefined
-      break
-    case 4:
-      row.operandB = undefined
-      break
-    case 5:
-      row.result = undefined
-      break
+function backspace(row: Row) {
+  if (row.result) {
+    row.result = undefined
+  } else if (row.operandB) {
+    row.operandB = undefined
+  } else if (row.operator) {
+    row.operator = undefined
+  } else if (row.operandA) {
+    row.operandA = undefined
   }
 }
 
@@ -167,7 +158,7 @@ function addCharacter(row: Row, currentCol: number, character: string) {
 function App() {
   const initialStates: State = {
     answer: () => getRandomAnswer(),
-    gameState: state.playing,
+    gameState: PlayState.Playing,
     board: [{}, {}, {}, {}, {}, {}],
     cellStatuses: Array(6).fill(Array(5).fill(status.unguessed)),
     currentRow: 0,
@@ -209,11 +200,11 @@ function App() {
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
-  const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', difficulty.normal)
+  const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', Difficulty.Normal)
   const getDifficultyLevelInstructions = () => {
-    if (difficultyLevel === difficulty.easy) {
+    if (difficultyLevel === Difficulty.Easy) {
       return 'Guess any equation'
-    } else if (difficultyLevel === difficulty.hard) {
+    } else if (difficultyLevel === Difficulty.Hard) {
       return "Guess any valid equation using all the hints you've been given"
     } else {
       return 'Guess any valid equation'
@@ -233,7 +224,7 @@ function App() {
   const toggleDarkMode = () => setDarkMode((prev: boolean) => !prev)
 
   useEffect(() => {
-    if (gameState !== state.playing) {
+    if (gameState !== PlayState.Playing) {
       setTimeout(() => {
         openModal()
       }, 500)
@@ -283,10 +274,10 @@ function App() {
   // returns an array with a boolean of if the word is valid and an error message if it is not
   const isValidRow = (row: Row): [boolean] | [boolean, string] => {
     // if (word.length < 5) return [false, `please enter a 5 letter word`]
-    if (difficultyLevel === difficulty.easy) return [true]
+    if (difficultyLevel === Difficulty.Easy) return [true]
     if (!validEquation(row))
       return [false, `${rowCharacters(row)} is not a valid equation. Please try again.`]
-    if (difficultyLevel === difficulty.normal) return [true]
+    if (difficultyLevel === Difficulty.Normal) return [true]
     const guessedLetters = Object.entries(charStatuses).filter(([letter, charStatus]) =>
       [status.yellow, status.green].includes(charStatus)
     )
@@ -323,13 +314,13 @@ function App() {
 
     setBoard((prev: Row[]) => {
       const newBoard = [...prev]
-      backspace(newBoard[currentRow], currentCol)
+      backspace(newBoard[currentRow])
       return newBoard
     })
 
     setCurrentCol((prev: number) => {
       // Equals sign is fixed - skip over it
-      const delta = currentCol === 2 ? 2 : 1
+      const delta = currentCol === 4 ? 2 : 1
       return prev - delta
     })
   }
@@ -384,14 +375,14 @@ function App() {
       return r[0] !== status.unguessed
     })
 
-    if (gameState === state.playing && lastFilledRow && isRowAllGreen(lastFilledRow)) {
-      setGameState(state.won)
+    if (gameState === PlayState.Playing && lastFilledRow && isRowAllGreen(lastFilledRow)) {
+      setGameState(PlayState.Won)
 
       var streak = currentStreak + 1
       setCurrentStreak(streak)
       setLongestStreak((prev: number) => (streak > prev ? streak : prev))
-    } else if (gameState === state.playing && currentRow === 6) {
-      setGameState(state.lost)
+    } else if (gameState === PlayState.Playing && currentRow === 6) {
+      setGameState(PlayState.Lost)
       setCurrentStreak(0)
     }
   }, [
@@ -501,7 +492,7 @@ function App() {
             </div>
             <div
               className={`absolute -bottom-24 left-1/2 transform -translate-x-1/2 ${
-                gameState === state.playing ? 'hidden' : ''
+                gameState === PlayState.Playing ? 'hidden' : ''
               }`}
             >
               <div className={darkMode ? 'dark' : ''}>
@@ -529,7 +520,6 @@ function App() {
           styles={modalStyles}
           darkMode={darkMode}
           gameState={gameState}
-          state={state}
           currentStreak={currentStreak}
           longestStreak={longestStreak}
           answer={answer}
@@ -545,13 +535,13 @@ function App() {
           setDifficultyLevel={setDifficultyLevel}
           levelInstructions={getDifficultyLevelInstructions()}
         />
-        <div className={`h-auto relative ${gameState === state.playing ? '' : 'invisible'}`}>
+        <div className={`h-auto relative ${gameState === PlayState.Playing ? '' : 'invisible'}`}>
           <Keyboard
             charStatuses={charStatuses}
             addLetter={addLetter}
             onEnterPress={onEnterPress}
             onDeletePress={onDeletePress}
-            gameDisabled={gameState !== state.playing}
+            gameDisabled={gameState !== PlayState.Playing}
             nextCharIsAnOperator={nextCharIsAnOperator}
           />
         </div>

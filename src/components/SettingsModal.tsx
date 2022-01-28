@@ -1,7 +1,7 @@
 import { RadioGroup, Switch } from '@headlessui/react'
 
 import Modal from 'react-modal'
-import { difficulty } from '../App'
+import { Difficulty } from '../coreTypes'
 import { ReactComponent as Close } from '../data/Close.svg'
 
 Modal.setAppElement('#root')
@@ -11,9 +11,9 @@ type Props = {
   handleClose: () => void
   styles: any
   darkMode: boolean
-  toggleDarkMode: () => void
+  toggleDarkMode: (dark: boolean) => void
   difficultyLevel: string
-  setDifficultyLevel: any
+  setDifficultyLevel: (d: Difficulty) => void
   levelInstructions: string
 }
 
@@ -72,7 +72,7 @@ export const SettingsModal = ({
             <RadioGroup value={difficultyLevel} onChange={setDifficultyLevel} className="mt-6">
               <RadioGroup.Label className="w-full text-center">Difficulty Level</RadioGroup.Label>
               <div className="grid grid-cols-3 gap-2 rounded-full mt-2 p-1 nm-inset-background dark:nm-inset-background-dark">
-                {Object.keys(difficulty).map((option) => (
+                {Object.values(Difficulty).map((option) => (
                   <RadioGroup.Option
                     key={option}
                     value={option}
