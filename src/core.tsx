@@ -52,11 +52,11 @@ export function rowCharacters(row: Row): string[] {
   })
 }
 
-export function getRandomAnswer(): Answer {
+export function getRandomAnswer(difficulty: Difficulty): Answer {
   while (true) {
     const potentialAnswer: Answer = {
       operandA: getRandomDigit(),
-      operator: getRandomOperator(),
+      operator: getRandomOperator(difficulty),
       operandB: getRandomDigit(),
       result: getRandomDigit(),
     }
@@ -70,9 +70,10 @@ const getRandomDigit = (): number => {
   return Math.floor(Math.random() * 10)
 }
 
-const getRandomOperator = (): string => {
-  const randomOperatorIndex = Math.floor(Math.random() * operators.length)
-  return operators[randomOperatorIndex]
+const getRandomOperator = (difficulty: Difficulty): string => {
+  const ops = validOperators(difficulty)
+  const randomOperatorIndex = Math.floor(Math.random() * ops.length)
+  return ops[randomOperatorIndex]
 }
 
 export function validEquation(row: Row): boolean {

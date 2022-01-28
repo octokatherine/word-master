@@ -23,7 +23,7 @@ import { ReactComponent as Settings } from './data/Settings.svg'
 
 type CellStatus = string
 type State = {
-  answer: () => Answer
+  answer: (d: Difficulty) => Answer
   gameState: string
   board: Row[]
   cellStatuses: CellStatus[][]
@@ -118,7 +118,7 @@ function addCharacter(row: Row, currentCol: number, character: string) {
 
 function App() {
   const initialStates: State = {
-    answer: () => getRandomAnswer(),
+    answer: (d: Difficulty) => getRandomAnswer(d),
     gameState: PlayState.Playing,
     board: [{}, {}, {}, {}, {}, {}],
     cellStatuses: Array(6).fill(Array(5).fill(status.unguessed)),
@@ -137,7 +137,6 @@ function App() {
     submittedInvalidWord: false,
   }
 
-  const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer())
   const [gameState, setGameState] = useLocalStorage('stateGameState', initialStates.gameState)
   const [board, setBoard] = useLocalStorage('stateBoard', initialStates.board)
   const [cellStatuses, setCellStatuses] = useLocalStorage(
@@ -162,6 +161,7 @@ function App() {
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
   const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', Difficulty.Normal)
+  const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer(difficultyLevel))
   const getDifficultyLevelInstructions = () => {
     if (difficultyLevel === Difficulty.Easy) {
       return `
@@ -364,7 +364,7 @@ function App() {
   }
 
   const playAgain = () => {
-    setAnswer(initialStates.answer())
+    setAnswer(initialStates.answer(difficultyLevel))
     setGameState(initialStates.gameState)
     setBoard(initialStates.board)
     setCellStatuses(initialStates.cellStatuses)
