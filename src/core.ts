@@ -1,5 +1,3 @@
-import { operators } from './constants'
-
 export interface Row {
   operandA?: number
   operator?: string
@@ -18,7 +16,17 @@ export enum Difficulty {
   Normal = 'normal',
   Hard = 'hard',
 }
-export function validOperators(difficulty: Difficulty): string[] {
+type Operator = '+' | '-' | '*' | '/' | '^' | '%'
+export const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+export const operators: Operator[] = ['+', '-', '*', '/', '^', '%']
+
+export const status = {
+  green: 'green',
+  yellow: 'yellow',
+  gray: 'gray',
+  unguessed: 'unguessed',
+}
+export function validOperators(difficulty: Difficulty): Operator[] {
   switch (difficulty) {
     case Difficulty.Easy:
       return operators.slice(0, 4)

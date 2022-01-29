@@ -1,4 +1,3 @@
-import { numbers, operators, status } from './constants'
 import { useEffect, useState } from 'react'
 
 import {
@@ -7,10 +6,13 @@ import {
   Difficulty,
   Equation,
   getRandomAnswer,
+  numbers,
+  operators,
   PlayState,
   Row,
   rowCharacter,
   rowCharacters,
+  status,
   validEquation,
   validOperators,
 } from './core'

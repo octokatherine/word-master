@@ -1,4 +1,4 @@
-import { status, numbers } from '../constants'
+import { status, numbers } from '../core'
 import { useEffect, useCallback } from 'react'
 
 type Props = {
