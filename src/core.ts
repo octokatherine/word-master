@@ -1,6 +1,6 @@
 declare global {
   interface Window {
-    plausible: (s: string) => void
+    plausible: (s: string, p?: { props: any }) => void
   }
 }
 export interface Row {

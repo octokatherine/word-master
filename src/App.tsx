@@ -201,9 +201,9 @@ function App() {
       case PlayState.Playing:
         window.plausible('hurdle-new-game')
       case PlayState.Lost:
-        window.plausible('hurdle-lost')
+        window.plausible('hurdle-lost', { props: { answer: answer } })
       case PlayState.Won:
-        window.plausible('hurdle-won')
+        window.plausible('hurdle-won', { props: { answer: answer } })
     }
   }, [gameState])
 
