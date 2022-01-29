@@ -15,6 +15,7 @@ import {
   rowCharacters,
   validEquation,
   validOperators,
+  Operator,
 } from './core'
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
@@ -93,7 +94,8 @@ function addCharacter(row: Row, currentCol: number, character: string) {
       row.operandA = parseInt(character)
       break
     case 1:
-      row.operator = character
+      //TODO: avoid cast?
+      row.operator = character as Operator
       break
     case 2:
       row.operandB = parseInt(character)

@@ -1,6 +1,6 @@
 export interface Row {
   operandA?: number
-  operator?: string
+  operator?: Operator
   operandB?: number
   result?: number
 }
@@ -16,7 +16,7 @@ export enum Difficulty {
   Normal = 'normal',
   Hard = 'hard',
 }
-type Operator = '+' | '-' | '*' | '/' | '^' | '%'
+export type Operator = '+' | '-' | '*' | '/' | '^' | '%'
 export const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 const easyOperators: Operator[] = ['+', '-', '*', '/']
 const normalOperators: Operator[] = ['^']
@@ -93,7 +93,7 @@ const getRandomDigit = (): number => {
   return Math.floor(Math.random() * 10)
 }
 
-const getRandomOperator = (difficulty: Difficulty): string => {
+const getRandomOperator = (difficulty: Difficulty): Operator => {
   const ops = validOperators(difficulty)
   const randomOperatorIndex = Math.floor(Math.random() * ops.length)
   return ops[randomOperatorIndex]
