@@ -1,4 +1,4 @@
-import { backspace, isFunAnswer, Operator, rowCharacters } from './core'
+import { backspace, isFunAnswer, Operator, rowCharacters, validEquation } from './core'
 
 test(`backspace deletes the result, even if it's a 0`, () => {
   const row = {
@@ -75,4 +75,14 @@ test('isFunAnswer is true for equations that are solvable with skill', () => {
 test('rowCharacters displays strings to render a row', () => {
   const row = { operandA: 1, operator: '+' as Operator, operandB: 2, result: 3 }
   expect(rowCharacters(row)).toEqual(['1', '+', '2', '=', '3'])
+})
+
+test('validEquation is false if result greater than 9', () => {
+  const row = { operandA: 2, operator: '+' as Operator, operandB: 8, result: 10 }
+  expect(validEquation(row)).toEqual(false)
+})
+
+test('validEquation is true if result less than 10 and is correct', () => {
+  const row = { operandA: 2, operator: '+' as Operator, operandB: 7, result: 9 }
+  expect(validEquation(row)).toEqual(true)
 })

@@ -76,12 +76,16 @@ export function rowCharacters(row: Row): string[] {
 }
 
 export function getRandomAnswer(difficulty: Difficulty): Answer {
+  const operator = getRandomOperator(difficulty)
+
   while (true) {
+    const operandA = getRandomDigit()
+    const operandB = getRandomDigit()
     const potentialAnswer: Answer = {
-      operandA: getRandomDigit(),
-      operator: getRandomOperator(difficulty),
-      operandB: getRandomDigit(),
-      result: getRandomDigit(),
+      operandA,
+      operator: operator,
+      operandB,
+      result: getResult(operandA, operator, operandB),
     }
     if (validEquation(potentialAnswer) && isFunAnswer(potentialAnswer)) {
       return potentialAnswer
@@ -99,22 +103,29 @@ const getRandomOperator = (difficulty: Difficulty): Operator => {
   return ops[randomOperatorIndex]
 }
 
+function getResult(operandA: number, operator: Operator, operandB: number): number {
+  switch (operator) {
+    case '+':
+      return operandA + operandB
+    case '-':
+      return operandA - operandB
+    case '*':
+      return operandA * operandB
+    case '/':
+      return operandA / operandB
+    case '^':
+      return Math.pow(operandA, operandB)
+    case '%':
+      return operandA % operandB
+  }
+}
+
 export function validEquation(row: Row): boolean {
-  const equation = row as Required<Row>
-  if (equation.operator === '+') {
-    return equation.operandA + equation.operandB === equation.result
-  } else if (equation.operator === '-') {
-    return equation.operandA - equation.operandB === equation.result
-  } else if (equation.operator === '*') {
-    return equation.operandA * equation.operandB === equation.result
-  } else if (equation.operator === '/') {
-    return equation.operandA / equation.operandB === equation.result
-  } else if (equation.operator === '^') {
-    return Math.pow(equation.operandA, equation.operandB) === equation.result
-  } else if (equation.operator === '%') {
-    return equation.operandA % equation.operandB === equation.result
+  if (row.operandA !== undefined && row.operator !== undefined && row.operandB !== undefined) {
+    const correctResult = getResult(row.operandA, row.operator, row.operandB)
+    return correctResult < 10 && correctResult === row.result
   } else {
-    throw new Error('Invalid operator ' + equation.operator)
+    return false
   }
 }
 
