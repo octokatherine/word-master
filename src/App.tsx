@@ -182,7 +182,6 @@ function App() {
     }
   }
   const eg: { [key: number]: string } = {}
-  const [exactGuesses, setExactGuesses] = useLocalStorage('exact-guesses', eg)
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
