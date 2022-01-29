@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import {
   Answer,
   backspace,
+  CellStatus,
   Difficulty,
   Equation,
   getRandomAnswer,
@@ -12,7 +13,6 @@ import {
   Row,
   rowCharacter,
   rowCharacters,
-  status,
   validEquation,
   validOperators,
 } from './core'
@@ -24,7 +24,6 @@ import { useLocalStorage } from './hooks/useLocalStorage'
 import { ReactComponent as Info } from './data/Info.svg'
 import { ReactComponent as Settings } from './data/Settings.svg'
 
-type CellStatus = string
 type State = {
   answer: (d: Difficulty) => Answer
   gameState: string
@@ -32,7 +31,7 @@ type State = {
   cellStatuses: CellStatus[][]
   currentRow: number
   currentCol: number
-  charStatuses: () => { [key: string]: string }
+  charStatuses: () => { [key: string]: CellStatus }
   submittedInvalidWord: boolean
 }
 
@@ -55,34 +54,34 @@ function calculateCharStatuses(
 
   const result = prev
   if (equation.operandA === answer.operandA) {
-    result[answer.operandA] = status.green
+    result[answer.operandA] = CellStatus.Green
   } else if (hasNumber(answer, equation.operandA)) {
-    result[equation.operandA] = status.yellow
+    result[equation.operandA] = CellStatus.Yellow
   } else {
-    result[equation.operandA] = status.gray
+    result[equation.operandA] = CellStatus.Gray
   }
 
   if (equation.operator === answer.operator) {
-    result[equation.operator] = status.green
+    result[equation.operator] = CellStatus.Green
   } else {
-    result[equation.operator] = status.gray
+    result[equation.operator] = CellStatus.Gray
   }
 
   if (equation.operandB === answer.operandB) {
-    result[equation.operandB] = status.green
+    result[equation.operandB] = CellStatus.Green
   } else if (hasNumber(answer, equation.operandB)) {
     // TODO: only mark as yellow if there's a remaining unguessed number
-    result[equation.operandB] = status.yellow
+    result[equation.operandB] = CellStatus.Yellow
   } else {
-    result[equation.operandB] = status.gray
+    result[equation.operandB] = CellStatus.Gray
   }
 
   if (equation.result === answer.result) {
-    result[equation.result] = status.green
+    result[equation.result] = CellStatus.Green
   } else if (hasNumber(answer, equation.result)) {
-    result[equation.result] = status.yellow
+    result[equation.result] = CellStatus.Yellow
   } else {
-    result[equation.result] = status.gray
+    result[equation.result] = CellStatus.Gray
   }
 
   return result
@@ -112,16 +111,16 @@ function App() {
     answer: (d: Difficulty) => getRandomAnswer(d),
     gameState: PlayState.Playing,
     board: [{}, {}, {}, {}, {}, {}],
-    cellStatuses: Array(6).fill(Array(5).fill(status.unguessed)),
+    cellStatuses: Array(6).fill(Array(5).fill(CellStatus.Unguessed)),
     currentRow: 0,
     currentCol: 0,
-    charStatuses: (): { [key: string]: string } => {
-      const statuses: { [key: string]: string } = {}
+    charStatuses: () => {
+      const statuses: { [key: string]: CellStatus } = {}
       numbers.forEach((char) => {
-        statuses[char] = status.unguessed
+        statuses[char] = CellStatus.Unguessed
       })
       operators.forEach((char) => {
-        statuses[char] = status.unguessed
+        statuses[char] = CellStatus.Unguessed
       })
       return statuses
     },
@@ -195,7 +194,7 @@ function App() {
     }
   }, [gameState])
 
-  const getCellStyles = (rowNumber: number, colNumber: number, letter: string) => {
+  const getCellStyles = (rowNumber: number, colNumber: number, letter: string): string => {
     if (rowNumber === currentRow) {
       if (letter) {
         return `nm-inset-background dark:nm-inset-background-dark text-primary dark:text-primary-dark ${
@@ -206,13 +205,13 @@ function App() {
     }
 
     switch (cellStatuses[rowNumber][colNumber]) {
-      case status.green:
+      case CellStatus.Green:
         return 'nm-inset-n-green text-gray-50'
-      case status.yellow:
+      case CellStatus.Yellow:
         return 'nm-inset-yellow-500 text-gray-50'
-      case status.gray:
+      case CellStatus.Gray:
         return 'nm-inset-n-gray text-gray-50'
-      default:
+      case CellStatus.Unguessed:
         return 'nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark'
     }
   }
@@ -289,13 +288,13 @@ function App() {
 
       // set all to gray
       for (let i = 0; i < rowLength; i++) {
-        newCellStatuses[rowNumber][i] = status.gray
+        newCellStatuses[rowNumber][i] = CellStatus.Gray
       }
 
       // check greens
       for (let i = rowLength - 1; i >= 0; i--) {
         if (isCellCorrect(row, i, answer)) {
-          newCellStatuses[rowNumber][i] = status.green
+          newCellStatuses[rowNumber][i] = CellStatus.Green
           answerChars.splice(i, 1)
           fixedLetters[i] = rowCharacter(answer, i)
         }
@@ -305,9 +304,9 @@ function App() {
       for (let i = 0; i < rowLength; i++) {
         if (
           answerChars.includes(rowCharacter(row, i)) &&
-          newCellStatuses[rowNumber][i] !== status.green
+          newCellStatuses[rowNumber][i] !== CellStatus.Green
         ) {
-          newCellStatuses[rowNumber][i] = status.yellow
+          newCellStatuses[rowNumber][i] = CellStatus.Yellow
           answerChars.splice(answerChars.indexOf(rowCharacter(row, i)), 1)
         }
       }
@@ -317,7 +316,7 @@ function App() {
   }
 
   const isRowAllGreen = (row: string[]) => {
-    return row.every((cell: string) => cell === status.green)
+    return row.every((cell: string) => cell === CellStatus.Green)
   }
 
   // every time cellStatuses updates, check if the game is won or lost
@@ -325,7 +324,7 @@ function App() {
     const cellStatusesCopy = [...cellStatuses]
     const reversedStatuses = cellStatusesCopy.reverse()
     const lastFilledRow = reversedStatuses.find((r) => {
-      return r[0] !== status.unguessed
+      return r[0] !== CellStatus.Unguessed
     })
 
     if (gameState === PlayState.Playing && lastFilledRow && isRowAllGreen(lastFilledRow)) {
