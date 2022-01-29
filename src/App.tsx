@@ -160,8 +160,12 @@ function App() {
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
-  const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', Difficulty.Normal)
+  const [difficultyLevel, persistDifficultyLevel] = useLocalStorage('difficulty', Difficulty.Normal)
   const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer(difficultyLevel))
+  const setDifficultyLevel = (d: Difficulty) => {
+    persistDifficultyLevel(d)
+    newGame()
+  }
   const getDifficultyLevelInstructions = () => {
     if (difficultyLevel === Difficulty.Easy) {
       return `
@@ -360,7 +364,7 @@ function App() {
     })
   }
 
-  const playAgain = () => {
+  const newGame = () => {
     setAnswer(initialStates.answer(difficultyLevel))
     setGameState(initialStates.gameState)
     setBoard(initialStates.board)
@@ -369,7 +373,9 @@ function App() {
     setCurrentCol(initialStates.currentCol)
     setCharStatuses(initialStates.charStatuses())
     setSubmittedInvalidWord(initialStates.submittedInvalidWord)
-
+  }
+  const playAgain = () => {
+    newGame()
     closeModal()
   }
 
