@@ -36,6 +36,7 @@ test('isFunAnswer is false for equation patterns that always equal one', () => {
   ;[
     { operandA: 5, operator: '^', operandB: 0, result: 1 },
     { operandA: 1, operator: '^', operandB: 3, result: 1 },
+    { operandA: 4, operator: '/', operandB: 4, result: 1 },
   ].forEach((row) => {
     expect(isFunAnswer(row)).toEqual(false)
   })
