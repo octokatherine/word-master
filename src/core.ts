@@ -20,11 +20,11 @@ type Operator = '+' | '-' | '*' | '/' | '^' | '%'
 export const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 export const operators: Operator[] = ['+', '-', '*', '/', '^', '%']
 
-export const status = {
-  green: 'green',
-  yellow: 'yellow',
-  gray: 'gray',
-  unguessed: 'unguessed',
+export enum CellStatus {
+  Green = 'green',
+  Yellow = 'yellow',
+  Gray = 'gray',
+  Unguessed = 'unguessed',
 }
 export function validOperators(difficulty: Difficulty): Operator[] {
   switch (difficulty) {

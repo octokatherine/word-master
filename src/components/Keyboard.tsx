@@ -1,8 +1,8 @@
-import { status, numbers } from '../core'
+import { CellStatus, numbers } from '../core'
 import { useEffect, useCallback } from 'react'
 
 type Props = {
-  charStatuses: { [key: string]: string }
+  charStatuses: { [key: string]: CellStatus }
   gameDisabled: boolean
   onDeletePress: () => void
   onEnterPress: () => void
@@ -20,15 +20,15 @@ const Keyboard = ({
   nextCharIsAnOperator,
   validOperators,
 }: Props) => {
-  const getKeyStyle = (char: string) => {
+  const getKeyStyle = (char: string): string => {
     switch (charStatuses[char]) {
-      case status.green:
+      case CellStatus.Green:
         return 'bg-n-green text-gray-50'
-      case status.yellow:
+      case CellStatus.Yellow:
         return 'bg-yellow-500 text-gray-50'
-      case status.gray:
+      case CellStatus.Gray:
         return 'bg-n-gray text-gray-50'
-      default:
+      case CellStatus.Unguessed:
         return 'text-primary dark:text-primary-dark'
     }
   }
