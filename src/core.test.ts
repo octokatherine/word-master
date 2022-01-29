@@ -13,6 +13,7 @@ test('isFunAnswer is false for identity functions', () => {
     { operandA: 1, operator: '*', operandB: 2, result: 2 },
     { operandA: 2, operator: '*', operandB: 1, result: 2 },
     { operandA: 5, operator: '/', operandB: 1, result: 5 },
+    { operandA: 5, operator: '^', operandB: 1, result: 5 },
   ].forEach((row) => {
     expect(isFunAnswer(row)).toEqual(false)
   })
@@ -32,7 +33,10 @@ test('isFunAnswer is false for equations that always equal zero', () => {
 })
 
 test('isFunAnswer is false for equation patterns that always equal one', () => {
-  ;[{ operandA: 5, operator: '^', operandB: 0, result: 1 }].forEach((row) => {
+  ;[
+    { operandA: 5, operator: '^', operandB: 0, result: 1 },
+    { operandA: 1, operator: '^', operandB: 3, result: 1 },
+  ].forEach((row) => {
     expect(isFunAnswer(row)).toEqual(false)
   })
 })

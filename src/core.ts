@@ -106,7 +106,7 @@ export function isFunAnswer(row: Answer): boolean {
     case '/':
       return row.operandA !== 0 && row.operandB !== 1
     case '^':
-      return row.operandA !== 0 && row.operandB !== 0
+      return row.operandA > 1 && row.operandB > 1
     case '%':
       return row.operandA !== 0 && row.operandB !== 1
   }
