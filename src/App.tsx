@@ -320,7 +320,6 @@ function App() {
 
       return newCellStatuses
     })
-    setExactGuesses((prev: { [key: number]: string }) => ({ ...prev, ...fixedLetters }))
   }
 
   const isRowAllGreen = (row: string[]) => {
@@ -371,7 +370,6 @@ function App() {
     setCurrentCol(initialStates.currentCol)
     setCharStatuses(initialStates.charStatuses())
     setSubmittedInvalidWord(initialStates.submittedInvalidWord)
-    setExactGuesses({})
 
     closeModal()
   }
