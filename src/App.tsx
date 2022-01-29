@@ -7,8 +7,8 @@ import {
   Difficulty,
   Equation,
   getRandomAnswer,
+  allOperators,
   numbers,
-  operators,
   PlayState,
   Row,
   rowCharacter,
@@ -119,7 +119,7 @@ function App() {
       numbers.forEach((char) => {
         statuses[char] = CellStatus.Unguessed
       })
-      operators.forEach((char) => {
+      allOperators.forEach((char) => {
         statuses[char] = CellStatus.Unguessed
       })
       return statuses
