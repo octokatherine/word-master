@@ -131,7 +131,12 @@ function getResult(operandA: number, operator: Operator, operandB: number): numb
 export function validEquation(row: Row): boolean {
   if (row.operandA !== undefined && row.operator !== undefined && row.operandB !== undefined) {
     const correctResult = getResult(row.operandA, row.operator, row.operandB)
-    return Number.isInteger(correctResult) && correctResult < 10 && correctResult === row.result
+    return (
+      correctResult >= 0 &&
+      correctResult < 10 &&
+      Number.isInteger(correctResult) &&
+      correctResult === row.result
+    )
   } else {
     return false
   }

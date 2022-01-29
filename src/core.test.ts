@@ -91,3 +91,8 @@ test('validEquation is false if result is not an integer', () => {
   const row = { operandA: 2, operator: '+' as Operator, operandB: 5.5, result: 7.5 }
   expect(validEquation(row)).toEqual(false)
 })
+
+test('validEquation is false if result is less than 0', () => {
+  const row = { operandA: 0, operator: '-' as Operator, operandB: 3, result: -3 }
+  expect(validEquation(row)).toEqual(false)
+})
