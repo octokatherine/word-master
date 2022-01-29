@@ -123,7 +123,7 @@ function getResult(operandA: number, operator: Operator, operandB: number): numb
 export function validEquation(row: Row): boolean {
   if (row.operandA !== undefined && row.operator !== undefined && row.operandB !== undefined) {
     const correctResult = getResult(row.operandA, row.operator, row.operandB)
-    return correctResult < 10 && correctResult === row.result
+    return Number.isInteger(correctResult) && correctResult < 10 && correctResult === row.result
   } else {
     return false
   }
@@ -147,5 +147,4 @@ export function isFunAnswer(row: Answer): boolean {
     case '%':
       return row.operandA !== 0 && row.operandB !== 1
   }
-  return true
 }
