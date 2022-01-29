@@ -181,7 +181,6 @@ function App() {
       `
     }
   }
-  const eg: { [key: number]: string } = {}
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
