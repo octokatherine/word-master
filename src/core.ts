@@ -29,6 +29,18 @@ export function validOperators(difficulty: Difficulty): string[] {
   }
 }
 
+export function backspace(row: Row) {
+  if (row.result != null) {
+    row.result = undefined
+  } else if (row.operandB != null) {
+    row.operandB = undefined
+  } else if (row.operator) {
+    row.operator = undefined
+  } else if (row.operandA != null) {
+    row.operandA = undefined
+  }
+}
+
 export function rowCharacter(row: Row, col: number): string {
   switch (col) {
     case 0:

@@ -1,8 +1,32 @@
-import { isFunAnswer, rowCharacters } from './core'
+import { backspace, isFunAnswer, rowCharacters } from './core'
 
-test('rowCharacters displays strings to render a row', () => {
-  const row = { operandA: 1, operator: '+', operandB: 2, result: 3 }
-  expect(rowCharacters(row)).toEqual(['1', '+', '2', '=', '3'])
+test(`backspace deletes the result, even if it's a 0`, () => {
+  const row = {
+    operandA: 0,
+    operator: '+',
+    operandB: 0,
+    result: 0,
+  }
+  backspace(row)
+  expect(rowCharacters(row)).toEqual(['0', '+', '0', '=', ''])
+})
+
+test(`backspace deletes operand B, even if it's a 0`, () => {
+  const row = {
+    operandA: 0,
+    operator: '+',
+    operandB: 0,
+  }
+  backspace(row)
+  expect(rowCharacters(row)).toEqual(['0', '+', '', '=', ''])
+})
+
+test(`backspace deletes operand A, even if it's a 0`, () => {
+  const row = {
+    operandA: 0,
+  }
+  backspace(row)
+  expect(rowCharacters(row)).toEqual(['', '', '', '=', ''])
 })
 
 test('isFunAnswer is false for identity functions', () => {
@@ -46,4 +70,9 @@ test('isFunAnswer is true for equations that are solvable with skill', () => {
   ;[{ operandA: 1, operator: '+', operandB: 2, result: 3 }].forEach((row) => {
     expect(isFunAnswer(row)).toEqual(true)
   })
+})
+
+test('rowCharacters displays strings to render a row', () => {
+  const row = { operandA: 1, operator: '+', operandB: 2, result: 3 }
+  expect(rowCharacters(row)).toEqual(['1', '+', '2', '=', '3'])
 })

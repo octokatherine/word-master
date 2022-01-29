@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 import {
   Answer,
+  backspace,
   Difficulty,
   Equation,
   getRandomAnswer,
@@ -83,18 +84,6 @@ function calculateCharStatuses(
   }
 
   return result
-}
-
-function backspace(row: Row) {
-  if (row.result) {
-    row.result = undefined
-  } else if (row.operandB) {
-    row.operandB = undefined
-  } else if (row.operator) {
-    row.operator = undefined
-  } else if (row.operandA) {
-    row.operandA = undefined
-  }
 }
 
 function addCharacter(row: Row, currentCol: number, character: string) {
