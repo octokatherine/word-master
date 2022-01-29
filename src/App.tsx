@@ -16,6 +16,7 @@ import {
   validEquation,
   validOperators,
   Operator,
+  rowToString,
 } from './core'
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
@@ -200,10 +201,13 @@ function App() {
     switch (gameState) {
       case PlayState.Playing:
         window.plausible('hurdle-new-game')
+        break
       case PlayState.Lost:
-        window.plausible('hurdle-lost', { props: { answer: answer } })
+        window.plausible('hurdle-lost', { props: { answer: rowToString(answer) } })
+        break
       case PlayState.Won:
-        window.plausible('hurdle-won', { props: { answer: answer } })
+        window.plausible('hurdle-won', { props: { answer: rowToString(answer) } })
+        break
     }
   }, [gameState])
 

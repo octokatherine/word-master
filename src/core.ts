@@ -79,6 +79,9 @@ export function rowCharacters(row: Row): string[] {
     return rowCharacter(row, col)
   })
 }
+export function rowToString(row: Row): string {
+  return rowCharacters(row).join('')
+}
 
 export function getRandomAnswer(difficulty: Difficulty): Answer {
   const operator = getRandomOperator(difficulty)
