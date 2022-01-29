@@ -341,7 +341,7 @@ function App() {
   return (
     <div className={darkMode ? 'dark' : ''}>
       <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
-        <header className="flex items-center py-2 px-3 text-primary dark:text-primary-dark">
+        <header className="flex items-center py-1 sm:py-2 px-3 text-primary dark:text-primary-dark">
           <button
             type="button"
             onClick={() => setSettingsModalIsOpen(true)}
@@ -360,7 +360,7 @@ function App() {
             <Info />
           </button>
         </header>
-        <div className="flex items-center flex-col py-3 flex-1 justify-center relative">
+        <div className="flex items-center flex-col pb-3 flex-1 justify-center relative">
           <div className="relative">
             <div className="grid grid-cols-5 grid-flow-row gap-4">
               {board.map((row: string[], rowNumber: number) =>
