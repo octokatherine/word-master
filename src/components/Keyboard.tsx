@@ -61,7 +61,7 @@ const Keyboard = ({
         addLetter(key)
       }
     },
-    [addLetter, onEnterPress, onDeletePress, gameDisabled]
+    [addLetter, onEnterPress, onDeletePress, gameDisabled, nextCharIsAnOperator, validOperators]
   )
 
   useEffect(() => {

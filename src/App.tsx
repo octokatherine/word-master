@@ -181,8 +181,6 @@ function App() {
       `
     }
   }
-  const eg: { [key: number]: string } = {}
-  const [exactGuesses, setExactGuesses] = useLocalStorage('exact-guesses', eg)
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -321,7 +319,6 @@ function App() {
 
       return newCellStatuses
     })
-    setExactGuesses((prev: { [key: number]: string }) => ({ ...prev, ...fixedLetters }))
   }
 
   const isRowAllGreen = (row: string[]) => {
@@ -372,7 +369,6 @@ function App() {
     setCurrentCol(initialStates.currentCol)
     setCharStatuses(initialStates.charStatuses())
     setSubmittedInvalidWord(initialStates.submittedInvalidWord)
-    setExactGuesses({})
 
     closeModal()
   }
