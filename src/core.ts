@@ -1,3 +1,8 @@
+declare global {
+  interface Window {
+    plausible: (s: string) => void
+  }
+}
 export interface Row {
   operandA?: number
   operator?: Operator

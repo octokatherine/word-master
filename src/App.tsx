@@ -196,6 +196,17 @@ function App() {
     }
   }, [gameState])
 
+  useEffect(() => {
+    switch (gameState) {
+      case PlayState.Playing:
+        window.plausible('hurdle-new-game')
+      case PlayState.Lost:
+        window.plausible('hurdle-lost')
+      case PlayState.Won:
+        window.plausible('hurdle-won')
+    }
+  }, [gameState])
+
   const getCellStyles = (rowNumber: number, colNumber: number, letter: string): string => {
     if (rowNumber === currentRow) {
       if (letter) {
