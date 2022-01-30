@@ -28,8 +28,9 @@ const normalOperators: Operator[] = ['^']
 const hardOperators: Operator[] = ['%']
 export const allOperators = easyOperators.concat(normalOperators, hardOperators)
 
-export type Column = 0 | 1 | 2 | 3 | 4
-export const columns: Column[] = [0, 1, 2, 3, 4]
+export type Column = 0 | 1 | 2 | 3 | 4 | 5
+export const columns: Column[] = [0, 1, 2, 3, 4, 5]
+export const rowCount: number = 6
 
 export enum CellStatus {
   Green = 'green',
@@ -50,7 +51,11 @@ export function validOperators(difficulty: Difficulty): Operator[] {
 
 export function backspace(row: Row) {
   if (row.result != null) {
-    row.result = undefined
+    if (row.result >= 10) {
+      row.result = row.result % 10
+    } else {
+      row.result = undefined
+    }
   } else if (row.operandB != null) {
     row.operandB = undefined
   } else if (row.operator) {
@@ -71,7 +76,19 @@ export function rowCharacter(row: Row, col: Column): string {
     case 3:
       return '='
     case 4:
-      return row.result?.toString() || ''
+      if (row.result === undefined || row.result < 10) {
+        return ''
+      } else {
+        const resultString = row.result.toString()
+        return resultString[0]
+      }
+    case 5:
+      if (row.result === undefined) {
+        return ''
+      } else {
+        const resultString = row.result.toString()
+        return resultString[1] || resultString[0] || ''
+      }
   }
 }
 
@@ -134,7 +151,7 @@ export function validEquation(row: Row): boolean {
     const correctResult = getResult(row.operandA, row.operator, row.operandB)
     return (
       correctResult >= 0 &&
-      correctResult < 10 &&
+      correctResult < 100 &&
       Number.isInteger(correctResult) &&
       correctResult === row.result
     )
