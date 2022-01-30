@@ -283,7 +283,6 @@ function App() {
   }
 
   const updateCellStatuses = (row: Row, rowNumber: number) => {
-    const fixedLetters: { [key: number]: string } = {}
     setCellStatuses((prev: string[][]) => {
       const newCellStatuses = [...prev]
       newCellStatuses[rowNumber] = [...prev[rowNumber]]
@@ -299,8 +298,6 @@ function App() {
       for (let col of [...columns].reverse()) {
         if (isCellCorrect(row, col, answer)) {
           newCellStatuses[rowNumber][col] = CellStatus.Green
-          answerChars.splice(col, 1)
-          fixedLetters[col] = rowCharacter(answer, col)
         }
       }
 
@@ -311,7 +308,6 @@ function App() {
           newCellStatuses[rowNumber][col] !== CellStatus.Green
         ) {
           newCellStatuses[rowNumber][col] = CellStatus.Yellow
-          answerChars.splice(answerChars.indexOf(rowCharacter(row, col)), 1)
         }
       }
 
