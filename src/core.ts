@@ -50,7 +50,7 @@ export function validOperators(difficulty: Difficulty): Operator[] {
 }
 
 export function nextCharIsAnOperator(row: Row): boolean {
-  return row.operandA !== undefined && row.operator == undefined
+  return row && row.operandA !== undefined && row.operator == undefined
 }
 
 export function backspace(row: Row) {
