@@ -123,7 +123,7 @@ function addCharacter(row: Row, currentCol: Column, character: string) {
       row.result = parseInt(character)
       break
     case 5:
-      if (row.result) {
+      if (row.result !== undefined) {
         row.result = row.result * 10 + parseInt(character)
       }
       break
