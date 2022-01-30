@@ -15,7 +15,6 @@ import {
   rowCharacters,
   validEquation,
   validOperators,
-  Operator,
   rowToString,
   columns,
   Column,
@@ -338,7 +337,7 @@ function App() {
       var streak = currentStreak + 1
       setCurrentStreak(streak)
       setLongestStreak((prev: number) => (streak > prev ? streak : prev))
-    } else if (gameState === PlayState.Playing && currentRow === 6) {
+    } else if (gameState === PlayState.Playing && currentRowNum === 6) {
       setGameState(PlayState.Lost)
       setCurrentStreak(0)
     }
