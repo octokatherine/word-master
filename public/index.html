@@ -52,7 +52,7 @@
     <script type="text/javascript">
       Honeybadger.configure({
         apiKey: 'hbp_JbEhkdsNSgyV6zxZfROVqNYSOg8Wtg2QMNYe',
-        environment: 'production',
+        environment: window.location.hostname === 'iancanderson.com' ? 'production' : 'development',
       })
     </script>
   </head>
