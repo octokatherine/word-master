@@ -102,19 +102,26 @@ export const SettingsModal = ({
               </a>
               <span className="ml-1 text-xs">💚</span>
             </div>
-            <a href="https://www.buymeacoffee.com/iancanderson" target="_blank">
-              <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=iancanderson&button_colour=40DCA5&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00" />
+            <a href="https://www.buymeacoffee.com/iancanderson" target="_blank" rel="noreferrer">
+              <img
+                src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=iancanderson&button_colour=40DCA5&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"
+                alt="Buy me a coffee"
+              />
             </a>
           </div>
 
           <div className="flex flex-col items-center">
             <span className="m-4">
               While you're at it, check out{' '}
-              <a href="https://octokatherine.github.io/word-master" target="_blank">
+              <a
+                href="https://octokatherine.github.io/word-master"
+                target="_blank"
+                rel="noreferrer"
+              >
                 Word Master ↗
               </a>
               , which{' '}
-              <a href="https://github.com/iancanderson/hurdle" target="_blank">
+              <a href="https://github.com/iancanderson/hurdle" target="_blank" rel="noreferrer">
                 hurdle's code
               </a>{' '}
               is based on.
