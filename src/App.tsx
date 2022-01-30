@@ -44,8 +44,12 @@ function isCellCorrect(row: Row, col: Column, answer: Answer): boolean {
   return rowCharacter(row, col) === rowCharacter(answer, col)
 }
 
-function hasNumber(row: Row, num?: number): boolean {
-  return row.operandA === num || row.operandB === num || row.result === num
+function hasNumber(row: Answer, num?: number): boolean {
+  return (
+    row.operandA === num ||
+    row.operandB === num ||
+    (!!num && row.result.toString().includes(num.toString()))
+  )
 }
 
 function calculateCharStatuses(
@@ -220,7 +224,6 @@ function App() {
   }, [answer, gameState])
 
   const getCellStyles = (rowNumber: number, colNumber: number, letter: string): string => {
-    console.log({ currentRow, rowNumber, colNumber, letter })
     if (rowNumber === currentRow) {
       if (letter) {
         return `nm-inset-background dark:nm-inset-background-dark text-primary dark:text-primary-dark ${
