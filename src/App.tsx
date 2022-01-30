@@ -20,6 +20,8 @@ import {
   columns,
   Column,
   rowCount,
+  nextCharIsAnOperator,
+  addCharacter,
 } from './core'
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
@@ -34,7 +36,7 @@ type State = {
   gameState: PlayState
   board: Row[]
   cellStatuses: CellStatus[][]
-  currentRow: number
+  currentRowNum: number
   currentCol: Column
   charStatuses: () => { [key: string]: CellStatus }
   submittedInvalidWord: boolean
@@ -105,38 +107,13 @@ function calculateCharStatuses(
   return result
 }
 
-function addCharacter(row: Row, currentCol: Column, character: string) {
-  switch (currentCol) {
-    case 0:
-      row.operandA = parseInt(character)
-      break
-    case 1:
-      //TODO: avoid cast?
-      row.operator = character as Operator
-      break
-    case 2:
-      row.operandB = parseInt(character)
-      break
-    case 3:
-      break
-    case 4:
-      row.result = parseInt(character)
-      break
-    case 5:
-      if (row.result !== undefined) {
-        row.result = row.result * 10 + parseInt(character)
-      }
-      break
-  }
-}
-
 function App() {
   const initialStates: State = {
     answer: (d: Difficulty) => getRandomAnswer(d),
     gameState: PlayState.Playing,
     board: Array.from({ length: rowCount }, () => ({})),
     cellStatuses: Array(rowCount).fill(Array(columns.length).fill(CellStatus.Unguessed)),
-    currentRow: 0,
+    currentRowNum: 0,
     currentCol: 0,
     charStatuses: () => {
       const statuses: { [key: string]: CellStatus } = {}
@@ -157,8 +134,10 @@ function App() {
     'stateCellStatuses',
     initialStates.cellStatuses
   )
-  const [currentRow, setCurrentRow] = useLocalStorage('stateCurrentRow', initialStates.currentRow)
-  const [currentCol, setCurrentCol] = useLocalStorage('stateCurrentCol', initialStates.currentCol)
+  const [currentRowNum, setCurrentRow] = useLocalStorage(
+    'stateCurrentRow',
+    initialStates.currentRowNum
+  )
   const [charStatuses, setCharStatuses] = useLocalStorage(
     'stateCharStatuses',
     initialStates.charStatuses()
@@ -233,7 +212,7 @@ function App() {
   }, [answer, gameState])
 
   const getCellStyles = (rowNumber: number, colNumber: number, letter: string): string => {
-    if (rowNumber === currentRow) {
+    if (rowNumber === currentRowNum) {
       if (letter) {
         return `nm-inset-background dark:nm-inset-background-dark text-primary dark:text-primary-dark ${
           submittedInvalidWord ? 'border border-red-800' : ''
@@ -257,19 +236,11 @@ function App() {
   const addLetter = (character: string) => {
     setSubmittedInvalidWord(false)
     setBoard((prev: Row[]) => {
-      if (currentCol >= columns.length) {
-        return prev
-      }
       const newBoard = [...prev]
-      const row = newBoard[currentRow]
-      addCharacter(row, currentCol, character)
+      const row = newBoard[currentRowNum]
+      addCharacter(row, character)
       return newBoard
     })
-    if (currentCol < columns.length) {
-      // Equals sign is fixed - skip over it
-      const delta = currentCol === 2 ? 2 : 1
-      setCurrentCol((prev: number) => prev + delta)
-    }
   }
 
   // returns an array with a boolean of if the row is valid and an error message if it is not
@@ -282,7 +253,7 @@ function App() {
   }
 
   const onEnterPress = () => {
-    const row = board[currentRow]
+    const row = board[currentRowNum]
     const [valid, _err] = isValidRow(row)
     if (!valid) {
       console.log({ valid, _err })
@@ -293,26 +264,18 @@ function App() {
 
     if (currentRow === 6) return
 
-    updateCellStatuses(row, currentRow)
+    updateCellStatuses(row, currentRowNum)
     updateCharStatuses(row)
     setCurrentRow((prev: number) => prev + 1)
-    setCurrentCol(0)
   }
 
   const onDeletePress = () => {
     setSubmittedInvalidWord(false)
-    if (currentCol === 0) return
 
     setBoard((prev: Row[]) => {
       const newBoard = [...prev]
-      backspace(newBoard[currentRow])
+      backspace(newBoard[currentRowNum])
       return newBoard
-    })
-
-    setCurrentCol((prev: number) => {
-      // Equals sign is fixed - skip over it
-      const delta = currentCol === 4 ? 2 : 1
-      return prev - delta
     })
   }
 
@@ -377,7 +340,7 @@ function App() {
     }
   }, [
     cellStatuses,
-    currentRow,
+    currentRowNum,
     gameState,
     setGameState,
     currentStreak,
@@ -397,8 +360,7 @@ function App() {
     setGameState(initialStates.gameState)
     setBoard(initialStates.board)
     setCellStatuses(initialStates.cellStatuses)
-    setCurrentRow(initialStates.currentRow)
-    setCurrentCol(initialStates.currentCol)
+    setCurrentRow(initialStates.currentRowNum)
     setCharStatuses(initialStates.charStatuses())
     setSubmittedInvalidWord(initialStates.submittedInvalidWord)
   }
@@ -439,7 +401,7 @@ function App() {
     },
   }
 
-  const nextCharIsAnOperator = currentCol === 1
+  const currentRow = board[currentRowNum]
 
   return (
     <div className={darkMode ? 'dark' : ''}>
@@ -537,7 +499,7 @@ function App() {
             onEnterPress={onEnterPress}
             onDeletePress={onDeletePress}
             gameDisabled={gameState !== PlayState.Playing}
-            nextCharIsAnOperator={nextCharIsAnOperator}
+            nextCharIsAnOperator={nextCharIsAnOperator(currentRow)}
             validOperators={validOperators(difficultyLevel)}
           />
         </div>

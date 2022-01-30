@@ -49,6 +49,10 @@ export function validOperators(difficulty: Difficulty): Operator[] {
   }
 }
 
+export function nextCharIsAnOperator(row: Row): boolean {
+  return row.operandA !== undefined && row.operator == undefined
+}
+
 export function backspace(row: Row) {
   if (row.result != null) {
     if (row.result >= 10) {
@@ -62,6 +66,21 @@ export function backspace(row: Row) {
     row.operator = undefined
   } else if (row.operandA != null) {
     row.operandA = undefined
+  }
+}
+
+export function addCharacter(row: Row, character: string) {
+  if (row.operandA == null) {
+    row.operandA = parseInt(character)
+  } else if (row.operator == null) {
+    //TODO: avoid cast?
+    row.operator = character as Operator
+  } else if (row.operandB == null) {
+    row.operandB = parseInt(character)
+  } else if (row.result == null) {
+    row.result = parseInt(character)
+  } else if (row.result < 10) {
+    row.result = row.result * 10 + parseInt(character)
   }
 }
 
