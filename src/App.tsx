@@ -85,13 +85,22 @@ function calculateCharStatuses(
     result[equation.operandB] = CellStatus.Gray
   }
 
-  if (equation.result === answer.result) {
-    result[equation.result] = CellStatus.Green
-  } else if (hasNumber(answer, equation.result)) {
-    result[equation.result] = CellStatus.Yellow
-  } else {
-    result[equation.result] = CellStatus.Gray
-  }
+  let equationResultChars = equation.result.toString().split('')
+  equationResultChars =
+    equationResultChars.length > 1 ? equationResultChars : ['', equationResultChars[0]]
+
+  let answerResultChars = answer.result.toString().split('')
+  answerResultChars = answerResultChars.length > 1 ? answerResultChars : ['', answerResultChars[0]]
+
+  equationResultChars.forEach((resultChar, i) => {
+    if (resultChar === answerResultChars[i]) {
+      result[resultChar] = CellStatus.Green
+    } else if (hasNumber(answer, parseInt(resultChar))) {
+      result[resultChar] = CellStatus.Yellow
+    } else {
+      result[resultChar] = CellStatus.Gray
+    }
+  })
 
   return result
 }
