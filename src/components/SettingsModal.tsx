@@ -97,26 +97,28 @@ export const SettingsModal = ({
           <div className="flex flex-col items-center">
             <div className="mb-4">
               If you're enjoying this game, you can show your support by{' '}
-              <a
-                href="https://www.buymeacoffee.com/katherinecodes"
-                target="_blank"
-                rel="noreferrer"
-              >
-                buying katherine a coffee
+              <a href="https://www.buymeacoffee.com/iancanderson" target="_blank" rel="noreferrer">
+                buying me a coffee
               </a>
-              <span className="ml-1 text-xs">💛</span>
+              <span className="ml-1 text-xs">💚</span>
             </div>
-            <a
-              href="https://www.buymeacoffee.com/katherinecodes"
-              target="_blank"
-              rel="noreferrer"
-              className="nm-flat-background dark:nm-flat-background-dark rounded-xl hover:nm-inset-background dark:hover:nm-inset-background-dark"
-            >
-              <img
-                alt="buy katherine a coffee"
-                src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=katherinecodes&button_colour=eab308&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"
-              />
+            <a href="https://www.buymeacoffee.com/iancanderson" target="_blank">
+              <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=iancanderson&button_colour=40DCA5&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00" />
             </a>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <span className="m-4">
+              While you're at it, check out{' '}
+              <a href="https://octokatherine.github.io/word-master" target="_blank">
+                Word Master ↗
+              </a>
+              , which{' '}
+              <a href="https://github.com/iancanderson/hurdle" target="_blank">
+                hurdle's code
+              </a>{' '}
+              is based on.
+            </span>
           </div>
         </div>
       </div>
