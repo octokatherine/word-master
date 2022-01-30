@@ -30,7 +30,7 @@ import { ReactComponent as Settings } from './data/Settings.svg'
 
 type State = {
   answer: (d: Difficulty) => Answer
-  gameState: string
+  gameState: PlayState
   board: Row[]
   cellStatuses: CellStatus[][]
   currentRow: number
