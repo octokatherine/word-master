@@ -8,7 +8,7 @@ test(`backspace deletes the result, even if it's a 0`, () => {
     result: 0,
   }
   backspace(row)
-  expect(rowCharacters(row)).toEqual(['0', '+', '0', '=', '', ''])
+  expect(rowCharacters(row)).toEqual(['0', '+', '0', '=', ''])
 })
 
 test(`backspace deletes operand B, even if it's a 0`, () => {
@@ -18,7 +18,7 @@ test(`backspace deletes operand B, even if it's a 0`, () => {
     operandB: 0,
   }
   backspace(row)
-  expect(rowCharacters(row)).toEqual(['0', '+', '', '=', '', ''])
+  expect(rowCharacters(row)).toEqual(['0', '+', '', '=', ''])
 })
 
 test(`backspace deletes operand A, even if it's a 0`, () => {
@@ -26,7 +26,7 @@ test(`backspace deletes operand A, even if it's a 0`, () => {
     operandA: 0,
   }
   backspace(row)
-  expect(rowCharacters(row)).toEqual(['', '', '', '=', '', ''])
+  expect(rowCharacters(row)).toEqual(['', '', '', '=', ''])
 })
 
 test('isFunAnswer is false for identity functions', () => {
@@ -74,11 +74,11 @@ test('isFunAnswer is true for equations that are solvable with skill', () => {
 
 test('rowCharacters displays strings to render a row', () => {
   const row = { operandA: 1, operator: '+' as Operator, operandB: 2, result: 3 }
-  expect(rowCharacters(row)).toEqual(['1', '+', '2', '=', '', '3'])
+  expect(rowCharacters(row)).toEqual(['1', '+', '2', '=', '3'])
 })
 
-test('validEquation is false if result greater than 99', () => {
-  const row = { operandA: 5, operator: '^' as Operator, operandB: 3, result: 125 }
+test('validEquation is false if result greater than 9', () => {
+  const row = { operandA: 2, operator: '+' as Operator, operandB: 8, result: 10 }
   expect(validEquation(row)).toEqual(false)
 })
 
