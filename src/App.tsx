@@ -19,6 +19,7 @@ import {
   rowToString,
   columns,
   Column,
+  rowCount,
 } from './core'
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
@@ -34,7 +35,7 @@ type State = {
   board: Row[]
   cellStatuses: CellStatus[][]
   currentRow: number
-  currentCol: number
+  currentCol: Column
   charStatuses: () => { [key: string]: CellStatus }
   submittedInvalidWord: boolean
 }
@@ -91,7 +92,7 @@ function calculateCharStatuses(
   return result
 }
 
-function addCharacter(row: Row, currentCol: number, character: string) {
+function addCharacter(row: Row, currentCol: Column, character: string) {
   switch (currentCol) {
     case 0:
       row.operandA = parseInt(character)
@@ -108,6 +109,11 @@ function addCharacter(row: Row, currentCol: number, character: string) {
     case 4:
       row.result = parseInt(character)
       break
+    case 5:
+      if (row.result) {
+        row.result = row.result * 10 + parseInt(character)
+      }
+      break
   }
 }
 
@@ -115,8 +121,8 @@ function App() {
   const initialStates: State = {
     answer: (d: Difficulty) => getRandomAnswer(d),
     gameState: PlayState.Playing,
-    board: [{}, {}, {}, {}, {}, {}],
-    cellStatuses: Array(6).fill(Array(5).fill(CellStatus.Unguessed)),
+    board: Array.from({ length: rowCount }, () => ({})),
+    cellStatuses: Array(rowCount).fill(Array(columns.length).fill(CellStatus.Unguessed)),
     currentRow: 0,
     currentCol: 0,
     charStatuses: () => {
@@ -214,6 +220,7 @@ function App() {
   }, [answer, gameState])
 
   const getCellStyles = (rowNumber: number, colNumber: number, letter: string): string => {
+    console.log({ currentRow, rowNumber, colNumber, letter })
     if (rowNumber === currentRow) {
       if (letter) {
         return `nm-inset-background dark:nm-inset-background-dark text-primary dark:text-primary-dark ${
@@ -238,7 +245,7 @@ function App() {
   const addLetter = (character: string) => {
     setSubmittedInvalidWord(false)
     setBoard((prev: Row[]) => {
-      if (currentCol > 4) {
+      if (currentCol >= columns.length) {
         return prev
       }
       const newBoard = [...prev]
@@ -246,7 +253,7 @@ function App() {
       addCharacter(row, currentCol, character)
       return newBoard
     })
-    if (currentCol < 5) {
+    if (currentCol < columns.length) {
       // Equals sign is fixed - skip over it
       const delta = currentCol === 2 ? 2 : 1
       setCurrentCol((prev: number) => prev + delta)
@@ -446,7 +453,11 @@ function App() {
         </header>
         <div className="flex items-center flex-col py-3 flex-1 justify-center relative">
           <div className="relative">
-            <div className="grid grid-cols-5 grid-flow-row gap-4">
+            <div
+              className={`grid ${
+                columns.length === 6 ? 'grid-cols-6' : 'grid-cols-5'
+              } grid-flow-row gap-2`}
+            >
               {board.map((row, rowNumber) =>
                 rowCharacters(row).map((value: string, colNumber: number) => (
                   <span
