@@ -211,6 +211,10 @@ function App() {
     }
   }, [answer, gameState])
 
+  function getCellStatus(row: number, col: number) {
+    return cellStatuses[row][col] ?? CellStatus.Unguessed
+  }
+
   const getCellStyles = (rowNumber: number, colNumber: number, letter: string): string => {
     if (rowNumber === currentRowNum) {
       if (letter) {
@@ -221,7 +225,7 @@ function App() {
       return 'nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark'
     }
 
-    switch (cellStatuses[rowNumber][colNumber]) {
+    switch (getCellStatus(rowNumber, colNumber)) {
       case CellStatus.Green:
         return 'nm-inset-n-green text-gray-50'
       case CellStatus.Yellow:
