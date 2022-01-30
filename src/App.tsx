@@ -17,6 +17,8 @@ import {
   validOperators,
   Operator,
   rowToString,
+  columns,
+  Column,
 } from './core'
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
@@ -37,8 +39,8 @@ type State = {
   submittedInvalidWord: boolean
 }
 
-function isCellCorrect(row: Row, i: number, answer: Answer): boolean {
-  return rowCharacter(row, i) === rowCharacter(answer, i)
+function isCellCorrect(row: Row, col: Column, answer: Answer): boolean {
+  return rowCharacter(row, col) === rowCharacter(answer, col)
 }
 
 function hasNumber(row: Row, num?: number): boolean {
@@ -209,7 +211,7 @@ function App() {
         window.plausible('hurdle-won', { props: { answer: rowToString(answer) } })
         break
     }
-  }, [gameState])
+  }, [answer, gameState])
 
   const getCellStyles = (rowNumber: number, colNumber: number, letter: string): string => {
     if (rowNumber === currentRow) {
@@ -309,22 +311,22 @@ function App() {
       }
 
       // check greens
-      for (let i = rowLength - 1; i >= 0; i--) {
-        if (isCellCorrect(row, i, answer)) {
-          newCellStatuses[rowNumber][i] = CellStatus.Green
-          answerChars.splice(i, 1)
-          fixedLetters[i] = rowCharacter(answer, i)
+      for (let col of [...columns].reverse()) {
+        if (isCellCorrect(row, col, answer)) {
+          newCellStatuses[rowNumber][col] = CellStatus.Green
+          answerChars.splice(col, 1)
+          fixedLetters[col] = rowCharacter(answer, col)
         }
       }
 
       // check yellows
-      for (let i = 0; i < rowLength; i++) {
+      for (let col of columns) {
         if (
-          answerChars.includes(rowCharacter(row, i)) &&
-          newCellStatuses[rowNumber][i] !== CellStatus.Green
+          answerChars.includes(rowCharacter(row, col)) &&
+          newCellStatuses[rowNumber][col] !== CellStatus.Green
         ) {
-          newCellStatuses[rowNumber][i] = CellStatus.Yellow
-          answerChars.splice(answerChars.indexOf(rowCharacter(row, i)), 1)
+          newCellStatuses[rowNumber][col] = CellStatus.Yellow
+          answerChars.splice(answerChars.indexOf(rowCharacter(row, col)), 1)
         }
       }
 

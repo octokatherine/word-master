@@ -28,6 +28,9 @@ const normalOperators: Operator[] = ['^']
 const hardOperators: Operator[] = ['%']
 export const allOperators = easyOperators.concat(normalOperators, hardOperators)
 
+export type Column = 0 | 1 | 2 | 3 | 4
+export const columns: Column[] = [0, 1, 2, 3, 4]
+
 export enum CellStatus {
   Green = 'green',
   Yellow = 'yellow',
@@ -57,7 +60,7 @@ export function backspace(row: Row) {
   }
 }
 
-export function rowCharacter(row: Row, col: number): string {
+export function rowCharacter(row: Row, col: Column): string {
   switch (col) {
     case 0:
       return row.operandA?.toString() || ''
@@ -70,12 +73,10 @@ export function rowCharacter(row: Row, col: number): string {
     case 4:
       return row.result?.toString() || ''
   }
-
-  throw new Error('Something bad happened')
 }
 
 export function rowCharacters(row: Row): string[] {
-  return [0, 1, 2, 3, 4].map((col) => {
+  return columns.map((col) => {
     return rowCharacter(row, col)
   })
 }
