@@ -28,7 +28,6 @@ import { SettingsModal } from './components/SettingsModal'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { ReactComponent as Info } from './data/Info.svg'
 import { ReactComponent as Settings } from './data/Settings.svg'
-import { CLIENT_RENEG_WINDOW } from 'tls'
 
 type State = {
   answer: (d: Difficulty) => Answer
