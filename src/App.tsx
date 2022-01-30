@@ -454,7 +454,7 @@ function App() {
         </header>
         <div className="flex items-center flex-col py-3 flex-1 justify-center relative">
           <div className="relative">
-            <div className={`grid grid-cols-${columns.length} grid-flow-row gap-4`}>
+            <div className={`grid grid-cols-${columns.length} grid-flow-row gap-2`}>
               {board.map((row, rowNumber) =>
                 rowCharacters(row).map((value: string, colNumber: number) => (
                   <span
