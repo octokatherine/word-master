@@ -1518,6 +1518,7 @@ const words: { [key: string]: boolean } = {
   cline: true,
   cling: true,
   clink: true,
+  clint: true,
   clips: true,
   clipt: true,
   cloak: true,
