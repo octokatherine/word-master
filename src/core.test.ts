@@ -1,4 +1,12 @@
-import { backspace, isFunAnswer, Operator, rowCharacters, validEquation } from './core'
+import {
+  backspace,
+  Difficulty,
+  isFunAnswer,
+  Operator,
+  rowCharacters,
+  validEquation,
+  validOperators,
+} from './core'
 
 test(`backspace deletes the result, even if it's a 0`, () => {
   const row = {
@@ -95,4 +103,16 @@ test('validEquation is false if result is not an integer', () => {
 test('validEquation is false if result is less than 0', () => {
   const row = { operandA: 0, operator: '-' as Operator, operandB: 3, result: -3 }
   expect(validEquation(row)).toEqual(false)
+})
+
+test('validOperators does not include exponent or modulus for easy', () => {
+  expect(validOperators(Difficulty.Easy)).toEqual(['+', '-', '*', '/'])
+})
+
+test('validOperators does not include modulus for normal', () => {
+  expect(validOperators(Difficulty.Normal)).toEqual(['+', '-', '*', '/', '^'])
+})
+
+test('validOperators includes all operators for hard', () => {
+  expect(validOperators(Difficulty.Hard)).toEqual(['+', '-', '*', '/', '^', '%'])
 })

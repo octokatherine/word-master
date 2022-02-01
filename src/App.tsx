@@ -156,7 +156,7 @@ function App() {
   const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer(difficultyLevel))
   const setDifficultyLevel = (d: Difficulty) => {
     persistDifficultyLevel(d)
-    newGame()
+    newGame(d)
   }
   const getDifficultyLevelInstructions = () => {
     if (difficultyLevel === Difficulty.Easy) {
@@ -354,8 +354,8 @@ function App() {
     })
   }
 
-  const newGame = () => {
-    setAnswer(initialStates.answer(difficultyLevel))
+  const newGame = (difficulty: Difficulty) => {
+    setAnswer(initialStates.answer(difficulty))
     setGameState(initialStates.gameState)
     setBoard(initialStates.board)
     setCellStatuses(initialStates.cellStatuses)
@@ -364,7 +364,7 @@ function App() {
     setSubmittedInvalidWord(initialStates.submittedInvalidWord)
   }
   const playAgain = () => {
-    newGame()
+    newGame(difficultyLevel)
     closeModal()
   }
 
