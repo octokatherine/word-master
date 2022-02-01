@@ -131,13 +131,16 @@ function App() {
 
     switch (cellStatuses[rowNumber][colNumber]) {
       case status.green:
-        return 'nm-inset-n-green text-gray-50'
+        str altText = String.append("'Correct letter AND column: ", letter, ", ", colNumber, "'")
+        return String.append('nm-inset-n-green text-gray-50 alt=', altText)
       case status.yellow:
-        return 'nm-inset-yellow-500 text-gray-50'
+        str altText = String.append("'Correct letter, wrong column: ", letter, ", ", colNumber, "'")
+        return String.append('nm-inset-yellow-500 text-gray-50', altText)
       case status.gray:
-        return 'nm-inset-n-gray text-gray-50'
+        str altText = String.append("'Wrong letter: ", letter, ", ", colNumber, "'")
+        return String.append('nm-inset-n-gray text-gray-50')
       default:
-        return 'nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark'
+        return 'nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark alt='Inactive cell''
     }
   }
 
