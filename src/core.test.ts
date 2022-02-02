@@ -1,9 +1,15 @@
 import {
+  Answer,
   backspace,
+  CellStatus,
+  columns,
   Difficulty,
   isFunAnswer,
+  newCellStatuses,
   Operator,
+  Row,
   rowCharacters,
+  rowCount,
   validEquation,
   validOperators,
 } from './core'
@@ -78,6 +84,87 @@ test('isFunAnswer is true for equations that are solvable with skill', () => {
   ;[{ operandA: 1, operator: '+' as Operator, operandB: 2, result: 3 }].forEach((row) => {
     expect(isFunAnswer(row)).toEqual(true)
   })
+})
+
+test('newCellStatuses adds gray statuses when number is already correctly guessed', () => {
+  const answer: Answer = {
+    operandA: 9,
+    operator: '*' as Operator,
+    operandB: 4,
+    result: 36,
+  }
+  const prev = Array(rowCount).fill(Array(columns.length).fill(CellStatus.Unguessed))
+  const row: Row = {
+    operandA: 6,
+    operator: '*' as Operator,
+    operandB: 6,
+    result: 36,
+  }
+  const rowNumber = 0
+
+  const expected = [...prev]
+  expected[0][0] = CellStatus.Gray
+  expected[0][1] = CellStatus.Green
+  expected[0][2] = CellStatus.Gray
+  expected[0][3] = CellStatus.Green
+  expected[0][4] = CellStatus.Green
+  expected[0][5] = CellStatus.Green
+
+  expect(newCellStatuses(prev, rowNumber, row, answer)).toEqual(expected)
+})
+
+test('newCellStatuses adds yellow statuses when number is not correctly guessed in this row', () => {
+  const answer: Answer = {
+    operandA: 9,
+    operator: '*' as Operator,
+    operandB: 4,
+    result: 36,
+  }
+  const prev = Array(rowCount).fill(Array(columns.length).fill(CellStatus.Unguessed))
+  const row: Row = {
+    operandA: 6,
+    operator: '*' as Operator,
+    operandB: 4,
+    result: 24,
+  }
+  const rowNumber = 0
+
+  const expected = [...prev]
+  expected[0][0] = CellStatus.Yellow
+  expected[0][1] = CellStatus.Green
+  expected[0][2] = CellStatus.Green
+  expected[0][3] = CellStatus.Green
+  expected[0][4] = CellStatus.Gray
+  expected[0][5] = CellStatus.Gray
+
+  expect(newCellStatuses(prev, rowNumber, row, answer)).toEqual(expected)
+})
+
+test('newCellStatuses adds yellow statuses when number is correctly guessed in this row but there is another column that also has this number', () => {
+  const answer: Answer = {
+    operandA: 5,
+    operator: '*' as Operator,
+    operandB: 7,
+    result: 35,
+  }
+  const prev = Array(rowCount).fill(Array(columns.length).fill(CellStatus.Unguessed))
+  const row: Row = {
+    operandA: 7,
+    operator: '*' as Operator,
+    operandB: 5,
+    result: 35,
+  }
+  const rowNumber = 0
+
+  const expected = [...prev]
+  expected[0][0] = CellStatus.Yellow
+  expected[0][1] = CellStatus.Green
+  expected[0][2] = CellStatus.Yellow
+  expected[0][3] = CellStatus.Green
+  expected[0][4] = CellStatus.Green
+  expected[0][5] = CellStatus.Green
+
+  expect(newCellStatuses(prev, rowNumber, row, answer)).toEqual(expected)
 })
 
 test('rowCharacters displays strings to render a row', () => {

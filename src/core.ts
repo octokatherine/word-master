@@ -198,3 +198,47 @@ export function isFunAnswer(row: Answer): boolean {
       return row.operandA !== 0 && row.operandB !== 1
   }
 }
+
+export function newCellStatuses(
+  prev: string[][],
+  rowNumber: number,
+  row: Row,
+  answer: Answer
+): string[][] {
+  const newCellStatuses = [...prev]
+  newCellStatuses[rowNumber] = [...prev[rowNumber]]
+  const rowLength = rowCharacters(row).length
+  const answerChars: string[] = rowCharacters(answer)
+
+  // set all to gray
+  for (let i = 0; i < rowLength; i++) {
+    newCellStatuses[rowNumber][i] = CellStatus.Gray
+  }
+
+  // check greens
+  for (let col of [...columns].reverse()) {
+    if (isCellCorrect(row, col, answer)) {
+      newCellStatuses[rowNumber][col] = CellStatus.Green
+      answerChars.splice(col, 1)
+    }
+  }
+
+  // check yellows
+  // yellow if all:
+  //   - answer contains this digit in a place that this row hasn't guessed correctly
+  //   - answer doesn't contain this digit in this column
+  for (let col of columns) {
+    if (
+      answerChars.includes(rowCharacter(row, col)) &&
+      newCellStatuses[rowNumber][col] !== CellStatus.Green
+    ) {
+      newCellStatuses[rowNumber][col] = CellStatus.Yellow
+    }
+  }
+
+  return newCellStatuses
+}
+
+function isCellCorrect(row: Row, col: Column, answer: Answer): boolean {
+  return rowCharacter(row, col) === rowCharacter(answer, col)
+}
