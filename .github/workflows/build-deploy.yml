@@ -38,9 +38,8 @@ jobs:
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v2
-        if: ${{matrix.node-version}} == '16.x'
         with:
-          name: production-files
+          name: production-files-${{matrix.node-version}}
           path: ./build
 
   deploy:
@@ -53,7 +52,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: production-files
+          name: production-files-16.x
           path: ./build
 
       - name: Deploy to gh-pages
