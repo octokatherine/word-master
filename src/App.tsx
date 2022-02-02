@@ -41,65 +41,27 @@ type State = {
   submittedInvalidWord: boolean
 }
 
-function hasNumber(row: Answer, num?: number): boolean {
-  return (
-    row.operandA === num ||
-    row.operandB === num ||
-    (!!num && row.result.toString().includes(num.toString()))
-  )
-}
-
 function calculateCharStatuses(
   prev: { [key: string]: string },
   equation: Equation,
   answer: Answer
 ): { [key: string]: string } {
-  // Yellow if the char has been guessed in a spot where it is not,
-  //     AND there is a matching unguessed char in the answer
-  // Green if all instances of this character are correct
+  const newLetterStatuses = { ...prev }
+  const rowChars = rowCharacters(equation)
+  const answerChars = rowCharacters(answer)
+  const rowLength = rowChars.length
+  for (let i = 0; i < rowLength; i++) {
+    if (newLetterStatuses[rowChars[i]] === CellStatus.Green) continue
 
-  const result = prev
-  if (equation.operandA === answer.operandA) {
-    result[answer.operandA] = CellStatus.Green
-  } else if (hasNumber(answer, equation.operandA)) {
-    result[equation.operandA] = CellStatus.Yellow
-  } else {
-    result[equation.operandA] = CellStatus.Gray
-  }
-
-  if (equation.operator === answer.operator) {
-    result[equation.operator] = CellStatus.Green
-  } else {
-    result[equation.operator] = CellStatus.Gray
-  }
-
-  if (equation.operandB === answer.operandB) {
-    result[equation.operandB] = CellStatus.Green
-  } else if (hasNumber(answer, equation.operandB)) {
-    // TODO: only mark as yellow if there's a remaining unguessed number
-    result[equation.operandB] = CellStatus.Yellow
-  } else {
-    result[equation.operandB] = CellStatus.Gray
-  }
-
-  let equationResultChars = equation.result.toString().split('')
-  equationResultChars =
-    equationResultChars.length > 1 ? equationResultChars : ['', equationResultChars[0]]
-
-  let answerResultChars = answer.result.toString().split('')
-  answerResultChars = answerResultChars.length > 1 ? answerResultChars : ['', answerResultChars[0]]
-
-  equationResultChars.forEach((resultChar, i) => {
-    if (resultChar === answerResultChars[i]) {
-      result[resultChar] = CellStatus.Green
-    } else if (hasNumber(answer, parseInt(resultChar))) {
-      result[resultChar] = CellStatus.Yellow
+    if (rowChars[i] === answerChars[i]) {
+      newLetterStatuses[rowChars[i]] = CellStatus.Green
+    } else if (answerChars.includes(rowChars[i])) {
+      newLetterStatuses[rowChars[i]] = CellStatus.Yellow
     } else {
-      result[resultChar] = CellStatus.Gray
+      newLetterStatuses[rowChars[i]] = CellStatus.Gray
     }
-  })
-
-  return result
+  }
+  return newLetterStatuses
 }
 
 function App() {
