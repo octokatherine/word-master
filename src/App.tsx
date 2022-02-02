@@ -11,7 +11,6 @@ import {
   numbers,
   PlayState,
   Row,
-  rowCharacter,
   rowCharacters,
   validEquation,
   validOperators,
@@ -21,6 +20,7 @@ import {
   rowCount,
   nextCharIsAnOperator,
   addCharacter,
+  newCellStatuses,
 } from './core'
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
@@ -39,10 +39,6 @@ type State = {
   currentCol: Column
   charStatuses: () => { [key: string]: CellStatus }
   submittedInvalidWord: boolean
-}
-
-function isCellCorrect(row: Row, col: Column, answer: Answer): boolean {
-  return rowCharacter(row, col) === rowCharacter(answer, col)
 }
 
 function hasNumber(row: Answer, num?: number): boolean {
@@ -284,34 +280,7 @@ function App() {
 
   const updateCellStatuses = (row: Row, rowNumber: number) => {
     setCellStatuses((prev: string[][]) => {
-      const newCellStatuses = [...prev]
-      newCellStatuses[rowNumber] = [...prev[rowNumber]]
-      const rowLength = rowCharacters(row).length
-      const answerChars: string[] = rowCharacters(answer)
-
-      // set all to gray
-      for (let i = 0; i < rowLength; i++) {
-        newCellStatuses[rowNumber][i] = CellStatus.Gray
-      }
-
-      // check greens
-      for (let col of [...columns].reverse()) {
-        if (isCellCorrect(row, col, answer)) {
-          newCellStatuses[rowNumber][col] = CellStatus.Green
-        }
-      }
-
-      // check yellows
-      for (let col of columns) {
-        if (
-          answerChars.includes(rowCharacter(row, col)) &&
-          newCellStatuses[rowNumber][col] !== CellStatus.Green
-        ) {
-          newCellStatuses[rowNumber][col] = CellStatus.Yellow
-        }
-      }
-
-      return newCellStatuses
+      return newCellStatuses(prev, rowNumber, row, answer)
     })
   }
 
