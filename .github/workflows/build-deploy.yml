@@ -38,6 +38,7 @@ jobs:
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v2
+        if: ${{matrix.node-version}} == '16.x'
         with:
           name: production-files
           path: ./build
