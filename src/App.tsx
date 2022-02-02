@@ -11,7 +11,6 @@ import {
   numbers,
   PlayState,
   Row,
-  rowCharacter,
   rowCharacters,
   validEquation,
   validOperators,
