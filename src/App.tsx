@@ -83,10 +83,13 @@ function App() {
   )
 
   const [currentStreak, setCurrentStreak] = useLocalStorage('current-streak', 0)
-  const [guessesInStreak, setGuessesInStreak] = useLocalStorage('guesses-in-streak', -1)
   const [longestStreak, setLongestStreak] = useLocalStorage('longest-streak', 0)
   const [modalIsOpen, setIsOpen] = useState(false)
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
+  const [guessesInStreak, setGuessesInStreak] = useLocalStorage(
+    'guesses-in-streak',
+    firstTime ? 0 : -1
+  )
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
   const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', difficulty.normal)
