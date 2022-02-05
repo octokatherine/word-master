@@ -83,6 +83,7 @@ function App() {
   )
 
   const [currentStreak, setCurrentStreak] = useLocalStorage('current-streak', 0)
+  const [guessesInStreak, setGuessesInStreak] = useLocalStorage('guesses-in-streak', -1)
   const [longestStreak, setLongestStreak] = useLocalStorage('longest-streak', 0)
   const [modalIsOpen, setIsOpen] = useState(false)
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
@@ -191,6 +192,12 @@ function App() {
     updateLetterStatuses(word)
     setCurrentRow((prev: number) => prev + 1)
     setCurrentCol(0)
+
+    // Only calculate guesses in streak if they've
+    // started a new streak since this feature was added.
+    if (guessesInStreak >= 0) {
+      setGuessesInStreak(guessesInStreak + 1)
+    }
   }
 
   const onDeletePress = () => {
@@ -245,6 +252,14 @@ function App() {
     return row.every((cell: string) => cell === status.green)
   }
 
+  const avgGuessesPerGame = (): number => {
+    if (currentStreak > 0) {
+      return guessesInStreak / currentStreak
+    } else {
+      return 0
+    }
+  }
+
   // every time cellStatuses updates, check if the game is won or lost
   useEffect(() => {
     const cellStatusesCopy = [...cellStatuses]
@@ -262,6 +277,7 @@ function App() {
     } else if (gameState === state.playing && currentRow === 6) {
       setGameState(state.lost)
       setCurrentStreak(0)
+      setGuessesInStreak(0)
     }
   }, [
     cellStatuses,
@@ -271,6 +287,7 @@ function App() {
     currentStreak,
     setCurrentStreak,
     setLongestStreak,
+    setGuessesInStreak,
   ])
 
   const updateLetterStatuses = (word: string) => {
@@ -413,6 +430,7 @@ function App() {
           longestStreak={longestStreak}
           answer={answer}
           playAgain={playAgain}
+          avgGuessesPerGame={avgGuessesPerGame()}
         />
         <SettingsModal
           isOpen={settingsModalIsOpen}
