@@ -1,6 +1,5 @@
 import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
-import Success from '../data/Success.png'
 import Fail from '../data/Cross.png'
 import { Answer, PlayState, rowCharacters } from '../core'
 
@@ -16,6 +15,39 @@ type Props = {
   longestStreak: number
   answer: Answer
   playAgain: () => void
+  avgGuessesPerGame: number
+}
+
+const avgGuessesPerGameGreatThreshold = 2.8
+const avgGuessesPerGameGoodThreshold = 3.0
+const avgGuessesPerGameOkayThreshold = 3.2
+
+const streakOkayThreshold = 25
+const streakGoodThreshold = 50
+const streakGreatThreshold = 100
+
+function avgGuessesClass(avgGuessesPerGame: number): string {
+  if (avgGuessesPerGame <= avgGuessesPerGameGreatThreshold) {
+    return 'text-red-600'
+  } else if (avgGuessesPerGame <= avgGuessesPerGameGoodThreshold) {
+    return 'text-orange-500'
+  } else if (avgGuessesPerGame <= avgGuessesPerGameOkayThreshold) {
+    return 'text-yellow-500'
+  } else {
+    return 'text-gray-900'
+  }
+}
+
+function currentStreakClass(currentStreak: number): string {
+  if (currentStreak >= streakGreatThreshold) {
+    return 'text-red-600'
+  } else if (currentStreak >= streakGoodThreshold) {
+    return 'text-orange-500'
+  } else if (currentStreak >= streakOkayThreshold) {
+    return 'text-yellow-500'
+  } else {
+    return 'text-gray-900'
+  }
 }
 
 export const EndGameModal = ({
@@ -28,6 +60,7 @@ export const EndGameModal = ({
   longestStreak,
   answer,
   playAgain,
+  avgGuessesPerGame,
 }: Props) => {
   const PlayAgainButton = () => {
     return (
@@ -60,14 +93,43 @@ export const EndGameModal = ({
           </button>
           {gameState === PlayState.Won && (
             <>
-              <img src={Success} alt="success" height="auto" width="auto" />
-              <h1 className=" text-3xl">Congrats!</h1>
-              <p className="mt-6">
-                Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
-              </p>
-              <p>
-                Longest streak: <strong>{longestStreak}</strong>
-              </p>
+              <h1 className=" text-3xl">Congrats! 🎉</h1>
+              <dl className="mt-5 grid grid-cols-1 gap-5">
+                <div className="rounded-lg p-4 nm-flat-gray-200 flex-grow relative">
+                  <dt className="text-sm font-medium text-gray-500 truncate">Current Streak</dt>
+                  <dd
+                    className={`mt-1 text-3xl font-semibold ${currentStreakClass(currentStreak)}`}
+                  >
+                    {currentStreak}
+                    {currentStreak >= streakOkayThreshold && '🔥'}
+                    {currentStreak >= streakGoodThreshold && '🔥'}
+                    {currentStreak >= streakGreatThreshold && '🔥'}
+                  </dd>
+                </div>
+
+                {avgGuessesPerGame > 0 && (
+                  <div className="rounded-lg p-4 nm-flat-gray-200 flex-grow relative">
+                    <dt className="text-sm font-medium text-gray-500 truncate">
+                      Avg. guesses in streak
+                    </dt>
+                    <dd
+                      className={`mt-1 text-3xl font-semibold ${avgGuessesClass(
+                        avgGuessesPerGame
+                      )}`}
+                    >
+                      {avgGuessesPerGame.toFixed(1)}
+                      {avgGuessesPerGame <= avgGuessesPerGameOkayThreshold && '🔥'}
+                      {avgGuessesPerGame <= avgGuessesPerGameGoodThreshold && '🔥'}
+                      {avgGuessesPerGame <= avgGuessesPerGameGreatThreshold && '🔥'}
+                    </dd>
+                  </div>
+                )}
+
+                <div className="rounded-lg p-4 nm-flat-gray-200 flex-grow relative">
+                  <dt className="text-sm font-medium text-gray-500 truncate">Longest streak</dt>
+                  <dd className="mt-1 text-3xl font-semibold text-gray-900">{longestStreak}</dd>
+                </div>
+              </dl>
             </>
           )}
           {gameState === PlayState.Lost && (
