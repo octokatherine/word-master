@@ -4,7 +4,7 @@ import Modal from 'react-modal'
 import { difficulty } from '../App'
 import { ReactComponent as Close } from '../data/Close.svg'
 
-Modal.setAppElement('#root')
+if (process.env.NODE_ENV !== 'test') Modal.setAppElement('#root')
 
 type Props = {
   isOpen: boolean
