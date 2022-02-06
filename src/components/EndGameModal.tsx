@@ -1,6 +1,5 @@
 import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
-import Success from '../data/Success.png'
 import Fail from '../data/Cross.png'
 
 Modal.setAppElement('#root')
@@ -10,12 +9,45 @@ type Props = {
   handleClose: () => void
   styles: any
   darkMode: boolean
-  gameState: any
+  gameState: string
   state: any
-  currentStreak: any
-  longestStreak: any
-  answer: any
-  playAgain: any
+  currentStreak: number
+  longestStreak: number
+  answer: string
+  playAgain: () => void
+  avgGuessesPerGame: number
+}
+
+const avgGuessesPerGameGreatThreshold = 2.8
+const avgGuessesPerGameGoodThreshold = 3.0
+const avgGuessesPerGameOkayThreshold = 3.2
+
+const streakOkayThreshold = 5
+const streakGoodThreshold = 20
+const streakGreatThreshold = 50
+
+function avgGuessesClass(avgGuessesPerGame: number): string {
+  if (avgGuessesPerGame <= avgGuessesPerGameGreatThreshold) {
+    return 'text-red-600'
+  } else if (avgGuessesPerGame <= avgGuessesPerGameGoodThreshold) {
+    return 'text-orange-500'
+  } else if (avgGuessesPerGame <= avgGuessesPerGameOkayThreshold) {
+    return 'text-yellow-500'
+  } else {
+    return ''
+  }
+}
+
+function currentStreakClass(currentStreak: number): string {
+  if (currentStreak >= streakGreatThreshold) {
+    return 'text-red-600'
+  } else if (currentStreak >= streakGoodThreshold) {
+    return 'text-orange-500'
+  } else if (currentStreak >= streakOkayThreshold) {
+    return 'text-yellow-500'
+  } else {
+    return ''
+  }
 }
 
 export const EndGameModal = ({
@@ -29,6 +61,7 @@ export const EndGameModal = ({
   longestStreak,
   answer,
   playAgain,
+  avgGuessesPerGame,
 }: Props) => {
   const PlayAgainButton = () => {
     return (
@@ -61,14 +94,41 @@ export const EndGameModal = ({
           </button>
           {gameState === state.won && (
             <>
-              <img src={Success} alt="success" height="auto" width="auto" />
-              <h1 className=" text-3xl">Congrats!</h1>
-              <p className="mt-6">
-                Current streak: <strong>{currentStreak}</strong> {currentStreak > 4 && '🔥'}
-              </p>
-              <p>
-                Longest streak: <strong>{longestStreak}</strong>
-              </p>
+              <h1 className=" text-3xl">Congrats! 🎉</h1>
+              <dl className="mt-5 grid grid-cols-1 gap-5">
+                <div className="rounded-lg p-4 flex-grow relative nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark">
+                  <dt className="text-sm font-medium truncate">Current Streak</dt>
+                  <dd
+                    className={`mt-1 text-3xl font-semibold ${currentStreakClass(currentStreak)}`}
+                  >
+                    {currentStreak}
+                    {currentStreak >= streakOkayThreshold && '🔥'}
+                    {currentStreak >= streakGoodThreshold && '🔥'}
+                    {currentStreak >= streakGreatThreshold && '🔥'}
+                  </dd>
+                </div>
+
+                {avgGuessesPerGame > 0 && (
+                  <div className="rounded-lg p-4 flex-grow relative nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark">
+                    <dt className="text-sm font-medium truncate">Avg. guesses in streak</dt>
+                    <dd
+                      className={`mt-1 text-3xl font-semibold ${avgGuessesClass(
+                        avgGuessesPerGame
+                      )}`}
+                    >
+                      {avgGuessesPerGame.toFixed(1)}
+                      {avgGuessesPerGame <= avgGuessesPerGameOkayThreshold && '🔥'}
+                      {avgGuessesPerGame <= avgGuessesPerGameGoodThreshold && '🔥'}
+                      {avgGuessesPerGame <= avgGuessesPerGameGreatThreshold && '🔥'}
+                    </dd>
+                  </div>
+                )}
+
+                <div className="rounded-lg p-4 flex-grow relative nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark">
+                  <dt className="text-sm font-medium truncate">Longest streak</dt>
+                  <dd className="mt-1 text-3xl font-semibold">{longestStreak}</dd>
+                </div>
+              </dl>
             </>
           )}
           {gameState === state.lost && (
