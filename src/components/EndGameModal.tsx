@@ -1,21 +1,39 @@
+import { ReactNode, useEffect, useState } from 'react'
 import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 import Success from '../data/Success.png'
 import Fail from '../data/Cross.png'
+import { status } from '../constants'
 
 if (process.env.NODE_ENV !== 'test') Modal.setAppElement('#root')
+
+interface ModalButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+  children: ReactNode
+}
+
+const ModalButton = ({ children, ...props }: ModalButtonProps) => (
+  <button
+    className="rounded-lg px-6 py-2 mt-8 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
+    {...props}
+  >
+    {children}
+  </button>
+)
 
 type Props = {
   isOpen: boolean
   handleClose: () => void
   styles: any
   darkMode: boolean
-  gameState: any
+  gameState: string
+  cellStatuses: string[][]
+  currentRow: number
   state: any
   currentStreak: any
   longestStreak: any
   answer: any
   playAgain: any
+  shareUrl: string
 }
 
 export const EndGameModal = ({
@@ -24,23 +42,67 @@ export const EndGameModal = ({
   styles,
   darkMode,
   gameState,
+  cellStatuses,
+  currentRow,
   state,
   currentStreak,
   longestStreak,
   answer,
   playAgain,
+  shareUrl,
 }: Props) => {
   const PlayAgainButton = () => {
     return (
       <div className={darkMode ? 'dark' : ''}>
-        <button
-          autoFocus
-          type="button"
-          className="rounded-lg px-6 py-2 mt-8 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
-          onClick={playAgain}
-        >
+        <ModalButton autoFocus type="button" onClick={playAgain}>
           Play Again
-        </button>
+        </ModalButton>
+      </div>
+    )
+  }
+  const ShareButton = () => {
+    const [buttonPressed, setButtonPressed] = useState(false)
+    useEffect(() => {
+      if (buttonPressed !== false) {
+        setTimeout(() => setButtonPressed(false), 3000)
+      }
+    }, [buttonPressed])
+    return (
+      <div className={darkMode ? 'dark' : ''}>
+        <ModalButton
+          onClick={() => {
+            setButtonPressed(true)
+            navigator.clipboard.writeText(
+              `${shareUrl} ${gameState === state.won ? currentRow : 'X'}/6\n\n` +
+                cellStatuses
+                  .map((row) => {
+                    if (row.every((item) => item !== status.unguessed)) {
+                      return (
+                        row
+                          .map((state) => {
+                            switch (state) {
+                              case status.gray:
+                                return '⬜'
+                              case status.green:
+                                return '🟩'
+                              case status.yellow:
+                                return '🟨'
+                              default:
+                                return '  '
+                            }
+                          })
+                          .join('') + '\n'
+                      )
+                    } else {
+                      return ''
+                    }
+                  })
+                  .join('')
+            )
+          }}
+        >
+          {buttonPressed ? 'Copied!' : 'Share'}
+        </ModalButton>
       </div>
     )
   }
@@ -89,6 +151,7 @@ export const EndGameModal = ({
             </>
           )}
           <PlayAgainButton />
+          <ShareButton />
         </div>
       </div>
     </Modal>

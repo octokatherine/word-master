@@ -1,5 +1,7 @@
-import { letters, status } from './constants'
+import { letters, status, cipherKey } from './constants'
 import { useEffect, useState } from 'react'
+import { Routes, Route, useParams, useNavigate, useLocation, Navigate } from 'react-router-dom'
+import Encrypt from 'ciphervgnr'
 
 import { EndGameModal } from './components/EndGameModal'
 import { InfoModal } from './components/InfoModal'
@@ -28,8 +30,63 @@ const getRandomAnswer = () => {
   return answers[randomIndex].toUpperCase()
 }
 
+// Adapted from https://github.com/hannahcode/wordle/blob/f8aa91766d7e2918ab6361efb7bdc5321bd93774/src/lib/words.ts#L15-L28
+// MIT Licensed
+const MS_IN_DAY = 86400000
+
+const getDailyAnswer = () => {
+  const epochMs = new Date('January 1, 2022 00:00:00').valueOf()
+  const now = Date.now()
+  const index = Math.floor((now - epochMs) / MS_IN_DAY) % answers.length
+  return answers[index].toUpperCase()
+}
+
+// Time after which game states are expired in localStorage
+const GAME_STATE_TTL = MS_IN_DAY
+
+const maybeEvictStaleGameStates = () => {
+  const lastFinishedAtData = window.localStorage.getItem('lastFinishedAt')
+  const lastFinishedAt = lastFinishedAtData ? JSON.parse(lastFinishedAtData) : null
+  if (lastFinishedAt && Date.now() - lastFinishedAt > GAME_STATE_TTL) {
+    for (var key in window.localStorage) {
+      // Keys that are prefixed with g: are game state keys
+      if (key.substring(0, 2) === 'g:') {
+        window.localStorage.removeItem(key)
+      }
+    }
+    window.localStorage.removeItem('lastFinishedAt')
+  }
+}
+
+function App() {
+  // Clear old game states so that played words can be reused
+  maybeEvictStaleGameStates()
+  return (
+    <Routes>
+      <Route path="/">
+        <Route index element={<DailyPuzzle />} />
+        <Route
+          path=":gameCode"
+          element={
+            <Puzzle>
+              <Board />
+            </Puzzle>
+          }
+        />
+        <Route
+          path="404"
+          element={
+            <h1 className="flex-1 text-center text-xl xxs:text-2xl -mr-6 sm:text-4xl tracking-wide font-bold">
+              Invalid URL!
+            </h1>
+          }
+        />
+      </Route>
+    </Routes>
+  )
+}
+
 type State = {
-  answer: () => string
   gameState: string
   board: string[][]
   cellStatuses: string[][]
@@ -39,47 +96,73 @@ type State = {
   submittedInvalidWord: boolean
 }
 
-function App() {
-  const initialStates: State = {
-    answer: () => getRandomAnswer(),
-    gameState: state.playing,
-    board: [
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-    ],
-    cellStatuses: Array(6).fill(Array(5).fill(status.unguessed)),
-    currentRow: 0,
-    currentCol: 0,
-    letterStatuses: () => {
-      const letterStatuses: { [key: string]: string } = {}
-      letters.forEach((letter) => {
-        letterStatuses[letter] = status.unguessed
-      })
-      return letterStatuses
-    },
-    submittedInvalidWord: false,
-  }
+function Puzzle({ children }: { children: JSX.Element }) {
+  const params = useParams()
+  const location = useLocation()
+  const decipheredAnswer = Encrypt(params.gameCode!, cipherKey, true).toLowerCase()
 
-  const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer())
-  const [gameState, setGameState] = useLocalStorage('stateGameState', initialStates.gameState)
-  const [board, setBoard] = useLocalStorage('stateBoard', initialStates.board)
-  const [cellStatuses, setCellStatuses] = useLocalStorage(
-    'stateCellStatuses',
-    initialStates.cellStatuses
+  if (!answers.includes(decipheredAnswer)) {
+    return <Navigate to="/404" state={{ from: location }} replace />
+  }
+  return children
+}
+
+const INITIAL_STATE: State = {
+  gameState: state.playing,
+  board: [
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+  ],
+  cellStatuses: Array(6).fill(Array(5).fill(status.unguessed)),
+  currentRow: 0,
+  currentCol: 0,
+  letterStatuses: () => {
+    const letterStatuses: { [key: string]: string } = {}
+    letters.forEach((letter) => {
+      letterStatuses[letter] = status.unguessed
+    })
+    return letterStatuses
+  },
+  submittedInvalidWord: false,
+}
+
+function Board() {
+  const params = useParams()
+  const navigate = useNavigate()
+
+  const gameCode = params.gameCode!
+  const decipheredAnswer = Encrypt(gameCode, cipherKey, true).toLowerCase()
+  const shareUrl = `${window.location.origin}/#/${gameCode}`
+
+  const [answer, setAnswer] = useState(decipheredAnswer.toUpperCase())
+  const [gameState, setGameState] = useLocalStorage(
+    `g:${gameCode}:stateGameState`,
+    INITIAL_STATE.gameState
   )
-  const [currentRow, setCurrentRow] = useLocalStorage('stateCurrentRow', initialStates.currentRow)
-  const [currentCol, setCurrentCol] = useLocalStorage('stateCurrentCol', initialStates.currentCol)
+  const [board, setBoard] = useLocalStorage(`g:${gameCode}:stateBoard`, INITIAL_STATE.board)
+  const [cellStatuses, setCellStatuses] = useLocalStorage(
+    `g:${gameCode}:stateCellStatuses`,
+    INITIAL_STATE.cellStatuses
+  )
+  const [currentRow, setCurrentRow] = useLocalStorage(
+    `g:${gameCode}:stateCurrentRow`,
+    INITIAL_STATE.currentRow
+  )
+  const [currentCol, setCurrentCol] = useLocalStorage(
+    `g:${gameCode}:stateCurrentCol`,
+    INITIAL_STATE.currentCol
+  )
   const [letterStatuses, setLetterStatuses] = useLocalStorage(
-    'stateLetterStatuses',
-    initialStates.letterStatuses()
+    `g:${gameCode}:stateLetterStatuses`,
+    INITIAL_STATE.letterStatuses()
   )
   const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage(
-    'stateSubmittedInvalidWord',
-    initialStates.submittedInvalidWord
+    `g:${gameCode}:stateSubmittedInvalidWord`,
+    INITIAL_STATE.submittedInvalidWord
   )
 
   const [currentStreak, setCurrentStreak] = useLocalStorage('current-streak', 0)
@@ -89,6 +172,7 @@ function App() {
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
   const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', difficulty.normal)
+  const [, setLastFinishedAt] = useLocalStorage('lastFinishedAt', null)
   const getDifficultyLevelInstructions = () => {
     if (difficultyLevel === difficulty.easy) {
       return 'Guess any 5 letters'
@@ -99,7 +183,7 @@ function App() {
     }
   }
   const eg: { [key: number]: string } = {}
-  const [exactGuesses, setExactGuesses] = useLocalStorage('exact-guesses', eg)
+  const [exactGuesses, setExactGuesses] = useLocalStorage(`g:${gameCode}:exact-guesses`, eg)
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -160,7 +244,6 @@ function App() {
   const isValidWord = (word: string): [boolean] | [boolean, string] => {
     if (word.length < 5) return [false, `please enter a 5 letter word`]
     if (difficultyLevel === difficulty.easy) return [true]
-    debugger
     if (!words[word.toLowerCase()]) return [false, `${word} is not a valid word. Please try again.`]
     if (difficultyLevel === difficulty.normal) return [true]
     const guessedLetters = Object.entries(letterStatuses).filter(([letter, letterStatus]) =>
@@ -259,9 +342,11 @@ function App() {
       var streak = currentStreak + 1
       setCurrentStreak(streak)
       setLongestStreak((prev: number) => (streak > prev ? streak : prev))
+      setLastFinishedAt(Date.now())
     } else if (gameState === state.playing && currentRow === 6) {
       setGameState(state.lost)
       setCurrentStreak(0)
+      setLastFinishedAt(Date.now())
     }
   }, [
     cellStatuses,
@@ -271,6 +356,7 @@ function App() {
     currentStreak,
     setCurrentStreak,
     setLongestStreak,
+    setLastFinishedAt,
   ])
 
   const updateLetterStatuses = (word: string) => {
@@ -293,14 +379,16 @@ function App() {
   }
 
   const playAgain = () => {
-    setAnswer(initialStates.answer())
-    setGameState(initialStates.gameState)
-    setBoard(initialStates.board)
-    setCellStatuses(initialStates.cellStatuses)
-    setCurrentRow(initialStates.currentRow)
-    setCurrentCol(initialStates.currentCol)
-    setLetterStatuses(initialStates.letterStatuses())
-    setSubmittedInvalidWord(initialStates.submittedInvalidWord)
+    const newAnswer = getRandomAnswer()
+    setAnswer(newAnswer)
+    navigate('/' + Encrypt(newAnswer, cipherKey))
+    setGameState(INITIAL_STATE.gameState)
+    setBoard(INITIAL_STATE.board)
+    setCellStatuses(INITIAL_STATE.cellStatuses)
+    setCurrentRow(INITIAL_STATE.currentRow)
+    setCurrentCol(INITIAL_STATE.currentCol)
+    setLetterStatuses(INITIAL_STATE.letterStatuses())
+    setSubmittedInvalidWord(INITIAL_STATE.submittedInvalidWord)
     setExactGuesses({})
 
     closeModal()
@@ -337,7 +425,6 @@ function App() {
       position: 'relative',
     },
   }
-
   return (
     <div className={darkMode ? 'dark' : ''}>
       <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
@@ -408,11 +495,14 @@ function App() {
           styles={modalStyles}
           darkMode={darkMode}
           gameState={gameState}
+          cellStatuses={cellStatuses}
+          currentRow={currentRow}
           state={state}
           currentStreak={currentStreak}
           longestStreak={longestStreak}
           answer={answer}
           playAgain={playAgain}
+          shareUrl={shareUrl}
         />
         <SettingsModal
           isOpen={settingsModalIsOpen}
@@ -424,7 +514,7 @@ function App() {
           setDifficultyLevel={setDifficultyLevel}
           levelInstructions={getDifficultyLevelInstructions()}
         />
-        <div className={`h-auto relative ${gameState === state.playing ? '' : 'invisible'}`}>
+        <div className={`h-auto relative g:${gameState === state.playing ? '' : 'invisible'}`}>
           <Keyboard
             letterStatuses={letterStatuses}
             addLetter={addLetter}
@@ -438,4 +528,12 @@ function App() {
   )
 }
 
+function DailyPuzzle() {
+  const navigate = useNavigate()
+  const answer = getDailyAnswer()
+  useEffect(() => {
+    navigate('/' + Encrypt(answer, cipherKey))
+  })
+  return null
+}
 export default App
