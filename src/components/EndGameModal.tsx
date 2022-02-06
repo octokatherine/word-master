@@ -34,7 +34,7 @@ function avgGuessesClass(avgGuessesPerGame: number): string {
   } else if (avgGuessesPerGame <= avgGuessesPerGameOkayThreshold) {
     return 'text-yellow-500'
   } else {
-    return 'text-gray-900'
+    return ''
   }
 }
 
@@ -46,7 +46,7 @@ function currentStreakClass(currentStreak: number): string {
   } else if (currentStreak >= streakOkayThreshold) {
     return 'text-yellow-500'
   } else {
-    return 'text-gray-900'
+    return ''
   }
 }
 
@@ -96,8 +96,8 @@ export const EndGameModal = ({
             <>
               <h1 className=" text-3xl">Congrats! 🎉</h1>
               <dl className="mt-5 grid grid-cols-1 gap-5">
-                <div className="rounded-lg p-4 nm-flat-gray-200 flex-grow relative">
-                  <dt className="text-sm font-medium text-gray-500 truncate">Current Streak</dt>
+                <div className="rounded-lg p-4 flex-grow relative nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark">
+                  <dt className="text-sm font-medium truncate">Current Streak</dt>
                   <dd
                     className={`mt-1 text-3xl font-semibold ${currentStreakClass(currentStreak)}`}
                   >
@@ -109,10 +109,8 @@ export const EndGameModal = ({
                 </div>
 
                 {avgGuessesPerGame > 0 && (
-                  <div className="rounded-lg p-4 nm-flat-gray-200 flex-grow relative">
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      Avg. guesses in streak
-                    </dt>
+                  <div className="rounded-lg p-4 flex-grow relative nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark">
+                    <dt className="text-sm font-medium truncate">Avg. guesses in streak</dt>
                     <dd
                       className={`mt-1 text-3xl font-semibold ${avgGuessesClass(
                         avgGuessesPerGame
@@ -126,9 +124,9 @@ export const EndGameModal = ({
                   </div>
                 )}
 
-                <div className="rounded-lg p-4 nm-flat-gray-200 flex-grow relative">
-                  <dt className="text-sm font-medium text-gray-500 truncate">Longest streak</dt>
-                  <dd className="mt-1 text-3xl font-semibold text-gray-900">{longestStreak}</dd>
+                <div className="rounded-lg p-4 flex-grow relative nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark">
+                  <dt className="text-sm font-medium truncate">Longest streak</dt>
+                  <dd className="mt-1 text-3xl font-semibold">{longestStreak}</dd>
                 </div>
               </dl>
             </>
