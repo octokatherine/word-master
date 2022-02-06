@@ -22,9 +22,9 @@ const avgGuessesPerGameGreatThreshold = 2.8
 const avgGuessesPerGameGoodThreshold = 3.0
 const avgGuessesPerGameOkayThreshold = 3.2
 
-const streakOkayThreshold = 25
-const streakGoodThreshold = 50
-const streakGreatThreshold = 100
+const streakOkayThreshold = 5
+const streakGoodThreshold = 20
+const streakGreatThreshold = 50
 
 function avgGuessesClass(avgGuessesPerGame: number): string {
   if (avgGuessesPerGame <= avgGuessesPerGameGreatThreshold) {
