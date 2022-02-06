@@ -2,7 +2,7 @@ import { ReactComponent as Close } from '../data/Close.svg'
 import Modal from 'react-modal'
 import Fail from '../data/Cross.png'
 
-Modal.setAppElement('#root')
+if (process.env.NODE_ENV !== 'test') Modal.setAppElement('#root')
 
 type Props = {
   isOpen: boolean
