@@ -288,7 +288,6 @@ function App() {
     currentStreak,
     setCurrentStreak,
     setLongestStreak,
-    setGuessesInStreak,
   ])
 
   const updateLetterStatuses = (word: string) => {
