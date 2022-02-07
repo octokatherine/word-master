@@ -198,7 +198,7 @@ function App() {
     // Only calculate guesses in streak if they've
     // started a new streak since this feature was added.
     if (guessesInStreak >= 0) {
-      setGuessesInStreak(guessesInStreak + 1)
+      setGuessesInStreak((prev: number) => prev + 1)
     }
   }
 
@@ -279,7 +279,6 @@ function App() {
     } else if (gameState === state.playing && currentRow === 6) {
       setGameState(state.lost)
       setCurrentStreak(0)
-      setGuessesInStreak(0)
     }
   }, [
     cellStatuses,
@@ -312,6 +311,10 @@ function App() {
   }
 
   const playAgain = () => {
+    if (gameState === state.lost) {
+      setGuessesInStreak(0)
+    }
+
     setAnswer(initialStates.answer())
     setGameState(initialStates.gameState)
     setBoard(initialStates.board)
