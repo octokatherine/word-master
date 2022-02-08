@@ -111,6 +111,11 @@ function App() {
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
   const toggleDarkMode = () => setDarkMode((prev: boolean) => !prev)
 
+  useEffect(
+    () => document.documentElement.classList[darkMode ? 'add' : 'remove']('dark'),
+    [darkMode]
+  )
+
   useEffect(() => {
     if (gameState !== state.playing) {
       setTimeout(() => {
@@ -339,7 +344,7 @@ function App() {
   }
 
   return (
-    <div className={darkMode ? 'dark' : ''}>
+    <div>
       <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
         <header className="flex items-center py-2 px-3 text-primary dark:text-primary-dark">
           <button
