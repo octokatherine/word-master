@@ -86,6 +86,10 @@ function App() {
   const [longestStreak, setLongestStreak] = useLocalStorage('longest-streak', 0)
   const [modalIsOpen, setIsOpen] = useState(false)
   const [firstTime, setFirstTime] = useLocalStorage('first-time', true)
+  const [guessesInStreak, setGuessesInStreak] = useLocalStorage(
+    'guesses-in-streak',
+    firstTime ? 0 : -1
+  )
   const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
   const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', difficulty.normal)
@@ -165,7 +169,6 @@ function App() {
   const isValidWord = (word: string): [boolean] | [boolean, string] => {
     if (word.length < 5) return [false, `please enter a 5 letter word`]
     if (difficultyLevel === difficulty.easy) return [true]
-    debugger
     if (!words[word.toLowerCase()]) return [false, `${word} is not a valid word. Please try again.`]
     if (difficultyLevel === difficulty.normal) return [true]
     const guessedLetters = Object.entries(letterStatuses).filter(([letter, letterStatus]) =>
@@ -196,6 +199,12 @@ function App() {
     updateLetterStatuses(word)
     setCurrentRow((prev: number) => prev + 1)
     setCurrentCol(0)
+
+    // Only calculate guesses in streak if they've
+    // started a new streak since this feature was added.
+    if (guessesInStreak >= 0) {
+      setGuessesInStreak((prev: number) => prev + 1)
+    }
   }
 
   const onDeletePress = () => {
@@ -250,6 +259,14 @@ function App() {
     return row.every((cell: string) => cell === status.green)
   }
 
+  const avgGuessesPerGame = (): number => {
+    if (currentStreak > 0) {
+      return guessesInStreak / currentStreak
+    } else {
+      return 0
+    }
+  }
+
   // every time cellStatuses updates, check if the game is won or lost
   useEffect(() => {
     const cellStatusesCopy = [...cellStatuses]
@@ -298,6 +315,10 @@ function App() {
   }
 
   const playAgain = () => {
+    if (gameState === state.lost) {
+      setGuessesInStreak(0)
+    }
+
     setAnswer(initialStates.answer())
     setGameState(initialStates.gameState)
     setBoard(initialStates.board)
@@ -418,6 +439,7 @@ function App() {
           longestStreak={longestStreak}
           answer={answer}
           playAgain={playAgain}
+          avgGuessesPerGame={avgGuessesPerGame()}
         />
         <SettingsModal
           isOpen={settingsModalIsOpen}
