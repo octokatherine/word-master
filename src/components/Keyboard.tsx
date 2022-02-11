@@ -66,7 +66,7 @@ const Keyboard = ({
     <div className="w-full flex flex-col items-center mb-3 select-none h-auto justify-end">
       {keyboardLetters.map((row, idx) => (
         <div key={idx} className="w-full flex justify-center my-[5px]">
-          {idx === 2 && (
+          {idx === keyboardLetters.length - 1 && (
             <button
               onClick={onEnterPress}
               className="h-10 xxs:h-14 w-12 px-1 text-xs font-medium mx-[3.5px] rounded nm-flat-background-sm dark:nm-flat-background-dark-sm text-primary dark:text-primary-dark"
@@ -89,7 +89,7 @@ const Keyboard = ({
               </div>
             </button>
           ))}
-          {idx === 2 && (
+          {idx === keyboardLetters.length - 1 && (
             <button
               onClick={onDeletePress}
               className="h-10 xxs:h-14 w-12 flex items-center justify-center nm-flat-background-sm dark:nm-flat-background-dark-sm text-primary dark:text-primary-dark mx-[3.5px] text-sm  rounded"
