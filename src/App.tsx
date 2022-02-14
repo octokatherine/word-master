@@ -2,12 +2,13 @@ import { letters, status } from './constants'
 import { useEffect, useState } from 'react'
 
 import { EndGameModal } from './components/EndGameModal'
-import { InfoModal } from './components/InfoModal'
+// import { InfoModal } from './components/InfoModal'
+import { InputModal } from './components/InputModal';
 import { Keyboard } from './components/Keyboard'
 import { SettingsModal } from './components/SettingsModal'
 import answers from './data/answers'
 import { useLocalStorage } from './hooks/useLocalStorage'
-import { ReactComponent as Info } from './data/Info.svg'
+// import { ReactComponent as Info } from './data/Info.svg'
 import { ReactComponent as Settings } from './data/Settings.svg'
 const words = require('./data/words').default as { [key: string]: boolean }
 
@@ -29,7 +30,7 @@ const getRandomAnswer = () => {
 }
 
 type State = {
-  answer: () => string
+  answer: '',
   gameState: string
   board: string[][]
   cellStatuses: string[][]
@@ -41,7 +42,7 @@ type State = {
 
 function App() {
   const initialStates: State = {
-    answer: () => getRandomAnswer(),
+    answer: '',
     gameState: state.playing,
     board: [
       ['', '', '', '', ''],
@@ -64,8 +65,10 @@ function App() {
     submittedInvalidWord: false,
   }
 
-  const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer())
-  const [gameState, setGameState] = useLocalStorage('stateGameState', initialStates.gameState)
+  // const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer())
+  const [answer, setAnswer] = useState('');
+  // const [gameState, setGameState] = useLocalStorage('stateGameState', initialStates.gameState)
+  const [gameState, setGameState] = useState('playing');
   const [board, setBoard] = useLocalStorage('stateBoard', initialStates.board)
   const [cellStatuses, setCellStatuses] = useLocalStorage(
     'stateCellStatuses',
@@ -90,7 +93,8 @@ function App() {
     'guesses-in-streak',
     firstTime ? 0 : -1
   )
-  const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
+  // const [infoModalIsOpen, setInfoModalIsOpen] = useState(firstTime)
+  const [inputModalIsOpen, setInputModalIsOpen] = useState(true);
   const [settingsModalIsOpen, setSettingsModalIsOpen] = useState(false)
   const [difficultyLevel, setDifficultyLevel] = useLocalStorage('difficulty', difficulty.normal)
   const getDifficultyLevelInstructions = () => {
@@ -107,9 +111,13 @@ function App() {
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
-  const handleInfoClose = () => {
-    setFirstTime(false)
-    setInfoModalIsOpen(false)
+  // const handleInfoClose = () => {
+  //   setFirstTime(false)
+  //   setInfoModalIsOpen(false)
+  // }
+
+  const handleInputClose = () => {
+    setInputModalIsOpen(false);
   }
 
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
@@ -319,7 +327,8 @@ function App() {
       setGuessesInStreak(0)
     }
 
-    setAnswer(initialStates.answer())
+    // setAnswer(initialStates.answer())
+    setAnswer('');
     setGameState(initialStates.gameState)
     setBoard(initialStates.board)
     setCellStatuses(initialStates.cellStatuses)
@@ -378,13 +387,13 @@ function App() {
           <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
             WORD MASTER
           </h1>
-          <button
+          {/* <button
             type="button"
             onClick={() => setInfoModalIsOpen(true)}
             className="p-1 rounded-full"
           >
             <Info />
-          </button>
+          </button> */}
         </header>
         <div className="flex items-center flex-col py-3 flex-1 justify-center relative">
           <div className="relative">
@@ -422,11 +431,20 @@ function App() {
             </div>
           </div>
         </div>
-        <InfoModal
+        {/* <InfoModal
           isOpen={infoModalIsOpen}
           handleClose={handleInfoClose}
           darkMode={darkMode}
           styles={modalStyles}
+        /> */}
+        <InputModal
+          isOpen={inputModalIsOpen}
+          handleClose={handleInputClose}
+          darkMode={darkMode}
+          setAnswer={setAnswer}
+          styles={modalStyles}
+          answers={answers}
+          setInputModalIsOpen={setInputModalIsOpen}
         />
         <EndGameModal
           isOpen={modalIsOpen}
@@ -457,7 +475,7 @@ function App() {
             addLetter={addLetter}
             onEnterPress={onEnterPress}
             onDeletePress={onDeletePress}
-            gameDisabled={gameState !== state.playing}
+            gameDisabled={gameState !== state.playing || inputModalIsOpen}
           />
         </div>
       </div>
