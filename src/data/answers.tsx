@@ -518,7 +518,6 @@ const answers = [
   'dizzy',
   'docks',
   'dodge',
-  'doggo',
   'doggy',
   'dogma',
   'doily',
