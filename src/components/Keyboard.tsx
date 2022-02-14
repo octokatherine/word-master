@@ -40,7 +40,6 @@ const Keyboard = ({
 
   const handleKeyDown = useCallback(
     (event) => {
-      console.log('game disabled?', {gameDisabled})
       if (gameDisabled) return
 
       const letter = event.key.toUpperCase()

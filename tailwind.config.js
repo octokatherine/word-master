@@ -27,5 +27,5 @@ module.exports = {
       xl: '0.8em',
     },
   },
-  plugins: [require('tailwindcss-neumorphism')],
+  plugins: [require('tailwindcss-neumorphism'), require('@tailwindcss/forms')],
 }

@@ -31,9 +31,6 @@ export const InputModal = ({ isOpen, handleClose, darkMode, styles, answers, set
       errorMessages.push('Wordle must be a valid word.');
     }
   
-    // TODO: Verify special characters
-
-    console.log({ errorMessages })
     //  @ts-ignore
     setErrorMessages(errorMessages);
   
