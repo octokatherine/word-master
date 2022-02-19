@@ -113,6 +113,7 @@ function App() {
   }
 
   const [hideGiveUp,setHideGiveUp] = useState(true)
+  
   useEffect(()=>{
     setTimeout(() => {
       setHideGiveUp(false)
@@ -415,7 +416,7 @@ function App() {
               )}
             </div>       
             <div
-              className={`absolute -bottom-24 left-1/2 transform -translate-x-1/2 ${
+              className={`flex justify-center pt-6 ${
                 hideGiveUp ? 'hidden' : ''
               }`}
             >
