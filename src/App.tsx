@@ -113,7 +113,7 @@ function App() {
   }
 
   const [hideGiveUp,setHideGiveUp] = useState(true)
-  
+
   useEffect(()=>{
     setTimeout(() => {
       setHideGiveUp(false)
@@ -414,10 +414,10 @@ function App() {
                   </span>
                 ))
               )}
-            </div>       
+            </div>
             <div
               className={`flex justify-center pt-6 ${
-                hideGiveUp ? 'hidden' : ''
+                hideGiveUp ||  gameState !== state.playing ? 'hidden' : ''
               }`}
             >
               <div className={darkMode ? 'dark' : ''}>
