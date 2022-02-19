@@ -23,6 +23,8 @@ export const difficulty = {
   hard: 'hard',
 }
 
+const GIVE_UP_TIME_OUT = 40000
+
 const getRandomAnswer = () => {
   const randomIndex = Math.floor(Math.random() * answers.length)
   return answers[randomIndex].toUpperCase()
@@ -115,11 +117,15 @@ function App() {
   const [hideGiveUp,setHideGiveUp] = useState(true)
 
   useEffect(()=>{
-    setTimeout(() => {
-      setHideGiveUp(false)
-         }, 40000);
-       },
-   [])
+      setHideGiveUp(true)
+      const giveUpTimer = window.setTimeout(() => {
+        setHideGiveUp(false)
+      }, GIVE_UP_TIME_OUT);
+
+      return () => {
+        clearTimeout(giveUpTimer);
+      };
+  }, [gameState])
 
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
   const toggleDarkMode = () => setDarkMode((prev: boolean) => !prev)
@@ -338,8 +344,6 @@ function App() {
     setSubmittedInvalidWord(initialStates.submittedInvalidWord)
     setExactGuesses({})
 
-    setHideGiveUp(true)
-    setTimeout(function() {setHideGiveUp(false)}, 40000);
     closeModal()
   }
 
