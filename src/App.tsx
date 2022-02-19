@@ -112,6 +112,14 @@ function App() {
     setInfoModalIsOpen(false)
   }
 
+  const [hideGiveUp,setHideGiveUp] = useState(true)
+  useEffect(()=>{
+    setTimeout(() => {
+      setHideGiveUp(false)
+         }, 40000);
+       },
+   [])
+
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
   const toggleDarkMode = () => setDarkMode((prev: boolean) => !prev)
 
@@ -329,6 +337,8 @@ function App() {
     setSubmittedInvalidWord(initialStates.submittedInvalidWord)
     setExactGuesses({})
 
+    setHideGiveUp(true)
+    setTimeout(function() {setHideGiveUp(false)}, 40000);
     closeModal()
   }
 
@@ -403,6 +413,22 @@ function App() {
                   </span>
                 ))
               )}
+            </div>       
+            <div
+              className={`absolute -bottom-24 left-1/2 transform -translate-x-1/2 ${
+                hideGiveUp ? 'hidden' : ''
+              }`}
+            >
+              <div className={darkMode ? 'dark' : ''}>
+                <button
+                    autoFocus
+                    type="button"
+                    className="rounded-lg z-10 px-6 py-2 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
+                    onClick={() => {setGameState(state.lost); setCurrentStreak(0)}}
+                  >
+                  Give Up
+                </button>
+              </div>
             </div>
             <div
               className={`absolute -bottom-24 left-1/2 transform -translate-x-1/2 ${
