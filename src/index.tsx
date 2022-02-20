@@ -5,10 +5,14 @@ import {
     Route, 
 } from "react-router-dom";
 
+// @ts-ignore
+import initializeFirebase from './utils/firebase';
 import './index.css';
 import Game from './Game';
 import Login from './views/Login';
 import Register from './views/Register';
+
+initializeFirebase();
 
 ReactDOM.render(
     <BrowserRouter>

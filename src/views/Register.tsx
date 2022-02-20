@@ -3,6 +3,7 @@ import { getAuth, createUserWithEmailAndPassword, } from "firebase/auth";
 import { Default } from 'react-spinners-css';
 import passwordValidator from 'password-validator';
 import * as EmailValidator from 'email-validator';
+import { useNavigate } from "react-router-dom";
 
 const passwordRequirements = new passwordValidator();
 
@@ -24,6 +25,7 @@ type EmailError = {
 	isEmailError: boolean,
 }
 
+// TODO: Need to add logic for if the email already exists
 const Register = ({}: Props) => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -31,6 +33,9 @@ const Register = ({}: Props) => {
 	const [isRegistrationReady, setIsRegistrationReady] = useState(false);
 	const [isRegistering, setIsRegistering] = useState(false);
 	const [validationErrors, setValidationErrors] = useState([]);
+	const [serverErrors, setServerErrors] = useState([]);
+
+	const navigate = useNavigate();
 
 	const handleRegistration = () => {
 		// TODO: Should probably be some kind of server validation for this, at some point, and not just front end
@@ -40,16 +45,31 @@ const Register = ({}: Props) => {
 
 		setIsRegistering(true);
 
+		// @ts-ignore
 		createUserWithEmailAndPassword(auth, email, password)
 		.then((userCredential) => {
 			// Signed in 
 			const user = userCredential.user;
 			console.log('signed in with user', user);
+			navigate('/game');
 		})
 		.catch((error) => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			// ..
+			const { code, message } = error;
+			console.log({
+				code,
+				message
+			});
+
+			let serverErrors = [];
+
+			if (code.includes('auth/email-already-in-use')) {
+				serverErrors.push({ message: 'Email is already in use.' });
+			}
+
+			if (serverErrors.length) setIsRegistering(false);
+
+			// @ts-ignore
+			setServerErrors(serverErrors);
 		});
 	}
 
@@ -60,6 +80,16 @@ const Register = ({}: Props) => {
 			// @ts-ignore
 			return <div className="text-red-600 text-sm">{validationError.message}</div>
 		});
+	}
+
+	const renderServerErrors = () => {
+		if (!serverErrors.length) return;
+
+		return serverErrors.map((serverError) => {
+			// @ts-ignore
+			return <div className="text-blue-600 text-sm">{serverError.message}</div>
+		});
+
 	}
 
 	const isValidEmail = () => {
@@ -82,13 +112,6 @@ const Register = ({}: Props) => {
 			validate() returns an array containing all errors. if it returns an empty array,
 			we can take that to mean there are no errors
 		*/
-
-
-		/*
-			This setState is technically a "side effect" and makes this not a "pure function",
-			but seeing as how this is React, and we're just affecting local state, i'm gonna call that okay
-		*/
-
 		let validationErrors = [];
 
 		if (password.trim() !== verifyPassword.trim()) {
@@ -149,6 +172,10 @@ const Register = ({}: Props) => {
 				<button disabled={!isRegistrationReady} onClick={handleRegistration} className={`bg-blue-500 text-white font-bold py-2 px-4 rounded flex items-center justify-center gap-x-1.5 ${isRegistrationReady ? 'hover:bg-blue-700' : 'opacity-50 cursor-not-allowed'} ${isRegistering ? 'opacity-50 cursor-not-allowed' : ''}`}>
 					{isRegistering ? <Fragment><span>Registering...</span> <Default color="#fff" size={20}/></Fragment> : <span>Sign Up with Email</span>}
 				</button>
+
+				<div className="flex flex-col">
+					{renderServerErrors()}
+				</div>
 			</div>
 		</div>
 	)
