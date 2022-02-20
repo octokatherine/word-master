@@ -2,7 +2,6 @@
   "name": "word-master",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://octokatherine.github.io/word-master",
   "dependencies": {
     "@headlessui/react": "^1.4.2",
     "@tailwindcss/forms": "^0.4.0",
@@ -22,7 +21,8 @@
     "react-scripts": "5.0.0-next.58",
     "tailwindcss-neumorphism": "^0.1.0",
     "typescript": "^4.5.5",
-    "web-vitals": "^2.1.2"
+    "web-vitals": "^2.1.2",
+    "zustand": "^3.7.0"
   },
   "scripts": {
     "predeploy": "npm run build",
