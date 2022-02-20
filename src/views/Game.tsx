@@ -1,16 +1,20 @@
-import { letters, status } from './constants'
+import { letters, status } from '../constants'
 import { useEffect, useState } from 'react'
+import { useNavigate } from "react-router-dom";
 
-import { EndGameModal } from './components/EndGameModal'
+import { EndGameModal } from '../components/EndGameModal'
 // import { InfoModal } from './components/InfoModal'
-import { InputModal } from './components/InputModal';
-import { Keyboard } from './components/Keyboard'
-import { SettingsModal } from './components/SettingsModal'
-import answers from './data/answers'
-import { useLocalStorage } from './hooks/useLocalStorage'
+import { InputModal } from '../components/InputModal';
+import { Keyboard } from '../components/Keyboard'
+import { SettingsModal } from '../components/SettingsModal'
+import Loading from '../components/Loading';
+import answers from '../data/answers'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 // import { ReactComponent as Info } from './data/Info.svg'
-import { ReactComponent as Settings } from './data/Settings.svg'
-const words = require('./data/words').default as { [key: string]: boolean }
+import { ReactComponent as Settings } from '../data/Settings.svg'
+import useStore from '../utils/store';
+import { TIMEOUT_DURATION } from '../utils/constants';
+const words = require('../data/words').default as { [key: string]: boolean }
 
 const state = {
   playing: 'playing',
@@ -24,10 +28,10 @@ export const difficulty = {
   hard: 'hard',
 }
 
-const getRandomAnswer = () => {
-  const randomIndex = Math.floor(Math.random() * answers.length)
-  return answers[randomIndex].toUpperCase()
-}
+// const getRandomAnswer = () => {
+//   const randomIndex = Math.floor(Math.random() * answers.length)
+//   return answers[randomIndex].toUpperCase()
+// }
 
 type State = {
   answer: '',
@@ -40,7 +44,7 @@ type State = {
   submittedInvalidWord: boolean
 }
 
-function App() {
+function Game() {
   const initialStates: State = {
     answer: '',
     gameState: state.playing,
@@ -108,17 +112,24 @@ function App() {
   }
   const eg: { [key: number]: string } = {}
   const [exactGuesses, setExactGuesses] = useLocalStorage('exact-guesses', eg)
-
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
-  // const handleInfoClose = () => {
-  //   setFirstTime(false)
-  //   setInfoModalIsOpen(false)
-  // }
 
-  const handleInputClose = () => {
-    setInputModalIsOpen(false);
-  }
+  const navigate = useNavigate();
+
+  const isLoading = useStore((state) => state.isLoading);
+  const { setIsLoading } = useStore();
+  const { user } = useStore();
+
+  useEffect(() => {
+    console.log('hmmm', { user })
+
+    setIsLoading(true);
+
+    if (user) setIsLoading(false);
+
+    
+  }, [user]);
 
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
   const toggleDarkMode = () => setDarkMode((prev: boolean) => !prev)
@@ -135,6 +146,15 @@ function App() {
       }, 500)
     }
   }, [gameState])
+
+    // const handleInfoClose = () => {
+  //   setFirstTime(false)
+  //   setInfoModalIsOpen(false)
+  // }
+
+  const handleInputClose = () => {
+    setInputModalIsOpen(false);
+  }
 
   const getCellStyles = (rowNumber: number, colNumber: number, letter: string) => {
     if (rowNumber === currentRow) {
@@ -373,114 +393,118 @@ function App() {
     },
   }
 
-  return (
-    <div>
-      <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
-        <header className="flex items-center py-2 px-3 text-primary dark:text-primary-dark">
-          <button
-            type="button"
-            onClick={() => setSettingsModalIsOpen(true)}
-            className="p-1 rounded-full"
-          >
-            <Settings />
-          </button>
-          <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
-            Wordle with Friends
-          </h1>
-          {/* <button
-            type="button"
-            onClick={() => setInfoModalIsOpen(true)}
-            className="p-1 rounded-full"
-          >
-            <Info />
-          </button> */}
-        </header>
-        <div className="flex items-center flex-col py-3 flex-1 justify-center relative">
-          <div className="relative">
-            <div className="grid grid-cols-5 grid-flow-row gap-4">
-              {board.map((row: string[], rowNumber: number) =>
-                row.map((letter: string, colNumber: number) => (
-                  <span
-                    key={colNumber}
-                    className={`${getCellStyles(
-                      rowNumber,
-                      colNumber,
-                      letter
-                    )} inline-flex items-center font-medium justify-center text-lg w-[13vw] h-[13vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
-                  >
-                    {letter}
-                  </span>
-                ))
-              )}
-            </div>
-            <div
-              className={`absolute -bottom-24 left-1/2 transform -translate-x-1/2 ${
-                gameState === state.playing ? 'hidden' : ''
-              }`}
+  if (isLoading) {
+    return <Loading />
+  } else {
+    return (
+      <div>
+        <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
+          <header className="flex items-center py-2 px-3 text-primary dark:text-primary-dark">
+            <button
+              type="button"
+              onClick={() => setSettingsModalIsOpen(true)}
+              className="p-1 rounded-full"
             >
-              <div className={darkMode ? 'dark' : ''}>
-                <button
-                  autoFocus
-                  type="button"
-                  className="rounded-lg z-10 px-6 py-2 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
-                  onClick={playAgain}
-                >
-                  Play Again
-                </button>
+              <Settings />
+            </button>
+            <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
+              Wordle with Friends
+            </h1>
+            {/* <button
+              type="button"
+              onClick={() => setInfoModalIsOpen(true)}
+              className="p-1 rounded-full"
+            >
+              <Info />
+            </button> */}
+          </header>
+          <div className="flex items-center flex-col py-3 flex-1 justify-center relative">
+            <div className="relative">
+              <div className="grid grid-cols-5 grid-flow-row gap-4">
+                {board.map((row: string[], rowNumber: number) =>
+                  row.map((letter: string, colNumber: number) => (
+                    <span
+                      key={colNumber}
+                      className={`${getCellStyles(
+                        rowNumber,
+                        colNumber,
+                        letter
+                      )} inline-flex items-center font-medium justify-center text-lg w-[13vw] h-[13vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
+                    >
+                      {letter}
+                    </span>
+                  ))
+                )}
+              </div>
+              <div
+                className={`absolute -bottom-24 left-1/2 transform -translate-x-1/2 ${
+                  gameState === state.playing ? 'hidden' : ''
+                }`}
+              >
+                <div className={darkMode ? 'dark' : ''}>
+                  <button
+                    autoFocus
+                    type="button"
+                    className="rounded-lg z-10 px-6 py-2 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
+                    onClick={playAgain}
+                  >
+                    Play Again
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        {/* <InfoModal
-          isOpen={infoModalIsOpen}
-          handleClose={handleInfoClose}
-          darkMode={darkMode}
-          styles={modalStyles}
-        /> */}
-        <InputModal
-          isOpen={inputModalIsOpen}
-          handleClose={handleInputClose}
-          darkMode={darkMode}
-          setAnswer={setAnswer}
-          styles={modalStyles}
-          answers={answers}
-          setInputModalIsOpen={setInputModalIsOpen}
-        />
-        <EndGameModal
-          isOpen={modalIsOpen}
-          handleClose={closeModal}
-          styles={modalStyles}
-          darkMode={darkMode}
-          gameState={gameState}
-          state={state}
-          currentStreak={currentStreak}
-          longestStreak={longestStreak}
-          answer={answer}
-          playAgain={playAgain}
-          avgGuessesPerGame={avgGuessesPerGame()}
-        />
-        <SettingsModal
-          isOpen={settingsModalIsOpen}
-          handleClose={() => setSettingsModalIsOpen(false)}
-          styles={modalStyles}
-          darkMode={darkMode}
-          toggleDarkMode={toggleDarkMode}
-          difficultyLevel={difficultyLevel}
-          setDifficultyLevel={setDifficultyLevel}
-          levelInstructions={getDifficultyLevelInstructions()}
-        />
-        <div className={`h-auto relative ${gameState === state.playing ? '' : 'invisible'}`}>
-          <Keyboard
-            letterStatuses={letterStatuses}
-            addLetter={addLetter}
-            onEnterPress={onEnterPress}
-            onDeletePress={onDeletePress}
-            gameDisabled={gameState !== state.playing || inputModalIsOpen}
+          {/* <InfoModal
+            isOpen={infoModalIsOpen}
+            handleClose={handleInfoClose}
+            darkMode={darkMode}
+            styles={modalStyles}
+          /> */}
+          <InputModal
+            isOpen={inputModalIsOpen}
+            handleClose={handleInputClose}
+            darkMode={darkMode}
+            setAnswer={setAnswer}
+            styles={modalStyles}
+            answers={answers}
+            setInputModalIsOpen={setInputModalIsOpen}
           />
+          <EndGameModal
+            isOpen={modalIsOpen}
+            handleClose={closeModal}
+            styles={modalStyles}
+            darkMode={darkMode}
+            gameState={gameState}
+            state={state}
+            currentStreak={currentStreak}
+            longestStreak={longestStreak}
+            answer={answer}
+            playAgain={playAgain}
+            avgGuessesPerGame={avgGuessesPerGame()}
+          />
+          <SettingsModal
+            isOpen={settingsModalIsOpen}
+            handleClose={() => setSettingsModalIsOpen(false)}
+            styles={modalStyles}
+            darkMode={darkMode}
+            toggleDarkMode={toggleDarkMode}
+            difficultyLevel={difficultyLevel}
+            setDifficultyLevel={setDifficultyLevel}
+            levelInstructions={getDifficultyLevelInstructions()}
+          />
+          <div className={`h-auto relative ${gameState === state.playing ? '' : 'invisible'}`}>
+            <Keyboard
+              letterStatuses={letterStatuses}
+              addLetter={addLetter}
+              onEnterPress={onEnterPress}
+              onDeletePress={onDeletePress}
+              gameDisabled={gameState !== state.playing || inputModalIsOpen}
+            />
+          </div>
         </div>
       </div>
-    </div>
-  )
+    ) 
+  }
 }
 
-export default App
+export default Game;

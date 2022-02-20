@@ -1,0 +1,5 @@
+const TIMEOUT_DURATION = 2000;
+
+export {
+    TIMEOUT_DURATION,
+}

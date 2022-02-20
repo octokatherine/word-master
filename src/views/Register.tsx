@@ -5,6 +5,8 @@ import passwordValidator from 'password-validator';
 import * as EmailValidator from 'email-validator';
 import { useNavigate } from "react-router-dom";
 
+import { renderServerErrors } from '../utils/misc';
+
 const passwordRequirements = new passwordValidator();
 
 passwordRequirements
@@ -48,17 +50,10 @@ const Register = ({}: Props) => {
 		// @ts-ignore
 		createUserWithEmailAndPassword(auth, email, password)
 		.then((userCredential) => {
-			// Signed in 
-			const user = userCredential.user;
-			console.log('signed in with user', user);
 			navigate('/game');
 		})
 		.catch((error) => {
 			const { code, message } = error;
-			console.log({
-				code,
-				message
-			});
 
 			let serverErrors = [];
 
@@ -80,16 +75,6 @@ const Register = ({}: Props) => {
 			// @ts-ignore
 			return <div className="text-red-600 text-sm">{validationError.message}</div>
 		});
-	}
-
-	const renderServerErrors = () => {
-		if (!serverErrors.length) return;
-
-		return serverErrors.map((serverError) => {
-			// @ts-ignore
-			return <div className="text-blue-600 text-sm">{serverError.message}</div>
-		});
-
 	}
 
 	const isValidEmail = () => {
@@ -174,7 +159,7 @@ const Register = ({}: Props) => {
 				</button>
 
 				<div className="flex flex-col">
-					{renderServerErrors()}
+					{renderServerErrors(serverErrors)}
 				</div>
 			</div>
 		</div>
