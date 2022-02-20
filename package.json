@@ -1,5 +1,5 @@
 {
-  "name": "word-master",
+  "name": "wordle-with-friends",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
