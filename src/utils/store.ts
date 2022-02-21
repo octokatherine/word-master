@@ -8,7 +8,7 @@ type State = {
 
 const useStore = create<State>((set) => ({
     user: null,
-    isLoading: false,
+    isLoading: true,
     setIsLoading: (isLoading: boolean) => set({ isLoading }),
     setUser: (user: any) => set({ user }),
 }));

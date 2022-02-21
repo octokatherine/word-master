@@ -33,16 +33,19 @@ const Login = ({}: Props) => {
 
 			switch (code) {
 				case 'auth/invalid-email':
+					serverErrors.push({ message: 'Not a valid email account.'});
+					break;
+				case 'auth/user-not-found':
 					serverErrors.push({ message: 'No accounts with that email.'});
 					break;
 				case 'auth/too-many-requests':
 					serverErrors.push({ message: 'Too many attempts. Try again n a few minutes.'});		
 					break;
-				case 'auth/user-not-found':
-					serverErrors.push({ message: 'No account with that email.'});
-					break;
-				case 'auth/wrong-passwored':
+				case 'auth/wrong-password':
 					serverErrors.push({ message: 'Incorrect login.'});
+					break;
+				case 'auth/internal-error':
+					serverErrors.push({ message: 'Error while logging in. Please try again.'});
 					break;
 				default:
 					break;

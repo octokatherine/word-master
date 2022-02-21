@@ -1,12 +1,33 @@
-import { Navigate } from 'react-router-dom';
+import { useEffect, useState, } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ user, children, redirectTo,  }: any) => {
-    console.log('protected', { user})
-    if (!user) {
-        return <Navigate to={redirectTo} replace />;
-    }
+import { TIMEOUT_DURATION } from '../utils/constants';
+import useStore from '../utils/store';
+import Loading from '../components/Loading';
 
-    return children;
+const ProtectedRoute = ({ children, redirectTo,  }: any) => {
+    const isLoading = useStore((state) => state.isLoading);
+    const { setIsLoading } = useStore();
+    const { user } = useStore();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        setIsLoading(true);
+
+        setTimeout(() => {
+            setIsLoading(false);
+            navigate(redirectTo);
+        }, TIMEOUT_DURATION);
+    // eslint-disable-next-line
+    }, []);
+
+    console.log({
+        isLoading,
+        user,
+    });
+
+    console.log('isLoading && !user', isLoading && !user);
+    return isLoading && !user ? <Loading /> : <div>lol</div>;
 };
 
 export default ProtectedRoute;

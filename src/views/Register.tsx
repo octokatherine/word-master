@@ -50,6 +50,7 @@ const Register = ({}: Props) => {
 		// @ts-ignore
 		createUserWithEmailAndPassword(auth, email, password)
 		.then((userCredential) => {
+			console.log('registered, go to game!');
 			navigate('/game');
 		})
 		.catch((error) => {

@@ -121,16 +121,6 @@ function Game() {
   const { setIsLoading } = useStore();
   const { user } = useStore();
 
-  useEffect(() => {
-    console.log('hmmm', { user })
-
-    setIsLoading(true);
-
-    if (user) setIsLoading(false);
-
-    
-  }, [user]);
-
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
   const toggleDarkMode = () => setDarkMode((prev: boolean) => !prev)
 

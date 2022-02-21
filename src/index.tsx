@@ -4,8 +4,6 @@ import './index.css';
 
 import App from './views/App';
 
-console.log('app initializing');
-
 ReactDOM.render(
     <App />
 , document.getElementById('root'))

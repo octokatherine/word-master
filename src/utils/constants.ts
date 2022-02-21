@@ -1,4 +1,4 @@
-const TIMEOUT_DURATION = 2000;
+const TIMEOUT_DURATION = 1000;
 
 export {
     TIMEOUT_DURATION,
