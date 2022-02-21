@@ -52,9 +52,9 @@ const Register = ({}: Props) => {
 		createUserWithEmailAndPassword(auth, email, password)
 		.then((userCredental) => {
 			const { user } = userCredental;
-			
+
 			useStore.setState({ user });
-			navigate('/game');
+			navigate('/');
 		})
 		.catch((error) => {
 			const { code, message } = error;

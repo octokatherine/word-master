@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { 
     BrowserRouter,
     Routes,
     Route, 
+    Navigate,
 } from "react-router-dom";
 
 // @ts-ignore
@@ -11,11 +13,12 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Game from './Game';
 import Login from './Login';
 import Register from './Register';
-import Loading from '../components/Loading';
-import useStore from '../utils/store';
+import Lobby from './Lobby';
+import Logout from './Logout';
 // Do you have stairs in your route? ;)
 import ProtectedRoute from '../components/ProtectedRoute';
-import { useEffect } from "react";
+import useStore from '../utils/store';
+import AuthRedirectRoute from "../components/AuthRedirectRoute";
 
 const { app, db } = initializeFirebase();
 
@@ -36,23 +39,28 @@ const App = ({}: Props) => {
             } else {
                 // User is signed out
                 // ...
-                console.log('no user. signed out. something like that');
+                // console.log('no user. signed out. something like that');
             }
         });
     }, []);
 	
     const isLoading = useStore((state) => state.isLoading);
+    const { user } = useStore();
 
 	return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/" element={
+                    <AuthRedirectRoute authRedirectTarget={<Navigate to="/lobby" />} noAuthRedirectTarget={< Login />} />
+                } />
+                <Route path="/lobby" element={<Lobby />} />
                 <Route path="/game" element={
                     <ProtectedRoute redirectTo='/'>
                         <Game />
                     </ProtectedRoute>
                 } />
                 <Route path="/register" element={<Register />} />
+                <Route path="/logout" element={<Logout />} />
             </Routes>
         </BrowserRouter>
 	)

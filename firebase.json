@@ -10,5 +10,11 @@
       "source": "**",
       "destination": "/index.html"
      }]
+  },
+  "emulators": {
+    "hosting": {
+      "host": "localhost",
+      "port": "6001"
+    }
   }
 }

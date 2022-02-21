@@ -16,10 +16,10 @@ const ProtectedRoute = ({ children, redirectTo, }: any) => {
             setIsLoading(false);
 
             if (!useStore.getState().user) {
-                console.log('redirect is triggering');
+                // console.log('redirect is triggering');
                 navigate(redirectTo);
             } else {
-                console.log('there was a user, and a miracle!', useStore.getState().user);
+                // console.log('there was a user, and a miracle!', useStore.getState().user);
             }
 
         }, TIMEOUT_DURATION);
@@ -30,8 +30,6 @@ const ProtectedRoute = ({ children, redirectTo, }: any) => {
         if (user) setIsLoading(false);
     }, [user, setIsLoading]);
 
-    console.log('isLoading && !user', isLoading && !user);
-    console.log({ children })
     return isLoading && !user ? <Loading /> : children;
 };
 
