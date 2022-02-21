@@ -13,6 +13,7 @@
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "@types/react-modal": "^3.13.1",
+    "animate.css": "^4.1.1",
     "email-validator": "^2.0.4",
     "firebase": "^9.6.6",
     "password-validator": "^5.2.1",
