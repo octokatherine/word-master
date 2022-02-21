@@ -32,35 +32,29 @@ const App = ({}: Props) => {
                 // https://firebase.google.com/docs/reference/js/firebase.User
                 const uid = user.uid;
                 
-                useStore.setState({ user, isLoading: false });
+                useStore.setState({ user });
             } else {
                 // User is signed out
                 // ...
                 console.log('no user. signed out. something like that');
-                useStore.setState({ user, isLoading: false });
             }
         });
     }, []);
 	
     const isLoading = useStore((state) => state.isLoading);
-    const { setIsLoading } = useStore();
-    const { user } = useStore();
-    
-    console.log('please', { isLoading});
+
 	return (
-		isLoading ? 
-            <Loading /> : 
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/game" element={
-                        <ProtectedRoute redirectTo='/'>
-                            {/* <Game /> */}
-                        </ProtectedRoute>
-                    } />
-                    <Route path="/register" element={<Register />} />
-                </Routes>
-            </BrowserRouter>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/game" element={
+                    <ProtectedRoute redirectTo='/'>
+                        <Game />
+                    </ProtectedRoute>
+                } />
+                <Route path="/register" element={<Register />} />
+            </Routes>
+        </BrowserRouter>
 	)
 }
 

@@ -5,29 +5,34 @@ import { TIMEOUT_DURATION } from '../utils/constants';
 import useStore from '../utils/store';
 import Loading from '../components/Loading';
 
-const ProtectedRoute = ({ children, redirectTo,  }: any) => {
+const ProtectedRoute = ({ children, redirectTo, }: any) => {
     const isLoading = useStore((state) => state.isLoading);
     const { setIsLoading } = useStore();
     const { user } = useStore();
     const navigate = useNavigate();
 
     useEffect(() => {
-        setIsLoading(true);
-
         setTimeout(() => {
             setIsLoading(false);
-            navigate(redirectTo);
+
+            if (!useStore.getState().user) {
+                console.log('redirect is triggering');
+                navigate(redirectTo);
+            } else {
+                console.log('there was a user, and a miracle!', useStore.getState().user);
+            }
+
         }, TIMEOUT_DURATION);
     // eslint-disable-next-line
     }, []);
 
-    console.log({
-        isLoading,
-        user,
-    });
+    useEffect(() => {
+        if (user) setIsLoading(false);
+    }, [user, setIsLoading]);
 
     console.log('isLoading && !user', isLoading && !user);
-    return isLoading && !user ? <Loading /> : <div>lol</div>;
+    console.log({ children })
+    return isLoading && !user ? <Loading /> : children;
 };
 
 export default ProtectedRoute;

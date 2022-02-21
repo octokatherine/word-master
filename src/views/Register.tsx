@@ -6,6 +6,7 @@ import * as EmailValidator from 'email-validator';
 import { useNavigate } from "react-router-dom";
 
 import { renderServerErrors } from '../utils/misc';
+import useStore from '../utils/store';
 
 const passwordRequirements = new passwordValidator();
 
@@ -49,8 +50,10 @@ const Register = ({}: Props) => {
 
 		// @ts-ignore
 		createUserWithEmailAndPassword(auth, email, password)
-		.then((userCredential) => {
-			console.log('registered, go to game!');
+		.then((userCredental) => {
+			const { user } = userCredental;
+			
+			useStore.setState({ user });
 			navigate('/game');
 		})
 		.catch((error) => {

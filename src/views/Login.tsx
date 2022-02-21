@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { renderServerErrors } from '../utils/misc';
+import useStore from '../utils/store';
 
 type Props = {
 //   letterStatuses: { [key: string]: string }
@@ -23,6 +24,7 @@ const Login = ({}: Props) => {
 		.then((userCredential) => {
 			// Signed in 
 			const user = userCredential.user;
+			useStore.setState({ user });
 			console.log('successfully logged in');
 		})
 		.catch((error) => {
@@ -60,7 +62,7 @@ const Login = ({}: Props) => {
 		<div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
 			<div className="max-w-lg w-full space-y-8">
 				<div>
-					<h1 className="text-center text-6xl">Wordle with Friends</h1>
+					<h1 className="text-center text-6xl">Wordles with Friendles</h1>
 					<h2 className="mt-2 text-center text-2xl text-gray-900">Sign In</h2>
 					<p className="mt-2 text-center text-sm text-gray-600">
 						Or
