@@ -2,10 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* TODO: Refactor scss, use variables */
+/* main BG color: #24191F */
+
+/* temp box bg color: #3C2A34 */
+
+/* main font color: #F1F1F9 */
+
+/* correct wordle letter: #15B097 */
+
 #root,
 body,
 html {
   /* Prevent overscroll on chrome (not supported on safari) */
   overscroll-behavior-y: none;
   height: 100vh;
+  background-color: #24191F;
+  color: #F1F1F9;
 }
