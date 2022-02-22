@@ -19,11 +19,11 @@ const Keyboard = ({
   const getKeyStyle = (letter: string) => {
     switch (letterStatuses[letter]) {
       case status.green:
-        return 'bg-n-green text-gray-50'
+        return 'bg-[#15B097] text-[#f1f1f9]'
       case status.yellow:
-        return 'bg-yellow-500 text-gray-50'
+        return 'bg-[#FFCE47] text-[#f1f1f9]'
       case status.gray:
-        return 'bg-n-gray text-gray-50'
+        return 'bg-[#3c2a34] text-[#f1f1f9]'
       default:
         return 'text-primary dark:text-primary-dark'
     }
@@ -69,7 +69,7 @@ const Keyboard = ({
           {idx === keyboardLetters.length - 1 && (
             <button
               onClick={onEnterPress}
-              className="h-10 xxs:h-14 w-12 px-1 text-xs font-medium mx-[3.5px] rounded nm-flat-background-sm dark:nm-flat-background-dark-sm text-primary dark:text-primary-dark"
+              className="h-10 xxs:h-14 w-12 px-1 text-xs font-medium mx-[3.5px] rounded keyboard-style text-primary dark:text-primary-dark"
             >
               ENTER
             </button>
@@ -78,7 +78,7 @@ const Keyboard = ({
             <button
               onClick={() => onKeyButtonPress(letter)}
               key={letter}
-              className="h-10 xxs:h-14 w-[2rem] sm:w-10 mx-[3.5px] text-sm font-medium rounded-[4px] nm-flat-background-sm dark:nm-flat-background-dark-sm"
+              className="h-10 xxs:h-14 w-[2rem] sm:w-10 mx-[3.5px] text-sm font-medium rounded-[4px] keyboard-style"
             >
               <div
                 className={`h-full w-full rounded-[3px] flex items-center justify-center ${getKeyStyle(
@@ -92,7 +92,7 @@ const Keyboard = ({
           {idx === keyboardLetters.length - 1 && (
             <button
               onClick={onDeletePress}
-              className="h-10 xxs:h-14 w-12 flex items-center justify-center nm-flat-background-sm dark:nm-flat-background-dark-sm text-primary dark:text-primary-dark mx-[3.5px] text-sm  rounded"
+              className="h-10 xxs:h-14 w-12 flex items-center justify-center keyboard-style text-primary dark:text-primary-dark mx-[3.5px] text-sm  rounded"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

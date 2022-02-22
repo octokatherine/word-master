@@ -20,3 +20,19 @@ html {
   background-color: #24191F;
   color: #F1F1F9;
 }
+
+.text-primary{
+  color: #F1F1F9;
+}
+
+.text-primary-dark{
+  color: #f1f1f9;
+}
+
+.bg-background{
+  background-color: #24191F;
+}
+
+.keyboard-style{
+  background-color: #A0939A; 
+}
