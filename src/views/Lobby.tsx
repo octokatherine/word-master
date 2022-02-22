@@ -35,6 +35,7 @@ const Lobby = ({}: Props) => {
     const [isOpenMatch, setIsOpenMatch] = useState(false);
     const [isSpecificPlayer, setSpecificPlayer] = useState(false);
     const [openMatchLink, setOpenMatchLink] = useState('');
+    const [wordle, setWordle] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isGenerateLinkReady, setIsGenerateLinkReady] = useState(false);
     const [isGeneratingLink, setIsGeneratingLink] = useState(false);
