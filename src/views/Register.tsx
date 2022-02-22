@@ -1,11 +1,12 @@
-import React, { Fragment, useEffect, useCallback, useState } from 'react'
+import { Fragment, useEffect, useCallback, useState } from 'react'
 import { getAuth, createUserWithEmailAndPassword, } from "firebase/auth";
 import { Default } from 'react-spinners-css';
+// TODO: Should probably replace this with the other 'validator.js' library
 import passwordValidator from 'password-validator';
 import * as EmailValidator from 'email-validator';
 import { useNavigate } from "react-router-dom";
 
-import { renderServerErrors } from '../utils/misc';
+import { renderErrors } from '../utils/misc';
 import useStore from '../utils/store';
 
 const passwordRequirements = new passwordValidator();
@@ -57,7 +58,7 @@ const Register = ({}: Props) => {
 			navigate('/');
 		})
 		.catch((error) => {
-			const { code, message } = error;
+			const { code } = error;
 
 			let serverErrors = [];
 
@@ -69,15 +70,6 @@ const Register = ({}: Props) => {
 
 			// @ts-ignore
 			setServerErrors(serverErrors);
-		});
-	}
-
-	const renderValidationErrors = () => {
-		if (!validationErrors.length) return;
-
-		return validationErrors.map((validationError) => {
-			// @ts-ignore
-			return <div className="text-red-600 text-sm">{validationError.message}</div>
 		});
 	}
 
@@ -154,7 +146,7 @@ const Register = ({}: Props) => {
 				</div>
 
 				<div className="flex flex-col">
-					{renderValidationErrors()}
+					{renderErrors(validationErrors, 'text-red-600 text-sm')}
 				</div>
 
 				{/* TODO: Abstract this into a SubmitButton component */}
@@ -163,7 +155,7 @@ const Register = ({}: Props) => {
 				</button>
 
 				<div className="flex flex-col">
-					{renderServerErrors(serverErrors)}
+					{renderErrors(serverErrors, 'text-blue-600 text-sm')}
 				</div>
 			</div>
 		</div>

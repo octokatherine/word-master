@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { renderServerErrors } from '../utils/misc';
+import { renderErrors } from '../utils/misc';
 import useStore from '../utils/store';
 
 type Props = {
@@ -85,7 +85,7 @@ const Login = ({}: Props) => {
 					</div>
 
 					<div className="flex flex-col">
-						{renderServerErrors(serverErrors)}
+						{renderErrors(serverErrors, 'text-blue-600 text-sm')}
 					</div>
 
 					<div className="flex items-center justify-between">

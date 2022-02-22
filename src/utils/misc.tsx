@@ -1,13 +1,22 @@
-const renderServerErrors = (serverErrors: any) => {
-    if (!serverErrors.length) return;
+const renderErrors = (errors: any, className: string) => {
+    let validationMessages = [];
 
-    return serverErrors.map((serverError: any) => {
-        // @ts-ignore
-        return <div className="text-blue-600 text-sm">{serverError.message}</div>
-    });
+    if (errors.length) {
+        validationMessages = errors.map((error: any) => {
+            /* 
+                TODO: This 'message' property is only necessary because of the 'password-valditor' library.
+                This can be refactored now that we're also using validator.js
+            */
+            // @ts-ignore
+            return <div className={className}>{error.message}</div>
+        });
+    } else {
+        validationMessages.push(<div className={'text-[#15B097] text-sm'}>Looking good!</div>);
+    }
 
+    return validationMessages;
 }
 
 export {
-    renderServerErrors,
+    renderErrors,
 }

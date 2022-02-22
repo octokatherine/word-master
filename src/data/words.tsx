@@ -3392,6 +3392,7 @@ const words: { [key: string]: boolean } = {
   grody: true,
   grogs: true,
   groin: true,
+  chode: true,
   groks: true,
   groom: true,
   grope: true,

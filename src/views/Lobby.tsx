@@ -1,17 +1,14 @@
-import { useState, Fragment} from 'react'
-import { Link } from "react-router-dom";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { renderServerErrors } from '../utils/misc';
+import { useState, useEffect, Fragment} from 'react'
+import { Default } from 'react-spinners-css';
+// import { Link } from "react-router-dom";
+// import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
+import { validateWordle } from '../utils/validation';
 import ReactModal from 'react-modal';
 import useStore from '../utils/store';
+import { renderErrors } from '../utils/misc';
 
-type Props = {
-//   letterStatuses: { [key: string]: string }
-//   gameDisabled: boolean
-//   onDeletePress: () => void
-//   onEnterPress: () => void
-//   addLetter: any
-}
+type Props = {}
 
 const modalStyle = { 
     overlay: {
@@ -39,6 +36,14 @@ const Lobby = ({}: Props) => {
     const [isSpecificPlayer, setSpecificPlayer] = useState(false);
     const [openMatchLink, setOpenMatchLink] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isGenerateLinkReady, setIsGenerateLinkReady] = useState(false);
+    const [isGeneratingLink, setIsGeneratingLink] = useState(false);
+    const [wordleValidationErrors, setWordleValidationErrors] = useState([]);
+
+    useEffect(() => {
+        // @ts-ignore
+        handleValidateWordle();
+    }, []);
 
     const handleModalButtonClick = (selection: string) => {
         if (selection === 'open') {
@@ -52,6 +57,17 @@ const Lobby = ({}: Props) => {
 
     const handleStartNewMatch = () => {
         setIsModalOpen(true);
+    }
+
+    const handleValidateWordle = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        const value = e?.target.value || '';
+
+        // @ts-ignore
+        setWordleValidationErrors(validateWordle(value).map(error => ({ message: error }))); // TODO: this 'message' property can be refactored away when we stop using 'password-validator.js'
+    }
+
+    const handleGenerateLink = () => {
+        console.log('generate link');
     }
 
 	return (
@@ -100,7 +116,7 @@ const Lobby = ({}: Props) => {
             </div>
 
             {/* @ts-ignore */}
-            <ReactModal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} style={modalStyle} className={`flex border-2 border-white rounded-[5rem]`}>
+            <ReactModal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} style={modalStyle} className={`flex border-2 border-white rounded-[5rem] bg-[#3C2A34]`}>
                 <Fragment>
                     <i className="fixed top-6 right-6 text-6xl not-italic cursor-pointer transition-all hover:text-zinc-500" onClick={() => setIsModalOpen(false)}>X</i>
 
@@ -152,12 +168,17 @@ const Lobby = ({}: Props) => {
 
                                 <p>Play with the first person who opens the link!</p>
 
-                                <div className="flex justify-center flex-col">
+                                <div className="flex justify-center flex-col gap-y-2">
                                     <span>Your Word</span>
-                                    <input type="text" className="text-black"></input>
+                                    <input type="text" className={`text-black ${wordleValidationErrors.length ? 'border-red-500 focus:border-red-500 focus:ring-red-500': 'border-[#15B097] focus:border-[#15B097] focus:ring-[#15B097]'}`} placeholder="Enter a word" onChange={handleValidateWordle}></input>
+                                    {renderErrors(wordleValidationErrors, 'text-red-500 text-sm')}
                                 </div>
                                 <div className="flex justify-center flex-col gap-y-2">
-                                    <button className="bg-[#15B097] hover:bg-green-700 text-[#F1F1F9] font-bold py-2 px-4 rounded w-full">Generate Link</button>
+                                    {/* TODO: Might want to abstract into 'submit button' component */}
+                                    <button disabled={!isGenerateLinkReady} onClick={handleGenerateLink} className={`bg-[#15B097] text-[#F1F1F9] font-bold py-2 px-4 rounded w-full ${isGenerateLinkReady ? 'hover:bg-green-700' : 'opacity-50 cursor-not-allowed'} ${isGenerateLinkReady ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                        {isGeneratingLink ? <Fragment><span>Registering...</span> <Default color="#fff" size={20}/></Fragment> : <span>Generate Link</span>}
+                                    </button>
+
                                     <button className="bg-[#FFCE47] hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded w-full" onClick={() => {
                                         setIsOpenMatch(false);
                                         setSpecificPlayer(false);
