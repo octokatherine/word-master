@@ -911,6 +911,7 @@ const words: { [key: string]: boolean } = {
   bohos: true,
   boils: true,
   boing: true,
+  boink: true,
   boite: true,
   bokeh: true,
   bolar: true,
