@@ -43,7 +43,7 @@ const Keyboard = ({
       if (gameDisabled) return
 
       const letter = event.key.toUpperCase()
-      const areAnyModifiersPressed = event.ctrlKey || event.shiftKey || event.altKey || event.metaKey;
+      const areAnyModifiersPressed = event.ctrlKey || event.altKey || event.metaKey
 
       if (!areAnyModifiersPressed && letters.includes(letter)) {
         addLetter(letter)
