@@ -23,6 +23,8 @@ export const difficulty = {
   hard: 'hard',
 }
 
+const GIVE_UP_TIME_OUT = 40000
+
 const getRandomAnswer = () => {
   const randomIndex = Math.floor(Math.random() * answers.length)
   return answers[randomIndex].toUpperCase()
@@ -111,6 +113,19 @@ function App() {
     setFirstTime(false)
     setInfoModalIsOpen(false)
   }
+
+  const [hideGiveUp,setHideGiveUp] = useState(true)
+
+  useEffect(()=>{
+      setHideGiveUp(true)
+      const giveUpTimer = window.setTimeout(() => {
+        setHideGiveUp(false)
+      }, GIVE_UP_TIME_OUT);
+
+      return () => {
+        clearTimeout(giveUpTimer);
+      };
+  }, [gameState])
 
   const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
   const toggleDarkMode = () => setDarkMode((prev: boolean) => !prev)
@@ -403,6 +418,22 @@ function App() {
                   </span>
                 ))
               )}
+            </div>
+            <div
+              className={`flex justify-center pt-6 ${
+                hideGiveUp ||  gameState !== state.playing ? 'hidden' : ''
+              }`}
+            >
+              <div className={darkMode ? 'dark' : ''}>
+                <button
+                    autoFocus
+                    type="button"
+                    className="rounded-lg z-10 px-6 py-2 text-lg nm-flat-background dark:nm-flat-background-dark hover:nm-inset-background dark:hover:nm-inset-background-dark text-primary dark:text-primary-dark"
+                    onClick={() => {setGameState(state.lost); setCurrentStreak(0)}}
+                  >
+                  Give Up
+                </button>
+              </div>
             </div>
             <div
               className={`absolute -bottom-24 left-1/2 transform -translate-x-1/2 ${
