@@ -37,6 +37,7 @@ type State = {
   currentCol: number
   letterStatuses: () => { [key: string]: string }
   submittedInvalidWord: boolean
+  darkMode: boolean
 }
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
       return letterStatuses
     },
     submittedInvalidWord: false,
+    darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
   }
 
   const [answer, setAnswer] = useLocalStorage('stateAnswer', initialStates.answer())
@@ -112,7 +114,7 @@ function App() {
     setInfoModalIsOpen(false)
   }
 
-  const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false)
+  const [darkMode, setDarkMode] = useLocalStorage('dark-mode', initialStates.darkMode)
   const toggleDarkMode = () => setDarkMode((prev: boolean) => !prev)
 
   useEffect(
