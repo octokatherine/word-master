@@ -369,7 +369,7 @@ function App() {
   return (
     <div>
       <div className={`flex flex-col justify-between h-fill bg-background dark:bg-background-dark`}>
-        <header className="flex items-center py-2 px-3 text-primary dark:text-primary-dark">
+        <header className="flex items-center py-1 sm:py-2 px-3 text-primary dark:text-primary-dark">
           <button
             type="button"
             onClick={() => setSettingsModalIsOpen(true)}
@@ -377,7 +377,7 @@ function App() {
           >
             <Settings />
           </button>
-          <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-4xl tracking-wide font-bold font-righteous">
+          <h1 className="flex-1 text-center text-xl xxs:text-2xl sm:text-3xl tracking-wide font-bold font-righteous">
             WORD MASTER
           </h1>
           <button
@@ -388,7 +388,7 @@ function App() {
             <Info />
           </button>
         </header>
-        <div className="flex items-center flex-col py-3 flex-1 justify-center relative">
+        <div className="flex items-center flex-col pb-3 flex-1 justify-center relative">
           <div className="relative">
             <div className="grid grid-cols-5 grid-flow-row gap-4">
               {board.map((row: string[], rowNumber: number) =>
@@ -399,7 +399,7 @@ function App() {
                       rowNumber,
                       colNumber,
                       letter
-                    )} inline-flex items-center font-medium justify-center text-lg w-[13vw] h-[13vw] xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full`}
+                    )} inline-flex items-center font-medium justify-center text-lg w-[13vw] h-[13vw] xs:w-14 xs:h-14 rounded-full`}
                   >
                     {letter}
                   </span>
