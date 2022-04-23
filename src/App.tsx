@@ -21,6 +21,7 @@ export const difficulty = {
   easy: 'easy',
   normal: 'normal',
   hard: 'hard',
+  extreme: 'extreme',
 }
 
 const getRandomAnswer = () => {
@@ -39,14 +40,16 @@ type LetterHint = {
   sourceRow: number
   sourceCol: number
   letter: string
-  minCount: number
+  minCount: number | null
+  maxCount: number | null
 }
 
 type PositionalHint = {
   sourceRow: number
   sourceCol: number
   position: number
-  is: string
+  is: string | null
+  isnot: string | null
 }
 
 type State = {
@@ -129,7 +132,9 @@ function App() {
     if (difficultyLevel === difficulty.easy) {
       return 'Guess any 5 letters'
     } else if (difficultyLevel === difficulty.hard) {
-      return "Guess any valid word using all the hints you've been given"
+      return "Guess any valid word using all the positive hints you've been given"
+    } else if (difficultyLevel === difficulty.extreme) {
+      return "Guess any valid word using all the positive hints you've been given and none of the negative hints"
     } else {
       return 'Guess any valid word'
     }
@@ -218,7 +223,7 @@ function App() {
 
     // hard
     letterHints.forEach(hint => {
-      if (hint.minCount > wordLetters.filter(letter => letter === hint.letter).length) {
+      if (hint.minCount !== null && hint.minCount > wordLetters.filter(letter => letter === hint.letter).length) {
         conflicts.push({
           sourceRow: hint.sourceRow,
           sourceCol: hint.sourceCol,
@@ -229,7 +234,7 @@ function App() {
     })
 
     positionalHints.forEach(hint => {
-      if (hint.is !== word[hint.position]) {
+      if (hint.is !== null && hint.is !== word[hint.position]) {
         conflicts.push({
           sourceRow: hint.sourceRow,
           sourceCol: hint.sourceCol,
@@ -239,10 +244,44 @@ function App() {
       }
     })
 
-    if (conflicts.length > 0)
-      return [false, "In hard mode, you must use all hints you've been given.", conflicts]
+    if (difficultyLevel === difficulty.hard) {
+      if (conflicts.length > 0) {
+        return [false, "In hard mode, you must use all positive hints you've been given.", conflicts]
+      } else {
+        return [true]
+      }
+    }
 
-    return [true]
+    // extreme
+    letterHints.forEach(hint => {
+      if (hint.maxCount !== null && hint.maxCount < wordLetters.filter(letter => letter === hint.letter).length) {
+        wordLetters.map((letter, i) => letter === hint.letter ? i : null).filter(i => i !== null).slice(hint.maxCount).forEach(i => {
+          conflicts.push({
+            sourceRow: hint.sourceRow,
+            sourceCol: hint.sourceCol,
+            position: i,
+            toolip: `${word} has more than ${hint.maxCount} ${hint.letter}'s`
+          })
+        })
+      }
+    })
+
+    positionalHints.forEach(hint => {
+      if (hint.isnot !== null && hint.isnot === word[hint.position]) {
+        conflicts.push({
+          sourceRow: hint.sourceRow,
+          sourceCol: hint.sourceCol,
+          position: hint.position,
+          toolip: `The ${getOrdinal(hint.position + 1)} letter cannot be ${hint.is}`
+        })
+      }
+    })
+
+    if (conflicts.length > 0) {
+      return [false, "In extreme mode, you must use all positive and negative hints you've been given.", conflicts]
+    } else {
+      return [true]
+    }
   }
 
   const getOrdinal = (n: number) => {
@@ -409,19 +448,44 @@ function App() {
           sourceCol: i,
           position: i,
           is: letter,
+          isnot: null
         })
         newLetterHints.push({
           sourceRow: currentRow,
           sourceCol: i,
           letter: letter,
           minCount: positiveHints[letter],
+          maxCount: null
         })
       } else if (cellStatuses[i] === status.yellow) {
+        newPositionalHints.push({
+          sourceRow: currentRow,
+          sourceCol: i,
+          position: i,
+          is: null,
+          isnot: letter
+        })
         newLetterHints.push({
           sourceRow: currentRow,
           sourceCol: i,
           letter: letter,
           minCount: positiveHints[letter],
+          maxCount: null
+        })
+      } else if (cellStatuses[i] === status.gray) {
+        newPositionalHints.push({
+          sourceRow: currentRow,
+          sourceCol: i,
+          position: i,
+          is: null,
+          isnot: letter
+        })
+        newLetterHints.push({
+          sourceRow: currentRow,
+          sourceCol: i,
+          letter: letter,
+          minCount: null,
+          maxCount: positiveHints[letter] || 0
         })
       }
     }
