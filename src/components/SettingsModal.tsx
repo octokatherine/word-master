@@ -71,7 +71,7 @@ export const SettingsModal = ({
 
             <RadioGroup value={difficultyLevel} onChange={setDifficultyLevel} className="mt-6">
               <RadioGroup.Label className="w-full text-center">Difficulty Level</RadioGroup.Label>
-              <div className="grid grid-cols-3 gap-2 rounded-full mt-2 p-1 nm-inset-background dark:nm-inset-background-dark">
+              <div className="grid grid-cols-4 gap-2 rounded-full mt-2 p-1 nm-inset-background dark:nm-inset-background-dark">
                 {Object.keys(difficulty).map((option) => (
                   <RadioGroup.Option
                     key={option}
