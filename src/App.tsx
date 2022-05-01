@@ -60,8 +60,6 @@ type State = {
   currentRow: number
   currentCol: number
   letterStatuses: () => { [key: string]: string }
-  letterHints: LetterHint[]
-  positionalHints: PositionalHint[]
   submittedInvalidWord: boolean
   currentConflicts: Conflict[]
   darkMode: boolean
@@ -89,8 +87,6 @@ function App() {
       })
       return letterStatuses
     },
-    letterHints: [],
-    positionalHints: [],
     submittedInvalidWord: false,
     currentConflicts: [],
     darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
@@ -109,8 +105,6 @@ function App() {
     'stateLetterStatuses',
     initialStates.letterStatuses()
   )
-  const [letterHints, setLetterHints] = useLocalStorage('stateLetterHints', initialStates.letterHints)
-  const [positionalHints, setPositionalHints] = useLocalStorage('statePositionalHints', initialStates.positionalHints)
   const [currentConflicts, setCurrentConflicts] = useLocalStorage('stateCurrentConflicts', initialStates.currentConflicts)
   const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage(
     'stateSubmittedInvalidWord',
@@ -220,6 +214,8 @@ function App() {
 
     const conflicts: Conflict[] = []
     const wordLetters = [...word]
+
+    const [letterHints, positionalHints] = getHints(currentRow)
 
     // hard
     letterHints.forEach(hint => {
@@ -362,8 +358,6 @@ function App() {
         }
       }
 
-      updateHints(word, newCellStatuses[rowNumber], rowNumber)
-
       return newCellStatuses
     })
   }
@@ -427,71 +421,73 @@ function App() {
     })
   }
 
-  const updateHints = (word: string, cellStatuses: string[], currentRow: number) => {
-    const newLetterHints: LetterHint[] = []
-    const newPositionalHints: PositionalHint[] = []
-    const wordLength = word.length
+  const getHints = (currentRow: number): [LetterHint[], PositionalHint[]] => {
+    const letterHints: LetterHint[] = []
+    const positionalHints: PositionalHint[] = []
 
-    const positiveHints: { [key: string]: number } = { }
-    for (let i = 0; i < wordLength; i++) {
-      const letter = word[i]
-      if (cellStatuses[i] !== status.gray) {
-        positiveHints[letter] = (positiveHints[letter] || 0) + 1
+    for (let row = 0; row < currentRow; row++) {
+      const word = board[row].join('')
+      const wordLength = word.length
+      const positiveHints: { [key: string]: number } = { }
+      for (let i = 0; i < wordLength; i++) {
+        const letter = word[i]
+        if (cellStatuses[row][i] !== status.gray) {
+          positiveHints[letter] = (positiveHints[letter] || 0) + 1
+        }
+      }
+
+      for (let i = 0; i < wordLength; i++) {
+        const letter = word[i]
+        if (cellStatuses[row][i] === status.green) {
+          positionalHints.push({
+            sourceRow: row,
+            sourceCol: i,
+            position: i,
+            is: letter,
+            isnot: null
+          })
+          letterHints.push({
+            sourceRow: row,
+            sourceCol: i,
+            letter: letter,
+            minCount: positiveHints[letter],
+            maxCount: null
+          })
+        } else if (cellStatuses[row][i] === status.yellow) {
+          positionalHints.push({
+            sourceRow: row,
+            sourceCol: i,
+            position: i,
+            is: null,
+            isnot: letter
+          })
+          letterHints.push({
+            sourceRow: row,
+            sourceCol: i,
+            letter: letter,
+            minCount: positiveHints[letter],
+            maxCount: null
+          })
+        } else if (cellStatuses[row][i] === status.gray) {
+          positionalHints.push({
+            sourceRow: row,
+            sourceCol: i,
+            position: i,
+            is: null,
+            isnot: letter
+          })
+          letterHints.push({
+            sourceRow: row,
+            sourceCol: i,
+            letter: letter,
+            minCount: null,
+            maxCount: positiveHints[letter] || 0
+          })
+        }
       }
     }
 
-    for (let i = 0; i < wordLength; i++) {
-      const letter = word[i]
-      if (cellStatuses[i] === status.green) {
-        newPositionalHints.push({
-          sourceRow: currentRow,
-          sourceCol: i,
-          position: i,
-          is: letter,
-          isnot: null
-        })
-        newLetterHints.push({
-          sourceRow: currentRow,
-          sourceCol: i,
-          letter: letter,
-          minCount: positiveHints[letter],
-          maxCount: null
-        })
-      } else if (cellStatuses[i] === status.yellow) {
-        newPositionalHints.push({
-          sourceRow: currentRow,
-          sourceCol: i,
-          position: i,
-          is: null,
-          isnot: letter
-        })
-        newLetterHints.push({
-          sourceRow: currentRow,
-          sourceCol: i,
-          letter: letter,
-          minCount: positiveHints[letter],
-          maxCount: null
-        })
-      } else if (cellStatuses[i] === status.gray) {
-        newPositionalHints.push({
-          sourceRow: currentRow,
-          sourceCol: i,
-          position: i,
-          is: null,
-          isnot: letter
-        })
-        newLetterHints.push({
-          sourceRow: currentRow,
-          sourceCol: i,
-          letter: letter,
-          minCount: null,
-          maxCount: positiveHints[letter] || 0
-        })
-      }
-    }
-
-    setLetterHints((prev: LetterHint[]) => [...prev, ...newLetterHints])
-    setPositionalHints((prev: PositionalHint[]) => [...prev, ...newPositionalHints])
+    return [letterHints, positionalHints]
   }
 
   const playAgain = () => {
@@ -506,8 +502,6 @@ function App() {
     setCurrentRow(initialStates.currentRow)
     setCurrentCol(initialStates.currentCol)
     setLetterStatuses(initialStates.letterStatuses())
-    setLetterHints(initialStates.letterHints)
-    setPositionalHints(initialStates.positionalHints)
     setSubmittedInvalidWord(initialStates.submittedInvalidWord)
     setCurrentConflicts(initialStates.currentConflicts)
 
