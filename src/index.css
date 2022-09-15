@@ -36,3 +36,7 @@ html {
 .font-righteous {
   font-family: 'Righteous', cursive;
 }
+
+input[type='button'] {
+  touch-action: manipulation;
+}
