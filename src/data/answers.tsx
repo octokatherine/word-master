@@ -904,7 +904,6 @@ const answers = [
   'guild',
   'gummy',
   'gusts',
-  'gyoza',
   'habit',
   'haiku',
   'halls',
