@@ -1,4 +1,4 @@
-# Word Master
+# Word Masterr
 
 🔗 https://octokatherine.github.io/word-master/
 
