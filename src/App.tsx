@@ -21,11 +21,35 @@ export const difficulty = {
   easy: 'easy',
   normal: 'normal',
   hard: 'hard',
+  extreme: 'extreme',
 }
 
 const getRandomAnswer = () => {
   const randomIndex = Math.floor(Math.random() * answers.length)
   return answers[randomIndex].toUpperCase()
+}
+
+type Conflict = {
+  sourceRow: number
+  sourceCol: number
+  position: number | null
+  toolip: string
+}
+
+type LetterHint = {
+  sourceRow: number
+  sourceCol: number
+  letter: string
+  minCount: number | null
+  maxCount: number | null
+}
+
+type PositionalHint = {
+  sourceRow: number
+  sourceCol: number
+  position: number
+  is: string | null
+  isnot: string | null
 }
 
 type State = {
@@ -37,6 +61,7 @@ type State = {
   currentCol: number
   letterStatuses: () => { [key: string]: string }
   submittedInvalidWord: boolean
+  currentConflicts: Conflict[]
   darkMode: boolean
 }
 
@@ -63,6 +88,7 @@ function App() {
       return letterStatuses
     },
     submittedInvalidWord: false,
+    currentConflicts: [],
     darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
   }
 
@@ -79,6 +105,7 @@ function App() {
     'stateLetterStatuses',
     initialStates.letterStatuses()
   )
+  const [currentConflicts, setCurrentConflicts] = useLocalStorage('stateCurrentConflicts', initialStates.currentConflicts)
   const [submittedInvalidWord, setSubmittedInvalidWord] = useLocalStorage(
     'stateSubmittedInvalidWord',
     initialStates.submittedInvalidWord
@@ -99,13 +126,13 @@ function App() {
     if (difficultyLevel === difficulty.easy) {
       return 'Guess any 5 letters'
     } else if (difficultyLevel === difficulty.hard) {
-      return "Guess any valid word using all the hints you've been given"
+      return "Guess any valid word using all the positive hints you've been given"
+    } else if (difficultyLevel === difficulty.extreme) {
+      return "Guess any valid word using all the positive hints you've been given and none of the negative hints"
     } else {
       return 'Guess any valid word'
     }
   }
-  const eg: { [key: number]: string } = {}
-  const [exactGuesses, setExactGuesses] = useLocalStorage('exact-guesses', eg)
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
@@ -131,22 +158,29 @@ function App() {
   }, [gameState])
 
   const getCellStyles = (rowNumber: number, colNumber: number, letter: string) => {
+    const hasConflicts = currentConflicts.filter(c => c.sourceRow === rowNumber && c.sourceCol === colNumber).length > 0
+
     if (rowNumber === currentRow) {
       if (letter) {
-        return `nm-inset-background dark:nm-inset-background-dark text-primary dark:text-primary-dark ${
-          submittedInvalidWord ? 'border border-red-800' : ''
-        }`
+        const base = 'nm-inset-background dark:nm-inset-background-dark text-primary dark:text-primary-dark'
+        if (currentConflicts.filter(c => c.position === colNumber).length > 0) {
+          return `${base} border-2 border-red-800`
+        } else if (submittedInvalidWord) {
+          return `${base} border border-red-800`
+        } else {
+          return base
+        }
       }
       return 'nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark'
     }
 
     switch (cellStatuses[rowNumber][colNumber]) {
       case status.green:
-        return 'nm-inset-n-green text-gray-50'
+        return `nm-inset-n-green text-gray-50 ${hasConflicts ? 'border-4 border-red-800' : ''}`
       case status.yellow:
-        return 'nm-inset-yellow-500 text-gray-50'
+        return `nm-inset-yellow-500 text-gray-50 ${hasConflicts ? 'border-4 border-red-800' : ''}`
       case status.gray:
-        return 'nm-inset-n-gray text-gray-50'
+        return `nm-inset-n-gray text-gray-50 ${hasConflicts ? 'border-4 border-red-800' : ''}`
       default:
         return 'nm-flat-background dark:nm-flat-background-dark text-primary dark:text-primary-dark'
     }
@@ -154,6 +188,7 @@ function App() {
 
   const addLetter = (letter: string) => {
     setSubmittedInvalidWord(false)
+    setCurrentConflicts([])
     setBoard((prev: string[][]) => {
       if (currentCol > 4) {
         return prev
@@ -168,31 +203,101 @@ function App() {
   }
 
   // returns an array with a boolean of if the word is valid and an error message if it is not
-  const isValidWord = (word: string): [boolean] | [boolean, string] => {
-    if (word.length < 5) return [false, `please enter a 5 letter word`]
+  const isValidWord = (word: string): [boolean] | [boolean, string, Conflict[]] => {
+    // easy
+    if (word.length < 5) return [false, `please enter a 5 letter word`, []]
     if (difficultyLevel === difficulty.easy) return [true]
-    if (!words[word.toLowerCase()]) return [false, `${word} is not a valid word. Please try again.`]
+
+    // normal
+    if (!words[word.toLowerCase()]) return [false, `${word} is not a valid word. Please try again.`, []]
     if (difficultyLevel === difficulty.normal) return [true]
-    const guessedLetters = Object.entries(letterStatuses).filter(([letter, letterStatus]) =>
-      [status.yellow, status.green].includes(letterStatus)
-    )
-    const yellowsUsed = guessedLetters.every(([letter, _]) => word.includes(letter))
-    const greensUsed = Object.entries(exactGuesses).every(
-      ([position, letter]) => word[parseInt(position)] === letter
-    )
-    if (!yellowsUsed || !greensUsed)
-      return [false, `In hard mode, you must use all the hints you've been given.`]
-    return [true]
+
+    const conflicts: Conflict[] = []
+    const wordLetters = [...word]
+
+    const [letterHints, positionalHints] = getHints(currentRow)
+
+    // hard
+    letterHints.forEach(hint => {
+      if (hint.minCount !== null && hint.minCount > wordLetters.filter(letter => letter === hint.letter).length) {
+        conflicts.push({
+          sourceRow: hint.sourceRow,
+          sourceCol: hint.sourceCol,
+          position: null,
+          toolip: `${word} has less than ${hint.minCount} ${hint.letter}'s`
+        })
+      }
+    })
+
+    positionalHints.forEach(hint => {
+      if (hint.is !== null && hint.is !== word[hint.position]) {
+        conflicts.push({
+          sourceRow: hint.sourceRow,
+          sourceCol: hint.sourceCol,
+          position: hint.position,
+          toolip: `The ${getOrdinal(hint.position + 1)} letter is supposed to be ${hint.is}`
+        })
+      }
+    })
+
+    if (difficultyLevel === difficulty.hard) {
+      if (conflicts.length > 0) {
+        return [false, "In hard mode, you must use all positive hints you've been given.", conflicts]
+      } else {
+        return [true]
+      }
+    }
+
+    // extreme
+    letterHints.forEach(hint => {
+      if (hint.maxCount !== null && hint.maxCount < wordLetters.filter(letter => letter === hint.letter).length) {
+        wordLetters.map((letter, i) => letter === hint.letter ? i : null).filter(i => i !== null).slice(hint.maxCount).forEach(i => {
+          conflicts.push({
+            sourceRow: hint.sourceRow,
+            sourceCol: hint.sourceCol,
+            position: i,
+            toolip: `${word} has more than ${hint.maxCount} ${hint.letter}'s`
+          })
+        })
+      }
+    })
+
+    positionalHints.forEach(hint => {
+      if (hint.isnot !== null && hint.isnot === word[hint.position]) {
+        conflicts.push({
+          sourceRow: hint.sourceRow,
+          sourceCol: hint.sourceCol,
+          position: hint.position,
+          toolip: `The ${getOrdinal(hint.position + 1)} letter cannot be ${hint.is}`
+        })
+      }
+    })
+
+    if (conflicts.length > 0) {
+      return [false, "In extreme mode, you must use all positive and negative hints you've been given.", conflicts]
+    } else {
+      return [true]
+    }
+  }
+
+  const getOrdinal = (n: number) => {
+    const s = ['th', 'st', 'nd', 'rd']
+    const v = n % 100
+    return n + (s[(v - 20) % 10] || s[v] || s[0])
   }
 
   const onEnterPress = () => {
     const word = board[currentRow].join('')
-    const [valid, _err] = isValidWord(word)
+    const [valid, _err, _conflicts] = isValidWord(word)
     if (!valid) {
       console.log({ valid, _err })
-      setSubmittedInvalidWord(true)
+      setSubmittedInvalidWord(_conflicts?.length === 0)
+      setCurrentConflicts(_conflicts)
       // alert(_err)
       return
+    } else {
+      setSubmittedInvalidWord(false)
+      setCurrentConflicts([])
     }
 
     if (currentRow === 6) return
@@ -211,6 +316,7 @@ function App() {
 
   const onDeletePress = () => {
     setSubmittedInvalidWord(false)
+    setCurrentConflicts([])
     if (currentCol === 0) return
 
     setBoard((prev: any) => {
@@ -254,7 +360,6 @@ function App() {
 
       return newCellStatuses
     })
-    setExactGuesses((prev: { [key: number]: string }) => ({ ...prev, ...fixedLetters }))
   }
 
   const isRowAllGreen = (row: string[]) => {
@@ -316,6 +421,75 @@ function App() {
     })
   }
 
+  const getHints = (currentRow: number): [LetterHint[], PositionalHint[]] => {
+    const letterHints: LetterHint[] = []
+    const positionalHints: PositionalHint[] = []
+
+    for (let row = 0; row < currentRow; row++) {
+      const word = board[row].join('')
+      const wordLength = word.length
+      const positiveHints: { [key: string]: number } = { }
+      for (let i = 0; i < wordLength; i++) {
+        const letter = word[i]
+        if (cellStatuses[row][i] !== status.gray) {
+          positiveHints[letter] = (positiveHints[letter] || 0) + 1
+        }
+      }
+
+      for (let i = 0; i < wordLength; i++) {
+        const letter = word[i]
+        if (cellStatuses[row][i] === status.green) {
+          positionalHints.push({
+            sourceRow: row,
+            sourceCol: i,
+            position: i,
+            is: letter,
+            isnot: null
+          })
+          letterHints.push({
+            sourceRow: row,
+            sourceCol: i,
+            letter: letter,
+            minCount: positiveHints[letter],
+            maxCount: null
+          })
+        } else if (cellStatuses[row][i] === status.yellow) {
+          positionalHints.push({
+            sourceRow: row,
+            sourceCol: i,
+            position: i,
+            is: null,
+            isnot: letter
+          })
+          letterHints.push({
+            sourceRow: row,
+            sourceCol: i,
+            letter: letter,
+            minCount: positiveHints[letter],
+            maxCount: null
+          })
+        } else if (cellStatuses[row][i] === status.gray) {
+          positionalHints.push({
+            sourceRow: row,
+            sourceCol: i,
+            position: i,
+            is: null,
+            isnot: letter
+          })
+          letterHints.push({
+            sourceRow: row,
+            sourceCol: i,
+            letter: letter,
+            minCount: null,
+            maxCount: positiveHints[letter] || 0
+          })
+        }
+      }
+    }
+
+    return [letterHints, positionalHints]
+  }
+
   const playAgain = () => {
     if (gameState === state.lost) {
       setGuessesInStreak(0)
@@ -329,7 +503,7 @@ function App() {
     setCurrentCol(initialStates.currentCol)
     setLetterStatuses(initialStates.letterStatuses())
     setSubmittedInvalidWord(initialStates.submittedInvalidWord)
-    setExactGuesses({})
+    setCurrentConflicts(initialStates.currentConflicts)
 
     closeModal()
   }
